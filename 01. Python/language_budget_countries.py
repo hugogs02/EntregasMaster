@@ -3,12 +3,6 @@ from mrjob.job import MRJob
 from collections import defaultdict
 
 class MRLanguageCountriesBudgets(MRJob):
-    def conv_int(cadena):
-        try:
-            return int(cadena)
-        except:
-            pass
-
     def mapper(self, _, linea):
         titulo, anho, idioma, pais, presupuesto = linea.split('|')
         try:
