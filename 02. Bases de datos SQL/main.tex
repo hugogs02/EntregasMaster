@@ -13,32 +13,26 @@
 % \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{verbatim} % comentarios
 \usepackage{listings}
+\usepackage{xcolor}
 \lstset{
-frame=single,
-breaklines=true,
-numbers=left,
-keywordstyle=\color{blue},
-numbersep=5pt,
-numberstyle=,
-basicstyle=\linespread{1.5}\selectfont\ttfamily,
-commentstyle=\color{gray},
-stringstyle=\color{orange},
-identifierstyle=\color{green!40!black},
-}
-\lstdefinestyle{console}
-{
-numbers=left,
-backgroundcolor=\color{violet},
-%belowcaptionskip=1\baselineskip,
-breaklines=true,
-%xleftmargin=\parindent,
-%showstringspaces=false,
-basicstyle=\footnotesize\ttfamily,
-%keywordstyle=\bfseries\color{green!40!black},
-%commentstyle=\itshape\color{green},
-%identifierstyle=\color{blue},
-%stringstyle=\color{orange},
-basicstyle=\scriptsize\color{white}\ttfamily,
+    language=SQL,
+    frame=single,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    identifierstyle=\color{black},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakindent=0pt,
+    breakatwhitespace=false,
+    tabsize=2,
+    captionpos=b
 }
 \setlength{\parskip}{0.8em}
 \usepackage{natbib}
@@ -62,7 +56,6 @@ basicstyle=\scriptsize\color{white}\ttfamily,
 %\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \usepackage{graphicx}
 %\usepackage{lipsum} % NO NECESARIO LUEGO
-%\usepackage{xcolor} % NO NECESARIO LUEGO
 %\usepackage{amsmath}
 %\usepackage{wrapfig}
 %\usepackage{multicol}
@@ -180,7 +173,8 @@ Como se indica, de una actividad nos interesa su nombre, su tipo y su coste. Adi
 establecerlo como clave primaria de la entidad. Respecto al coste de la actividad, se indica que el coste es la suma del caché de los artistas. 
 Este coste, en el modelo entidad relación, se ha definido como un atributo diferenciado, pero es importante destacar que depende de la relación entre
 actividad y artista (un artista, por ejemplo, puede tener un caché diferente para diferentes actividades). En el \hyperref[mr]{paso a tablas} se 
-explicará como se abordará esta cuestión en nuestra base de datos.
+explicará como se abordará esta cuestión en nuestra base de datos. La actividad se relaciona con evento mediante la relación \textbf{tiene}, de 1 a 
+muchos entre evento y actividad. Es decir, un evento sólo tiene una actividad, pero una actividad puede estar en varios eventos.
 
 Respecto a la actividad, se indica que puede ser de diferentes tipos. A priori, podría parecer lógico definir el tipo de la actividad como un atributo 
 de la propia entidad. Sin embargo, parece más adecuado definir el tipo de actividad como una entidad diferenciada, ya que los tipos de actividad 
@@ -194,25 +188,51 @@ adicional \underline{id\_artista} que se usará como clave primaria. El Artista 
 un artista participa en una actividad, y no en un evento), mediante la relación \textbf{actúaEn}. Esta relación tiene un atributo, caché, que 
 representa el caché del artista. Como se comentó anteriormente, el caché de un artista no es una cantidad fija, sino que dependiendo de la actividad, 
 un artista puede tener un caché diferente. Por eso, no puede considerarse un atribto de la entidad artista, ya que no es algo intrínseco a él, 
-sino que se establece al crearse la actividad en cuestión. Es por eso que se ha decidido incluir como un atributo de la relación actúaEn.
+sino que se establece al crearse la actividad en cuestión. Es por eso que se ha decidido incluir como un atributo de la relación actúaEn. Además, esta 
+relación es de muchos a muchos: se indica que en cada actividad participan uno o varios artistas y, naturalmente, un artista puede participar
+en múltiples actividades.
 
 
 \section{Diseño lógico} \label{mr}
-clave primaria->subrayada
-clave ajena->cursiva
-nulos->asterisco
+Una vez que tenemos definidas todas las entidades, podemos realizar el diseño lógico de la base de datos, mediante el paso a tablas del modelo 
+entidad relación para obtener el modelo relacional.
+
+En primer lugar, deberemos crear una tabla por cada una de las entidades que tenemos en el MER. Esto nos dará lugar a seis tablas, con sus 
+correspondientes atributos: evento, localización, persona, actividad, tipoActividad y artista.
+
+Por otra parte, aquellas relaciones que son de muchos a muchos generarán una tabla. De esta forma, se añaden dos nuevas tablas: acudeA y actúaEn. 
+En cada una de estas tablas, guardaremos las claves primarias de cada una de las entidades participantes, así como los atributos, si los hubiese,
+de dicha relación. Para las que son de 1 a muchos, se pasará la clave primaria de la entidad con participación 1 a la entidad con participación n.
+
+Como detalle, destacar que los atributos \textit{fecha} y \textit{hora} de la entidad Evento se han fusionado en uno solo, fecha, ya que a nivel 
+de implementación en SQL se puede definir como un tipo timestamp, facilitando el trabajo con los datos.
+
+De esta forma, el modelo relacional es el siguiente:
+
+\noindent
+\textbf{LOCALIZACION}(\underline{id\_localizacion}, nombre, direccion, ciudad, aforo, alquiler, caracteristicas)\\ \\
+\textbf{EVENTO}(\underline{id\_evento}, \textit{id\_localizacion}, fecha, precio\_entrada, descripción)\\ \\
+\textbf{ACTIVIDAD}(\underline{id\_actividad}, \textit{id\_evento}, \textit{id\_tipo}, nombre, coste)\\ \\
+\textbf{TIPOACTIVIDAD}(\underline{id\_tipo}, tipo, descripcion)\\ \\
+\textbf{ARTISTA}(\underline{id\_artista}, nombre, biografia)\\ \\
+\textbf{PERSONA}(\underline{email}, \underline{telefono}, nombre, apellido1, apellido2)\\ \\
+\textbf{ACTUAEN}(\textit{id\_artista}, \textit{id\_actividad}, cache)\\ \\
+\textbf{ACUDEA}(\textit{email}, \textit{telefono}, \textit{id\_evento}, valoracion)\\ \\
+
 
 \section{Implementación y consultas} \label{sql}
+El script completo de la implementación de la base de datos se encuenta en el Anexo \ref{anexo1}. Sin embargo, aquí se 
+explicará la elección de algunos tipos de los datos, así como un breve detalle de los triggers y vistas definidos y de las consultas propuestas, 
+aclarando brevemente su objetivo y como se llega al mismo.
 
+
+\newpage
+
+\appendix
+\section{Anexo I: Script de SQL}\label{anexo1}
+aaaaaaa
+
+\lstinputlisting{HugoGomezSabucedo.sql}
 
 \end{sloppypar}
 \end{document}
-
-\newpage
-\begin{appendices}
-\section{Anexo I: Script de SQL}\label{apendice}
-
-\lstset{language=SQL}
-\lstinputlisting[frame=single]{HugoGomezSabucedo.sql}
-
-\end{appendices}
