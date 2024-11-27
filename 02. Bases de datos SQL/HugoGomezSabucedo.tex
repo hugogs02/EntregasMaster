@@ -172,7 +172,7 @@ Por otra parte, se define la entidad \textbf{Actividad}, que se corresponde con 
 Como se indica, de una actividad nos interesa su nombre, su tipo y su coste. Adicionalmente, se define el atributo \underline{id\_actividad}, para 
 establecerlo como clave primaria de la entidad. Respecto al coste de la actividad, se indica que el coste es la suma del caché de los artistas. 
 Este coste, en el modelo entidad relación, se ha definido como un atributo diferenciado, pero es importante destacar que depende de la relación entre
-actividad y artista (un artista, por ejemplo, puede tener un caché diferente para diferentes actividades). En el \hyperref[mr]{paso a tablas} se 
+actividad y artista (un artista, por ejemplo, puede tener un caché diferente para diferentes actividades). En el paso a tablas se 
 explicará como se abordará esta cuestión en nuestra base de datos. La actividad se relaciona con evento mediante la relación \textbf{tiene}, de 1 a 
 muchos entre evento y actividad. Es decir, un evento sólo tiene una actividad, pero una actividad puede estar en varios eventos.
 
@@ -225,13 +225,55 @@ El script completo de la implementación de la base de datos se encuenta en el A
 explicará la elección de algunos tipos de los datos, así como un breve detalle de los triggers y vistas definidos y de las consultas propuestas, 
 aclarando brevemente su objetivo y como se llega al mismo.
 
+Lo primero que debemos hacer es comprobar que la base de datos cumple las tres formas normales:
+\begin{itemize}
+\item Respecto a la Primera Forma Normal (\textbf{FN1}), esta establece que no debe haber grupos repetidos de columnas ni una columna con múltiples
+valores. Esto se comprueba viendo que todas las tablas tienen atributos atómicos y una clave primaria que asegura la unicidad de los registros.
+\item La Segunda Forma Normal (\textbf{FN2}) dice que, además de cumplirse la FN1, debe haber dependencia funcional: los atributos que no forman
+parte de ninguna clave deben depender completamente de la clave primaria. Esto se cumple viendo que todas las tablas con claves compuestas
+(\texttt{ActuaEn} y \texttt{AcudeA}) sus atributos dependen de toda la clave (en caso de ActuaEn, cache depende del id\_artista e id\_actividad;
+y en el caso de AcudeA, valoracion depende de email, telefono e id\_evento); y para el resto, las claves primarias son simples
+\item Por último, la Tercera Forma Normal (\textbf{FN3}) establece que, además de cumplirse la FN2, no debe haber ninguna dependencia transitiva; 
+es decir, cada columna debe estar relacionada directamente con las columnas de la clave primaria. Esto se comprueba directamente, por ejemplo, en 
+la tabla Persona, donde vemos que nombre, apellido1 y apellido2 dependen directamente de la clave compuesta (email, telefono).
+\end{itemize}
+
+Una vez comprobamos las formas normales, pasamos a explicar brevemente algunos detalles sobre la implementación en SQL de la base de datos. En 
+general, se han elegido los tipos de datos en función del atributo y su naturaleza, siendo por ejemplo la mayor parte de las claves números enteros,
+puesto que las definimos como un id correlativo. Valores como el alquiler de una localización, el precio de una entrada de un evento o el coste de una 
+actividad se han definido como \texttt{DECIMAL}, con un total de 10 dígitos de los cuales 2 son decimales. Para los valores de tipo \texttt{varchar}, 
+sus longitudes se han determinado en función del posible valor que almacenarán; por su parte, valores como la biografía del artista o las caracaterísticas 
+de una localización se han definido como tipo \texttt{TEXT} para que se pueda almacenar una mayor cantidad de información en los mismos.
+
+Respecto a las tablas, para casi todas aquellas claves foráneas se ha definido una política de borrado y actualización en cascada, para que al eliminar 
+algún registro de una tabla, se elimine también de la tabla dependiente. Únicamente en el caso de la tabla Actividad se ha definido que, en caso de que 
+se elimine un tipo de actividad, ese campo se ponga a null en la tabla de Actividad, ya que creo que tiene más sentido en este caso guardar un valor nulo.
+
+En lo que respecta a los triggers, se han creado dos, uno de los cuales está duplicado para que se ejecute tanto tras un update como tras un insert: 
+el primero de ellos nos servirá para actualizar el coste de una actividad. Este valor, por defecto, lo hemos establecido a 0 (se supone que, cuando 
+definamos inicialmente una actividad, quizás no sabremos aún los artistas). Pero, como indicamos, el coste depende del caché de los artistas, y este 
+puede o bien variar (ya que un artista puede aumentar o disminuir su caché puntualmente) o simplemente aumentar debido a que se sumen más artistas. Por tanto,
+se han creado dos triggers idénticos (\texttt{actualiza\_coste\_actividad\_insert} y \texttt{actualiza\_coste\_actividad\_update}), que se ejecutarán tras cada 
+insert o update en la tabla ActuaEn, que actualizarán el coste de la actividad correspondiente, estableciéndolo como la suma de los cachés de las actividades 
+que coincidan, empleando un coalesce(caché, 0) para evitar posibles errores. 
+
+Por otra parte, tenemos el trigger \texttt{valida\_aforo}, el cual nos sirve para comprobar que no se exceda el aforo de un recinto. En este caso, se 
+ejecuta tras cada insert en AcudeA, y lo que hace es, por una parte, obtener el aforo máximo de la localización donde tiene lugar el evento al que acude la 
+persona en cuestión; y por otra, obtener el aforo actual o número de personas que tiene ese evento. Si el aforo actual fuese mayor o igual que el máximo, 
+no nos dejaría hacer el insert, y mostraría un mensaje por pantalla.
+
+En lo que respecta a las vistas, se ha creado una sencilla, \texttt{ValoracionesEventos}, que nos permite ver, para cada evento, la valoración que le han 
+dado los asistentes, así como el total de personas que han asistido a ese evento.
+
+Las consultas que se han propuesto son las siguientes:
+\begin{enumerate}
+    \item 
+\end{enumerate}
 
 \newpage
 
 \appendix
-\section{Anexo I: Script de SQL}\label{anexo1}
-aaaaaaa
-
+\section{Anexo: Script de SQL}\label{anexo1}
 \lstinputlisting{HugoGomezSabucedo.sql}
 
 \end{sloppypar}
