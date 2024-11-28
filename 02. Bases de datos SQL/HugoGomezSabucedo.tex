@@ -15,6 +15,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \lstset{
+    inputencoding=utf8,
     language=SQL,
     frame=single,
     basicstyle=\ttfamily\small,
@@ -260,21 +261,31 @@ que coincidan, empleando un coalesce(caché, 0) para evitar posibles errores.
 Por otra parte, tenemos el trigger \texttt{valida\_aforo}, el cual nos sirve para comprobar que no se exceda el aforo de un recinto. En este caso, se 
 ejecuta tras cada insert en AcudeA, y lo que hace es, por una parte, obtener el aforo máximo de la localización donde tiene lugar el evento al que acude la 
 persona en cuestión; y por otra, obtener el aforo actual o número de personas que tiene ese evento. Si el aforo actual fuese mayor o igual que el máximo, 
-no nos dejaría hacer el insert, y mostraría un mensaje por pantalla.
+no nos dejaría hacer el insert, y mostraría un mensaje por pantalla. Se muestra un ejemplo de funcionamiento de este caso, aunque comentado, para permitir 
+que el script se ejecute correctamente por completo.
 
 En lo que respecta a las vistas, se ha creado una sencilla, \texttt{ValoracionesEventos}, que nos permite ver, para cada evento, la valoración que le han 
-dado los asistentes, así como el total de personas que han asistido a ese evento.
+dado los asistentes, así como el total de personas que han asistido a ese evento. Además, se ha creado la vista \texttt{GananciasEvento}, que nos permite 
+obtener las ganancias de cada evento, teniendo en cuenta que las ganancias son la suma de todas las entradas vendidas en ese evento, restando el coste 
+de todas las actividades y el alquiler del recinto.
 
 Las consultas que se han propuesto son las siguientes:
 \begin{enumerate}
-    \item 
+    \item Total de eventos por ciudad: obtener el número total de eventos en cada ciudad.
+    \item Sabiendo el coste promedio de las actividades, seleccionar aquellas que superen dicho coste promedio.
+    \item Obtener las ganancias de cada uno de los artistas en las actividades que han participado con nuestra empresa.
+    \item Obtener los dos eventos menos populares, es decir, aquellos con menor asistencia.
+    \item Obtener el promedio de valoración que han otorgado las diferentes personas a los eventos que han asistido.
+    \item Obtener el top 3 de eventos que más actividades han tenido.
+    \item Conocer cuáles son los eventos más costosos.
+    \item Averiguar el porcentaje de ocupación de cada evento.
 \end{enumerate}
 
 \newpage
 
 \appendix
 \section{Anexo: Script de SQL}\label{anexo1}
-\lstinputlisting{HugoGomezSabucedo.sql}
+%\lstinputlisting{HugoGomezSabucedo.sql}
 
 \end{sloppypar}
 \end{document}

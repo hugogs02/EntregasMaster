@@ -254,3 +254,12 @@ LEFT JOIN AcudeA aa
     ON e.id_evento = aa.id_evento
 GROUP BY e.id_evento, e.descripcion, l.nombre
 ;
+
+-- Consulta 1: eventos por ciudad
+SELECT l.ciudad, count(e.descripcion)
+FROM Evento e
+JOIN Localizacion l
+	ON e.id_localizacion = l.id_localizacion
+GROUP BY l.ciudad
+
+-- Consulta 
