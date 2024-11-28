@@ -166,7 +166,7 @@ caso, debería ser única (no tendría mucho sentido que una persona se registra
 
 Esta entidad tiene únicamente una relación, \textbf{acudeA}, que la relaciona con el evento. Esta relación es de muchos a muchos, ya que se indica que una persona
 puede asistir a varios eventos, y que a un evento asisten varias personas. Además, en el enunciado se comenta que para los eventos se desea conocer
-"el entusiasmo de los visitantes que asisten". Es por ello que se ha definido un atributo de esta relación, valoración, que nos permitirá registrar
+''el entusiasmo de los visitantes que asisten''. Es por ello que se ha definido un atributo de esta relación, valoración, que nos permitirá registrar
 las opiniones de los asistentes a los diferentes eventos.
 
 Por otra parte, se define la entidad \textbf{Actividad}, que se corresponde con cada una de las diferentes actividades que tienen lugar en el evento.
@@ -182,7 +182,7 @@ de la propia entidad. Sin embargo, parece más adecuado definir el tipo de activ
 serán siempre los mismo (dentro de un conjunto), y esto nos permite además definir atributos adicionales como por ejemplo una breve descripción. Es 
 por esto que nace la entidad \textbf{tipoActividad}, cuyos atributos son un \underline{id\_tipo}, así como el nombre o tipo y la descripción. Esta 
 entidad se relaciona con Actividad mediante la relación \textbf{esDeTipo}, que es de cardinalidad varios a uno. Es decir, una actividad sólamente es 
-de un tipo en concreto, pero un tipo puede tener (y tiene) varias actividades.
+de un tipo en concreto, pero un tipo puede tener varias actividades asociadas.
 
 Por último, se define la entidad \textbf{Artista}, que únicamente tiene como atributos el nombre del mismo y su biografía, así como un atributo 
 adicional \underline{id\_artista} que se usará como clave primaria. El Artista se relaciona con la Actividad (ya que se indica en el enunciado que 
@@ -206,7 +206,7 @@ En cada una de estas tablas, guardaremos las claves primarias de cada una de las
 de dicha relación. Para las que son de 1 a muchos, se pasará la clave primaria de la entidad con participación 1 a la entidad con participación n.
 
 Como detalle, destacar que los atributos \textit{fecha} y \textit{hora} de la entidad Evento se han fusionado en uno solo, fecha, ya que a nivel 
-de implementación en SQL se puede definir como un tipo timestamp, facilitando el trabajo con los datos.
+de implementación en SQL se puede definir como un tipo \textit{timestamp}, facilitando el trabajo con los datos.
 
 De esta forma, el modelo relacional es el siguiente:
 
@@ -273,9 +273,9 @@ Las consultas que se han propuesto son las siguientes:
 \begin{enumerate}
     \item Total de eventos por ciudad: obtener el número total de eventos en cada ciudad.
     \item Sabiendo el coste promedio de las actividades, seleccionar aquellas que superen dicho coste promedio.
-    \item Obtener las ganancias de cada uno de los artistas en las actividades que han participado con nuestra empresa.
+    \item Obtener las ganancias de cada uno de los artistas en las actividades que han participado con nuestra empresa, ordenado de forma descendente.
     \item Obtener los dos eventos menos populares, es decir, aquellos con menor asistencia.
-    \item Obtener el promedio de valoración que han otorgado las diferentes personas a los eventos que han asistido.
+    \item Obtener el promedio de valoración que han otorgado las diferentes personas a los eventos que han asistido, con dos dígitos decimales.
     \item Obtener el top 3 de eventos que más actividades han tenido.
     \item Conocer cuáles son los eventos más costosos.
     \item Averiguar el porcentaje de ocupación de cada evento.
@@ -285,7 +285,7 @@ Las consultas que se han propuesto son las siguientes:
 
 \appendix
 \section{Anexo: Script de SQL}\label{anexo1}
-%\lstinputlisting{HugoGomezSabucedo.sql}
+\lstinputlisting{HugoGomezSabucedo.sql}
 
 \end{sloppypar}
 \end{document}

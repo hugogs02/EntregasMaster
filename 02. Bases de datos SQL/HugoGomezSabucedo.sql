@@ -201,9 +201,9 @@ INSERT INTO Actividad (id_evento, id_tipo, nombre) VALUES
 (1, 1, 'Concierto de piezas de Beethoven'),
 (1, 1, 'Concierto de piezas de Mozart'),
 (2, 2, 'Arte en el Siglo XXI'),
-(3, 1, 'Actuación musical de Sabela'),
-(4, 1, 'Actuación musical de Rosalía'),
-(4, 1, 'Actuación musical de los teloneros de Rosalía');
+(4, 1, 'Actuación musical de Sabela'),
+(3, 1, 'Actuación musical de Rosalía'),
+(3, 1, 'Actuación musical de los teloneros de Rosalía');
 
 INSERT INTO Artista (nombre, biografia) VALUES 
 ('Rosalía', 'La cantante española más conocida'),
@@ -231,9 +231,9 @@ INSERT INTO AcudeA (email, telefono, id_evento, valoracion) VALUES
 INSERT INTO ActuaEn (id_artista, id_actividad, cache) VALUES
 (1,5,1500.20), 
 (2,6,987.65), 
-(3,4,127.4), 
-(4,4,156.6), 
-(4,6,73.91), 
+(3,6,127.4), 
+(4,6,156.6), 
+(4,4,73.91), 
 (5,1,125.4), 
 (6,2,200.5); 
 
@@ -245,6 +245,7 @@ set sql_safe_updates=0;
 -- Comprobamos el funcionamiento del trigger
 -- INSERT INTO AcudeA (email, telefono, id_evento, valoracion) VALUES ('carlosml@gmail.com', '634646665' , 4, 10);
 
+DROP VIEW IF EXISTS ValoracionesEventos;
 CREATE VIEW ValoracionesEventos AS 
 SELECT e.id_evento, e.descripcion as evento, l.nombre as localizacion, avg(aa.valoracion) as valoracion, count(aa.email) as asistencia
 FROM Evento e 
@@ -255,11 +256,91 @@ LEFT JOIN AcudeA aa
 GROUP BY e.id_evento, e.descripcion, l.nombre
 ;
 
+DROP VIEW IF EXISTS GananciasEvento;
+CREATE VIEW GananciasEvento AS
+SELECT e.descripcion AS evento,
+((e.precio_entrada * (SELECT count(email) from AcudeA aa where aa.id_evento = e.id_evento)) - (select sum(coste) from Actividad a where a.id_evento = e.id_evento) - l.alquiler) as ganancia
+FROM Evento e
+JOIN localizacion l 
+	ON e.id_localizacion = l.id_localizacion
+;
+
+-- Cambiamos el precio de la entrada del evento 'Concierto de Sabela Rodríguez'
+UPDATE Evento set precio_entrada=60 where id_evento=4;
+
 -- Consulta 1: eventos por ciudad
 SELECT l.ciudad, count(e.descripcion)
 FROM Evento e
 JOIN Localizacion l
 	ON e.id_localizacion = l.id_localizacion
 GROUP BY l.ciudad
+;
 
--- Consulta 
+-- Consulta 2: Actividades que superan el coste promedio
+SELECT a.nombre, a.coste
+FROM Actividad a
+WHERE a.coste >= (SELECT AVG(coste) FROM Actividad)
+;
+
+-- Consulta 3: Ganancias de los artistas
+SELECT a.nombre AS Artista, SUM(act.cache) AS Ganancias
+FROM Artista a
+JOIN ActuaEn act
+	ON a.id_artista = act.id_artista
+GROUP BY a.nombre
+ORDER BY Ganancias DESC;
+
+-- Consulta 4: Eventos menos populares
+WITH Asistencia AS (
+	SELECT e.descripcion, COUNT(a.email) as asistentes, 
+    ROW_NUMBER() OVER (ORDER BY COUNT(a.email) ASC) AS ranking
+    FROM Evento e
+    JOIN AcudeA a
+		ON e.id_evento = a.id_evento
+	GROUP BY e.descripcion
+)
+SELECT descripcion, asistentes FROM Asistencia
+where ranking <=2
+;
+
+-- Consulta 5: Valoración promedio
+SELECT p.nombre, p.email, p.telefono, ROUND(AVG(a.valoracion), 2) as "Valoración promedio"
+FROM Persona p
+JOIN AcudeA a
+	ON p.email = a.email
+    AND p.telefono = a.telefono
+GROUP BY p.nombre, p.email, p.telefono
+;
+
+-- Consulta 6: Eventos con más actividades
+SELECT e.descripcion AS Evento, l.nombre as Localizacion, COUNT(a.id_actividad) as Actividades
+FROM Evento e
+JOIN Localizacion l
+	ON e.id_localizacion = l.id_localizacion
+JOIN Actividad a
+	ON a.id_evento = e.id_evento
+GROUP BY Evento, Localizacion
+ORDER BY Actividades DESC
+LIMIT 3
+;
+
+-- Consulta 7: Eventos más costosos
+SELECT e.descripcion as Evento, l.nombre as Localizacion, SUM(a.coste) as Coste
+FROM Evento e
+JOIN Localizacion l
+	ON e.id_localizacion = l.id_localizacion
+JOIN Actividad a
+	ON a.id_evento = e.id_evento
+GROUP BY Evento, Localizacion
+ORDER BY Coste DESC
+;
+
+-- Consulta 8: Porcentaje de ocupación de cada evento
+SELECT e.descripcion as Evento, round(((COUNT(a.email)/l.aforo)*100), 2) as Ocupacion
+FROM Evento e
+JOIN Localizacion l
+	ON e.id_localizacion = l.id_localizacion
+JOIN AcudeA a
+	ON a.id_evento = e.id_evento
+GROUP BY Evento, l.id_localizacion
+;
