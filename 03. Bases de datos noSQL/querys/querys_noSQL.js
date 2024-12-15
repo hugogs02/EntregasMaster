@@ -36,7 +36,7 @@ db.movies.find({}, {year: 1, "_id": 0}).sort({year: -1}).limit(1);
 
 /*Ejercicio 12*/
 db.movies.aggregate([
-    { // Encontrar el año mas reciente
+    { // Encontrar el anho mas reciente
         $group: {
             _id: null,
             maxYear: { $max: "$year" }
@@ -66,7 +66,7 @@ db.movies.aggregate([
             as: "peliculasIntervalo" 
         } 
     },
-    { // Añadimos un campo con el total de las películas
+    { // Anhadimos un campo con el total de las peliculas
         $addFields: {
             total: { $size: "$peliculasIntervalo" }
         }
@@ -96,18 +96,18 @@ db.movies.aggregate([
 
 /*Ejercicio 14*/
 db.movies.aggregate([
-    { // Agrupamos por año y contamos las películas por año
+    { // Agrupamos por anho y contamos las peliculas por anho
         $group: {
             _id: "$year",
             pelis: { $sum: 1 }
         }
     },
-    { // Encontramos el máximo
+    { // Encontramos el maximo
         $group: {
             _id: null,
             maxPelis: { $max: "$pelis" },
             years: 
-            {  // Guardamos los años y su total de peliculas
+            {  // Guardamos los anhos y su total de peliculas
                 $push: {
                     year: "$_id",
                     pelis: "$pelis"
@@ -115,10 +115,10 @@ db.movies.aggregate([
             }
         }
     },
-    { // Obtenemos un documento por año
+    { // Obtenemos un documento por anho
         $unwind: "$years"
     },
-    { // Filtramos por el año con el máximo de películas
+    { // Filtramos por el anho con el maximo de peliculas
         $match: { 
             $expr: { $eq: ["$years.pelis", "$maxPelis"] }
         }
@@ -133,26 +133,26 @@ db.movies.aggregate([
 
 /*Ejercicio 15*/
 db.movies.aggregate([
-    { // Agrupamos por año y contamos las películas por año
+    { // Agrupamos por anho y contamos las peliculas por anho
         $group: {
             _id: "$year",
             pelis: { $sum: 1 }
         }
     },
-    { // Encontramos el mínimo
+    { // Encontramos el minimo
         $group: {
             _id: null,
             minPelis: { $min: "$pelis" },
             years: 
-            {  // Guardamos los años y su total de peliculas
+            {  // Guardamos los anhos y su total de peliculas
                 $push: { year: "$_id", pelis: "$pelis" }
             }
         }
     },
-    { // Obtenemos un documento por año
+    { // Obtenemos un documento por anho
         $unwind: "$years"
     },
-    { // Filtramos por el año con el mínimo de películas
+    { // Filtramos por el anho con el minimo de peliculas
         $match: { $expr: { $eq: ["$years.pelis", "$minPelis"] } }
     },
     { // Ajustamos el reesultado
@@ -200,7 +200,7 @@ db.actors.aggregate([
 
 /*Ejercicio 18*/
 db.actors.aggregate([
-    { // Agrupamos por película y año y contamos el total de actores
+    { // Agrupamos por pelicula y anho y contamos el total de actores
         $group: {
             _id: { title: "$title", year: "$year" },
             cuenta: { $sum: 1 }
@@ -228,13 +228,13 @@ db.actors.aggregate([
             termina: { $max: "$year" }
         }
     },
-    { // Añadimos un campo con los años trabajados
+    { // Anhadimos un campo con los anhos trabajados
         $addFields: { anos: {$subtract: ["$termina", "$comienza"]} }
     },
-    { // Ordenamos por la duración descendente
+    { // Ordenamos por la duracion descendente
         $sort: { anos: -1 }
     },
-    { // Nos quedamos con el máximo
+    { // Nos quedamos con el maximo
         $limit: 1
     }
 ]);
@@ -247,20 +247,21 @@ db.actors.aggregate([
     { // Eliminamos el id
         $project: { _id: 0 }
     },
-    { // Guardamos en la colección genres
+    { // Guardamos en la coleccion genres
         $out: "genres"
+    }
 ]);
 db.genres.count();
 
 /*Ejercicio 21*/
 db.genres.aggregate([
-    { // Agrupamos por año y género y hallamos las películas distintas
+    { // Agrupamos por anho y genero y hallamos las peliculas distintas
         $group: {
             _id: { year: "$year", genre: "$genres" },
             pelisUnicas: { $addToSet: "$title" }
         }
     },
-    { // Añadimos el contador de pelis unicas
+    { // Anhadimos el contador de pelis unicas
         $project:{
             _id: 1,
             pelis: { $size: "$pelisUnicas" }
@@ -281,13 +282,13 @@ db.genres.aggregate([
             cast: { $ne: "Undefined" }
         }
     },
-    { // Agrupamos por actor y hallamos los géneros distintos
+    { // Agrupamos por actor y hallamos los generos distintos
         $group: {
             _id: "$cast",
             generos: { $addToSet: "$genres" }
         }
     },
-    { // Añadimos el número de géneros
+    { // Anhadimos el numero de generos
         $addFields: { numgeneros: { $size: "$generos" } }
     },
     { // Ordenamos por el numero de generos descendente
@@ -300,13 +301,13 @@ db.genres.aggregate([
 
 /*Ejercicio 23*/
 db.genres.aggregate([
-    { // Agrupamos por título y año y hallamos los géneros distintos
+    { // Agrupamos por titulo y anho y hallamos los generos distintos
         $group: {
             _id: { title: "$title", year: "$year" },
             generos: { $addToSet: "$genres" }
         }
     },
-    { // Añadimos el número de géneros
+    { // Anhadimos el numero de generos
         $addFields: { numgeneros: { $size: "$generos" } }
     },
     { // Ordenamos por el numero de generos descendente
@@ -317,26 +318,26 @@ db.genres.aggregate([
     }
 ]);
 
-/*Ejercicio 24 - Película con el reparto más grande */
+/*Ejercicio 24 - Pelicula con el reparto mas grande */
 db.movies.aggregate([
-    { // Añadimos un campo con el tamaño del cast
+    { // Anhadimos un campo con el tamanho del cast
         $addFields: { castSize: { $size: "$cast" } }
     },
-    { // ORdenamos por el tamaño del cast
+    { // Ordenamos por el tamanho del cast
         $sort: { castSize: -1 }
     },
     { // Limitamos a uno el resultado
         $limit: 1
     },
-    { // Eliminamos el id del output
-        $project: { _id: 0 }
+    { // Eliminamos el id del output y los generos
+        $project: { _id: 0, genres: 0 }
     }
 ]);
 
 
-/*Ejercicio 25 - Actor más popular por género */
+/*Ejercicio 25 - Actor mas popular por genero */
 db.actors.aggregate([
-    { // Excluimos los actores y géneros Undefined
+    { // Excluimos los actores y generos Undefined
         $match: {
             $and: [ { genres: { $ne: "Undefined"} }, { cast: { $ne: "Undefined"} } ]
         }
@@ -350,7 +351,7 @@ db.actors.aggregate([
             totalPeliculas: { $sum: 1 }
         }
     },
-    { // Ordenamos por género y total de películas
+    { // Ordenamos por genero y total de peliculas
         $sort: { "_id.genre": 1, totalPeliculas: -1 }
     },
     { // Agrupamos por genero y seleccionamos el actor con mas peliculas
@@ -370,33 +371,33 @@ db.actors.aggregate([
     }
 ]);
 
-/*Ejercicio 26 - Género más popular por década */
+/*Ejercicio 26 - Genero mas popular por decada */
 db.genres.aggregate([
-    { // Excluimos los géneros que sean Undefined
+    { // Excluimos los generos que sean Undefined
         $match: { genres: { $ne: "Undefined"} }
     },
-    { // Calculamos la década, usando la función $mod
+    { // Calculamos la decada, usando la funcion $mod
         $addFields: {
             decada: { $subtract: ["$year", { $mod: [ "$year", 10 ] } ] }
         }
     },
-    { // Agrupamos por década y género y calculamos el total
+    { // Agrupamos por decada y genero y calculamos el total
         $group: {
             _id: { decada: "$decada", genero: "$genres" },
             total: { $sum: 1 }
         }
     },
-    { // Ordenamos por década, de forma ascendente, y luego por el total de géneros
+    { // Ordenamos por decada, de forma ascendente, y luego por el total de generos
         $sort: { "_id.decada": 1, total: -1 }
     },
-    { // Agrupamos por década para obtener el género más popular, y el conteo de películas
+    { // Agrupamos por decada para obtener el genero mas popular, y el conteo de peliculas
         $group: {
             _id: "$_id.decada",
             generoMasPopular: { $first: "$_id.genero" },
             totalPeliculas: { $first: "$total" }
         }    
     },
-    { // Ordenamos por década de manera ascendente
+    { // Ordenamos por decada de manera ascendente
         $sort: { "_id": 1}
     }
 ]);

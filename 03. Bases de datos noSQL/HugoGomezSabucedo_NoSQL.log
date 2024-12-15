@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  1 DEC 2024 19:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  15 DEC 2024 19:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -158,6 +158,13 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+) (c:/texlive/2024/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count291
+\float@exts=\toks26
+\float@box=\box55
+\@float@everytoks=\toks27
+\@floatcapt=\box56
 ) (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 ) (c:/texlive/2024/texmf-dist/tex/latex/natbib/natbib.sty
@@ -165,23 +172,23 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip58
 \bibsep=\skip59
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count291
+\c@NAT@ctr=\count292
 ) (c:/texlive/2024/texmf-dist/tex/latex/enumitem/enumitem.sty
 Package: enumitem 2019/06/20 v3.9 Customized lists
 \labelindent=\skip60
 \enit@outerparindent=\dimen150
-\enit@toks=\toks26
-\enit@inbox=\box55
-\enit@count@id=\count292
-\enitdp@description=\count293
+\enit@toks=\toks28
+\enit@inbox=\box57
+\enit@count@id=\count293
+\enitdp@description=\count294
 ) (c:/texlive/2024/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2023/10/27 v2.16 Sectioning titles
-\ttl@box=\box56
+\ttl@box=\box58
 \beforetitleunit=\skip61
 \aftertitleunit=\skip62
 \ttl@plus=\dimen151
 \ttl@minus=\dimen152
-\ttl@toksa=\toks27
+\ttl@toksa=\toks29
 \titlewidth=\dimen153
 \titlewidthlast=\dimen154
 \titlewidthfirst=\dimen155
@@ -232,13 +239,13 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
  (c:/texlive/2024/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count294
+\c@section@level=\count295
 ) (c:/texlive/2024/texmf-dist/tex/generic/stringenc/stringenc.sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 )
 \@linkdim=\dimen156
-\Hy@linkcounter=\count295
-\Hy@pagecounter=\count296
+\Hy@linkcounter=\count296
+\Hy@pagecounter=\count297
  (c:/texlive/2024/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2024-11-05 v7.01l Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -246,7 +253,7 @@ Now handling font encoding PD1 ...
 ) (c:/texlive/2024/texmf-dist/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count297
+\Hy@SavedSpaceFactor=\count298
  (c:/texlive/2024/texmf-dist/tex/latex/hyperref/puenc.def
 File: puenc.def 2024-11-05 v7.01l Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -260,7 +267,7 @@ Package hyperref Info: Plain pages OFF on input line 4172.
 Package hyperref Info: Backreferencing OFF on input line 4177.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4424.
-\c@Hy@tempcnt=\count298
+\c@Hy@tempcnt=\count299
 LaTeX Info: Redefining \url on input line 4763.
 \XeTeXLinkMargin=\dimen157
  (c:/texlive/2024/texmf-dist/tex/generic/bitset/bitset.sty
@@ -268,7 +275,7 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
  (c:/texlive/2024/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
 ))
-\Fld@menulength=\count299
+\Fld@menulength=\count300
 \Field@Width=\dimen158
 \Fld@charsize=\dimen159
 Package hyperref Info: Hyper figures OFF on input line 6042.
@@ -282,9 +289,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6072.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count300
-\c@Item=\count301
-\c@Hfootnote=\count302
+\Hy@abspage=\count301
+\c@Item=\count302
+\c@Hfootnote=\count303
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
  (c:/texlive/2024/texmf-dist/tex/latex/hyperref/hpdftex.def
@@ -293,8 +300,8 @@ File: hpdftex.def 2024-11-05 v7.01l Hyperref driver for pdfTeX
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
 with kernel methods
 )
-\Fld@listcount=\count303
-\c@bookmark@seq@number=\count304
+\Fld@listcount=\count304
+\c@bookmark@seq@number=\count305
  (c:/texlive/2024/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
  (c:/texlive/2024/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
@@ -318,96 +325,96 @@ Package graphics Info: Driver file: pdftex.def on input line 106.
 \Gin@req@width=\dimen161
 ) (c:/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count305
-\l__pdf_internal_box=\box57
+\l__color_backend_stack_int=\count306
+\l__pdf_internal_box=\box59
 ) (./HugoGomezSabucedo_NoSQL.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
 \openout1 = `HugoGomezSabucedo_NoSQL.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
 \big@size=\dimen162
-LaTeX Info: Redefining \microtypecontext on input line 87.
-Package microtype Info: Applying patch `item' on input line 87.
-Package microtype Info: Applying patch `toc' on input line 87.
-Package microtype Info: Applying patch `eqnum' on input line 87.
-Package microtype Info: Applying patch `footnote' on input line 87.
-Package microtype Info: Applying patch `verbatim' on input line 87.
+LaTeX Info: Redefining \microtypecontext on input line 88.
+Package microtype Info: Applying patch `item' on input line 88.
+Package microtype Info: Applying patch `toc' on input line 88.
+Package microtype Info: Applying patch `eqnum' on input line 88.
+Package microtype Info: Applying patch `footnote' on input line 88.
+Package microtype Info: Applying patch `verbatim' on input line 88.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 87.
+LaTeX Info: Redefining \showhyphens on input line 88.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
  (c:/texlive/2024/texmf-dist/tex/latex/microtype/mt-ppl.cfg
 File: mt-ppl.cfg 2005/11/16 v1.6 microtype config. file: Palatino (RS)
 )
-LaTeX Info: Redefining \. on input line 87.
-LaTeX Info: Redefining \% on input line 87.
-\c@lstlisting=\count306
+LaTeX Info: Redefining \. on input line 88.
+LaTeX Info: Redefining \% on input line 88.
+\c@lstlisting=\count307
  (c:/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count307
+\scratchcounter=\count308
 \scratchdimen=\dimen163
-\scratchbox=\box58
-\nofMPsegments=\count308
-\nofMParguments=\count309
-\everyMPshowfont=\toks28
-\MPscratchCnt=\count310
+\scratchbox=\box60
+\nofMPsegments=\count309
+\nofMParguments=\count310
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count311
 \MPscratchDim=\dimen164
-\MPnumerator=\count311
-\makeMPintoPDFobject=\count312
-\everyMPtoPDFconversion=\toks29
+\MPnumerator=\count312
+\makeMPintoPDFobject=\count313
+\everyMPtoPDFconversion=\toks31
 ) (c:/texlive/2024/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (c:/texlive/2024/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 87.
+Package hyperref Info: Link coloring OFF on input line 88.
  (./HugoGomezSabucedo_NoSQL.out) (./HugoGomezSabucedo_NoSQL.out)
 \@outlinefile=\write3
 \openout3 = `HugoGomezSabucedo_NoSQL.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 91.
+LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 92.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 91.
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 92.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 91.
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 92.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 91.
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 92.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 91.
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 92.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
@@ -422,7 +429,7 @@ Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/pplx/m/sc/24.88'.
 (microtype)             Ignoring protrusion settings for this character.
 
-Overfull \hbox (28.64133pt too wide) in paragraph at lines 91--91
+Overfull \hbox (28.64133pt too wide) in paragraph at lines 92--92
  [] 
  []
 
@@ -431,8 +438,212 @@ Overfull \hbox (28.64133pt too wide) in paragraph at lines 91--91
 [1
 
 {c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc}]
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+<querys/0.png, id=21, 1594.45688pt x 342.5297pt>
+File: querys/0.png Graphic file (type png)
+<use querys/0.png>
+Package pdftex.def Info: querys/0.png  used on input line 107.
+(pdftex.def)             Requested size: 345.0pt x 74.11284pt.
+<querys/1.png, id=23, 855.195pt x 637.63219pt>
+File: querys/1.png Graphic file (type png)
+<use querys/1.png>
+Package pdftex.def Info: querys/1.png  used on input line 113.
+(pdftex.def)             Requested size: 345.0pt x 257.22775pt.
+<querys/2.png, id=24, 468.24937pt x 197.23688pt>
+File: querys/2.png Graphic file (type png)
+<use querys/2.png>
+Package pdftex.def Info: querys/2.png  used on input line 119.
+(pdftex.def)             Requested size: 345.0pt x 145.33pt.
 
-[2] (./HugoGomezSabucedo_NoSQL.aux
+
+[2{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc} <./querys/0.png> <./querys/1.png>]
+<querys/3.png, id=35, 1027.58907pt x 216.05719pt>
+File: querys/3.png Graphic file (type png)
+<use querys/3.png>
+Package pdftex.def Info: querys/3.png  used on input line 125.
+(pdftex.def)             Requested size: 345.0pt x 72.53867pt.
+<querys/4.png, id=36, 550.30594pt x 217.5628pt>
+File: querys/4.png Graphic file (type png)
+<use querys/4.png>
+Package pdftex.def Info: querys/4.png  used on input line 132.
+(pdftex.def)             Requested size: 345.0pt x 136.39803pt.
+<querys/5.png, id=37, 459.96844pt x 210.7875pt>
+File: querys/5.png Graphic file (type png)
+<use querys/5.png>
+Package pdftex.def Info: querys/5.png  used on input line 138.
+(pdftex.def)             Requested size: 345.0pt x 158.10953pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[3 <./querys/2.png> <./querys/3.png> <./querys/4.png>]
+<querys/6.png, id=48, 697.8572pt x 241.65282pt>
+File: querys/6.png Graphic file (type png)
+<use querys/6.png>
+Package pdftex.def Info: querys/6.png  used on input line 144.
+(pdftex.def)             Requested size: 345.0pt x 119.46548pt.
+<querys/7.png, id=49, 411.78844pt x 180.675pt>
+File: querys/7.png Graphic file (type png)
+<use querys/7.png>
+Package pdftex.def Info: querys/7.png  used on input line 150.
+(pdftex.def)             Requested size: 345.0pt x 151.37172pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/8.png, id=50, 681.29532pt x 264.23718pt>
+File: querys/8.png Graphic file (type png)
+<use querys/8.png>
+Package pdftex.def Info: querys/8.png  used on input line 156.
+(pdftex.def)             Requested size: 345.0pt x 133.80763pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/9.png, id=51, 436.63126pt x 169.38281pt>
+File: querys/9.png Graphic file (type png)
+<use querys/9.png>
+Package pdftex.def Info: querys/9.png  used on input line 162.
+(pdftex.def)             Requested size: 345.0pt x 133.83679pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/10.png, id=52, 709.14937pt x 239.39438pt>
+File: querys/10.png Graphic file (type png)
+<use querys/10.png>
+Package pdftex.def Info: querys/10.png  used on input line 168.
+(pdftex.def)             Requested size: 345.0pt x 116.46776pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[4 <./querys/5.png> <./querys/6.png>]
+
+LaTeX Warning: Text page 5 contains only floats.
+
+
+
+[5 <./querys/7.png> <./querys/8.png> <./querys/9.png> <./querys/10.png>]
+<querys/11.png, id=73, 650.43pt x 198.7425pt>
+File: querys/11.png Graphic file (type png)
+<use querys/11.png>
+Package pdftex.def Info: querys/11.png  used on input line 174.
+(pdftex.def)             Requested size: 345.0pt x 105.41792pt.
+<querys/12.png, id=74, 960.58875pt x 852.18375pt>
+File: querys/12.png Graphic file (type png)
+<use querys/12.png>
+Package pdftex.def Info: querys/12.png  used on input line 180.
+(pdftex.def)             Requested size: 345.0pt x 306.07072pt.
+<querys/13.png, id=75, 396.7322pt x 380.92313pt>
+File: querys/13.png Graphic file (type png)
+<use querys/13.png>
+Package pdftex.def Info: querys/13.png  used on input line 186.
+(pdftex.def)             Requested size: 345.0pt x 331.26093pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[6 <./querys/11.png> <./querys/12.png>]
+<querys/14.png, id=85, 508.90125pt x 727.96968pt>
+File: querys/14.png Graphic file (type png)
+<use querys/14.png>
+Package pdftex.def Info: querys/14.png  used on input line 192.
+(pdftex.def)             Requested size: 345.0pt x 493.53549pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/15.png, id=86, 529.22719pt x 802.49812pt>
+File: querys/15.png Graphic file (type png)
+<use querys/15.png>
+Package pdftex.def Info: querys/15.png  used on input line 198.
+(pdftex.def)             Requested size: 345.0pt x 523.14824pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/16.png, id=87, 353.82187pt x 313.9228pt>
+File: querys/16.png Graphic file (type png)
+<use querys/16.png>
+Package pdftex.def Info: querys/16.png  used on input line 204.
+(pdftex.def)             Requested size: 345.0pt x 306.09984pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<querys/17.png, id=88, 524.71031pt x 753.5653pt>
+File: querys/17.png Graphic file (type png)
+<use querys/17.png>
+Package pdftex.def Info: querys/17.png  used on input line 210.
+(pdftex.def)             Requested size: 345.0pt x 495.49188pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[7 <./querys/13.png>]
+
+[8 <./querys/14.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[9 <./querys/15.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[10 <./querys/16.png>]
+
+LaTeX Warning: Text page 11 contains only floats.
+
+
+
+[11 <./querys/17.png>]
+
+[12]
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 272.
+ (./querys/querys_noSQL.js
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 8.
+
+
+[13]
+
+[14]
+
+[15]
+
+[16]
+
+[17]
+
+[18]
+
+[19]
+
+[20])
+
+[21] (./HugoGomezSabucedo_NoSQL.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -441,21 +652,21 @@ LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
 Package rerunfilecheck Info: File `HugoGomezSabucedo_NoSQL.out' has not changed.
-(rerunfilecheck)             Checksum: 6D78FB9418EB64E3ED1A042465B046E9;93.
+(rerunfilecheck)             Checksum: 5C17A74502EAB5A45912AB0BA9596F80;265.
  ) 
 Here is how much of TeX's memory you used:
- 15635 strings out of 473362
- 244567 string characters out of 5725050
- 739342 words of memory out of 5000000
- 38439 multiletter control sequences out of 15000+600000
- 591484 words of font info for 131 fonts, out of 8000000 for 9000
+ 17073 strings out of 473362
+ 262848 string characters out of 5725050
+ 1044696 words of memory out of 5000000
+ 39309 multiletter control sequences out of 15000+600000
+ 609100 words of font info for 223 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1102b,494s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo_NoSQL.pdf (2 pages, 62038 bytes).
+ 75i,12n,79p,1102b,2202s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on HugoGomezSabucedo_NoSQL.pdf (21 pages, 1053281 bytes).
 PDF statistics:
- 44 PDF objects out of 1000 (max. 8388607)
- 31 compressed objects within 1 object stream
- 4 named destinations out of 1000 (max. 500000)
- 50697 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 710 PDF objects out of 1000 (max. 8388607)
+ 630 compressed objects within 7 object streams
+ 455 named destinations out of 1000 (max. 500000)
+ 74347 words of extra memory for PDF output out of 89155 (max. 10000000)
 
