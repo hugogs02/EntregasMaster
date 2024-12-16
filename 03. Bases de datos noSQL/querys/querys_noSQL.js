@@ -44,7 +44,7 @@ db.movies.aggregate([
     },
     { // Encontrar el inicio del intervalo
         $addFields: {
-            minYear: { $subtract: ["$maxYear", 19] }
+            minYear: { $subtract: ["$maxYear", 20] }
         }
     },
     { // Obtenemos las peliculas en el intervalo
@@ -56,7 +56,7 @@ db.movies.aggregate([
                     $match: { 
                         $expr: {
                             $and: [
-                                { $gte: ["$year", "$$minYear"] },
+                                { $gt: ["$year", "$$minYear"] },
                                 { $lte: ["$year", "$$maxYear"] }
                             ]
                         }
@@ -77,7 +77,7 @@ db.movies.aggregate([
             total: 1
         }
     }
-])
+]);
 
 /*Ejercicio 13*/
 db.movies.aggregate([
@@ -235,7 +235,7 @@ db.actors.aggregate([
         $sort: { anos: -1 }
     },
     { // Nos quedamos con el maximo
-        $limit: 1
+        $limit: 5
     }
 ]);
 
