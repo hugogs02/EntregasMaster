@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  16 DEC 2024 22:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  16 DEC 2024 23:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -494,17 +494,17 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<querys/0.png, id=21, 1594.45688pt x 342.5297pt>
+<querys/0.png, id=17, 1594.45688pt x 342.5297pt>
 File: querys/0.png Graphic file (type png)
 <use querys/0.png>
 Package pdftex.def Info: querys/0.png  used on input line 109.
 (pdftex.def)             Requested size: 345.0pt x 74.11284pt.
-<querys/1.png, id=23, 855.195pt x 637.63219pt>
+<querys/1.png, id=19, 855.195pt x 637.63219pt>
 File: querys/1.png Graphic file (type png)
 <use querys/1.png>
 Package pdftex.def Info: querys/1.png  used on input line 115.
 (pdftex.def)             Requested size: 345.0pt x 257.22775pt.
-<querys/2.png, id=24, 468.24937pt x 197.23688pt>
+<querys/2.png, id=20, 468.24937pt x 197.23688pt>
 File: querys/2.png Graphic file (type png)
 <use querys/2.png>
 Package pdftex.def Info: querys/2.png  used on input line 121.
@@ -512,17 +512,17 @@ Package pdftex.def Info: querys/2.png  used on input line 121.
 
 
 [2{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc} <./querys/0.png> <./querys/1.png>]
-<querys/3.png, id=37, 1027.58907pt x 216.05719pt>
+<querys/3.png, id=33, 1027.58907pt x 216.05719pt>
 File: querys/3.png Graphic file (type png)
 <use querys/3.png>
 Package pdftex.def Info: querys/3.png  used on input line 127.
 (pdftex.def)             Requested size: 345.0pt x 72.53867pt.
-<querys/4.png, id=38, 550.30594pt x 217.5628pt>
+<querys/4.png, id=34, 550.30594pt x 217.5628pt>
 File: querys/4.png Graphic file (type png)
 <use querys/4.png>
 Package pdftex.def Info: querys/4.png  used on input line 134.
 (pdftex.def)             Requested size: 345.0pt x 136.39803pt.
-<querys/5.png, id=39, 459.96844pt x 210.7875pt>
+<querys/5.png, id=35, 459.96844pt x 210.7875pt>
 File: querys/5.png Graphic file (type png)
 <use querys/5.png>
 Package pdftex.def Info: querys/5.png  used on input line 140.
@@ -530,7 +530,7 @@ Package pdftex.def Info: querys/5.png  used on input line 140.
 
 
 [3 <./querys/2.png> <./querys/3.png> <./querys/4.png>]
-<querys/6.png, id=53, 697.8572pt x 241.65282pt>
+<querys/6.png, id=49, 697.8572pt x 241.65282pt>
 File: querys/6.png Graphic file (type png)
 <use querys/6.png>
 Package pdftex.def Info: querys/6.png  used on input line 147.
@@ -538,17 +538,17 @@ Package pdftex.def Info: querys/6.png  used on input line 147.
 
 
 [4 <./querys/5.png> <./querys/6.png>]
-<querys/7.png, id=64, 411.78844pt x 180.675pt>
+<querys/7.png, id=60, 411.78844pt x 180.675pt>
 File: querys/7.png Graphic file (type png)
 <use querys/7.png>
 Package pdftex.def Info: querys/7.png  used on input line 154.
 (pdftex.def)             Requested size: 345.0pt x 151.37172pt.
-<querys/8.png, id=65, 681.29532pt x 264.23718pt>
+<querys/8.png, id=61, 681.29532pt x 264.23718pt>
 File: querys/8.png Graphic file (type png)
 <use querys/8.png>
 Package pdftex.def Info: querys/8.png  used on input line 161.
 (pdftex.def)             Requested size: 345.0pt x 133.80763pt.
-<querys/9.png, id=66, 436.63126pt x 169.38281pt>
+<querys/9.png, id=62, 436.63126pt x 169.38281pt>
 File: querys/9.png Graphic file (type png)
 <use querys/9.png>
 Package pdftex.def Info: querys/9.png  used on input line 167.
@@ -556,12 +556,12 @@ Package pdftex.def Info: querys/9.png  used on input line 167.
 
 
 [5 <./querys/7.png> <./querys/8.png> <./querys/9.png>]
-<querys/10.png, id=80, 709.14937pt x 239.39438pt>
+<querys/10.png, id=76, 709.14937pt x 239.39438pt>
 File: querys/10.png Graphic file (type png)
 <use querys/10.png>
 Package pdftex.def Info: querys/10.png  used on input line 173.
 (pdftex.def)             Requested size: 345.0pt x 116.46776pt.
-<querys/11.png, id=81, 650.43pt x 198.7425pt>
+<querys/11.png, id=77, 650.43pt x 198.7425pt>
 File: querys/11.png Graphic file (type png)
 <use querys/11.png>
 Package pdftex.def Info: querys/11.png  used on input line 179.
@@ -569,7 +569,7 @@ Package pdftex.def Info: querys/11.png  used on input line 179.
 
 
 [6 <./querys/10.png> <./querys/11.png>]
-<querys/12.png, id=92, 706.13812pt x 842.39719pt>
+<querys/12.png, id=88, 706.13812pt x 842.39719pt>
 File: querys/12.png Graphic file (type png)
 <use querys/12.png>
 Package pdftex.def Info: querys/12.png  used on input line 189.
@@ -577,7 +577,7 @@ Package pdftex.def Info: querys/12.png  used on input line 189.
 
 
 [7 <./querys/12.png>]
-<querys/13.png, id=101, 396.7322pt x 380.92313pt>
+<querys/13.png, id=97, 396.7322pt x 380.92313pt>
 File: querys/13.png Graphic file (type png)
 <use querys/13.png>
 Package pdftex.def Info: querys/13.png  used on input line 197.
@@ -585,7 +585,7 @@ Package pdftex.def Info: querys/13.png  used on input line 197.
 
 
 [8 <./querys/13.png>]
-<querys/14.png, id=109, 508.90125pt x 727.96968pt>
+<querys/14.png, id=105, 508.90125pt x 727.96968pt>
 File: querys/14.png Graphic file (type png)
 <use querys/14.png>
 Package pdftex.def Info: querys/14.png  used on input line 207.
@@ -593,7 +593,7 @@ Package pdftex.def Info: querys/14.png  used on input line 207.
 
 
 [9 <./querys/14.png>]
-<querys/15.png, id=117, 529.22719pt x 802.49812pt>
+<querys/15.png, id=113, 529.22719pt x 802.49812pt>
 File: querys/15.png Graphic file (type png)
 <use querys/15.png>
 Package pdftex.def Info: querys/15.png  used on input line 213.
@@ -601,7 +601,7 @@ Package pdftex.def Info: querys/15.png  used on input line 213.
 
 
 [10 <./querys/15.png>]
-<querys/16.png, id=125, 353.82187pt x 313.9228pt>
+<querys/16.png, id=121, 353.82187pt x 313.9228pt>
 File: querys/16.png Graphic file (type png)
 <use querys/16.png>
 Package pdftex.def Info: querys/16.png  used on input line 221.
@@ -609,17 +609,17 @@ Package pdftex.def Info: querys/16.png  used on input line 221.
 
 
 [11 <./querys/16.png>]
-<querys/17.png, id=133, 524.71031pt x 753.5653pt>
+<querys/17.png, id=129, 524.71031pt x 753.5653pt>
 File: querys/17.png Graphic file (type png)
 <use querys/17.png>
 Package pdftex.def Info: querys/17.png  used on input line 229.
 (pdftex.def)             Requested size: 345.0pt x 495.49188pt.
-<querys/18_query.png, id=134, 560.8453pt x 282.30469pt>
+<querys/18_query.png, id=130, 560.8453pt x 282.30469pt>
 File: querys/18_query.png Graphic file (type png)
 <use querys/18_query.png>
 Package pdftex.def Info: querys/18_query.png  used on input line 238.
 (pdftex.def)             Requested size: 172.5pt x 86.82863pt.
-<querys/18_result.png, id=135, 552.56438pt x 622.57594pt>
+<querys/18_result.png, id=131, 552.56438pt x 622.57594pt>
 File: querys/18_result.png Graphic file (type png)
 <use querys/18_result.png>
 Package pdftex.def Info: querys/18_result.png  used on input line 242.
@@ -634,7 +634,7 @@ Overfull \hbox (2.21pt too wide) in paragraph at lines 236--244
 [12 <./querys/17.png>]
 
 [13 <./querys/18_query.png> <./querys/18_result.png>]
-<querys/19.png, id=152, 542.025pt x 603.0028pt>
+<querys/19.png, id=148, 542.025pt x 603.0028pt>
 File: querys/19.png Graphic file (type png)
 <use querys/19.png>
 Package pdftex.def Info: querys/19.png  used on input line 253.
@@ -642,7 +642,7 @@ Package pdftex.def Info: querys/19.png  used on input line 253.
 
 
 [14 <./querys/19.png>]
-<querys/20.png, id=160, 379.4175pt x 307.1475pt>
+<querys/20.png, id=156, 379.4175pt x 307.1475pt>
 File: querys/20.png Graphic file (type png)
 <use querys/20.png>
 Package pdftex.def Info: querys/20.png  used on input line 261.
@@ -650,12 +650,12 @@ Package pdftex.def Info: querys/20.png  used on input line 261.
 
 
 [15 <./querys/20.png>]
-<querys/21_query.png, id=168, 553.31718pt x 356.0803pt>
+<querys/21_query.png, id=164, 553.31718pt x 356.0803pt>
 File: querys/21_query.png Graphic file (type png)
 <use querys/21_query.png>
 Package pdftex.def Info: querys/21_query.png  used on input line 271.
 (pdftex.def)             Requested size: 207.0021pt x 133.20921pt.
-<querys/21_result.png, id=169, 346.29375pt x 626.34pt>
+<querys/21_result.png, id=165, 346.29375pt x 626.34pt>
 File: querys/21_result.png Graphic file (type png)
 <use querys/21_result.png>
 Package pdftex.def Info: querys/21_result.png  used on input line 275.
@@ -668,22 +668,22 @@ Overfull \hbox (2.21pt too wide) in paragraph at lines 269--277
 
 
 [16 <./querys/21_query.png> <./querys/21_result.png>]
-<querys/22_query.png, id=179, 481.04718pt x 379.4175pt>
+<querys/22_query.png, id=174, 481.04718pt x 379.4175pt>
 File: querys/22_query.png Graphic file (type png)
 <use querys/22_query.png>
 Package pdftex.def Info: querys/22_query.png  used on input line 284.
 (pdftex.def)             Requested size: 207.0021pt x 163.2737pt.
-<querys/22_result1.png, id=180, 440.39531pt x 797.98125pt>
+<querys/22_result1.png, id=175, 440.39531pt x 797.98125pt>
 File: querys/22_result1.png Graphic file (type png)
 <use querys/22_result1.png>
 Package pdftex.def Info: querys/22_result1.png  used on input line 288.
 (pdftex.def)             Requested size: 117.29874pt x 212.53552pt.
-<querys/22_result2.png, id=181, 401.24907pt x 796.47563pt>
+<querys/22_result2.png, id=176, 401.24907pt x 796.47563pt>
 File: querys/22_result2.png Graphic file (type png)
 <use querys/22_result2.png>
 Package pdftex.def Info: querys/22_result2.png  used on input line 293.
 (pdftex.def)             Requested size: 117.29874pt x 232.83147pt.
-<querys/22_result3.png, id=182, 326.72063pt x 473.51906pt>
+<querys/22_result3.png, id=177, 326.72063pt x 473.51906pt>
 File: querys/22_result3.png Graphic file (type png)
 <use querys/22_result3.png>
 Package pdftex.def Info: querys/22_result3.png  used on input line 297.
@@ -691,17 +691,17 @@ Package pdftex.def Info: querys/22_result3.png  used on input line 297.
 
 
 [17 <./querys/22_query.png> <./querys/22_result1.png> <./querys/22_result2.png> <./querys/22_result3.png>]
-<querys/23_query.png, id=193, 557.08125pt x 297.36093pt>
+<querys/23_query.png, id=189, 557.08125pt x 297.36093pt>
 File: querys/23_query.png Graphic file (type png)
 <use querys/23_query.png>
 Package pdftex.def Info: querys/23_query.png  used on input line 306.
 (pdftex.def)             Requested size: 207.0021pt x 110.4937pt.
-<querys/23_result1.png, id=194, 380.92313pt x 751.30687pt>
+<querys/23_result1.png, id=190, 380.92313pt x 751.30687pt>
 File: querys/23_result1.png Graphic file (type png)
 <use querys/23_result1.png>
 Package pdftex.def Info: querys/23_result1.png  used on input line 311.
 (pdftex.def)             Requested size: 155.24895pt x 306.1921pt.
-<querys/23_result2.png, id=195, 383.18156pt x 506.6428pt>
+<querys/23_result2.png, id=191, 383.18156pt x 506.6428pt>
 File: querys/23_result2.png Graphic file (type png)
 <use querys/23_result2.png>
 Package pdftex.def Info: querys/23_result2.png  used on input line 315.
@@ -709,12 +709,12 @@ Package pdftex.def Info: querys/23_result2.png  used on input line 315.
 
 
 [18 <./querys/23_query.png> <./querys/23_result1.png> <./querys/23_result2.png>]
-<querys/24_query.png, id=205, 453.94594pt x 248.42813pt>
+<querys/24_query.png, id=201, 453.94594pt x 248.42813pt>
 File: querys/24_query.png Graphic file (type png)
 <use querys/24_query.png>
 Package pdftex.def Info: querys/24_query.png  used on input line 324.
 (pdftex.def)             Requested size: 207.0021pt x 113.28516pt.
-<querys/24_result.png, id=206, 453.19313pt x 691.83469pt>
+<querys/24_result.png, id=202, 453.19313pt x 691.83469pt>
 File: querys/24_result.png Graphic file (type png)
 <use querys/24_result.png>
 Package pdftex.def Info: querys/24_result.png  used on input line 328.
@@ -724,17 +724,17 @@ Overfull \hbox (2.21pt too wide) in paragraph at lines 322--330
 [][]  [] 
  []
 
-<querys/25_query.png, id=207, 648.92438pt x 569.12625pt>
+<querys/25_query.png, id=203, 648.92438pt x 569.12625pt>
 File: querys/25_query.png Graphic file (type png)
 <use querys/25_query.png>
 Package pdftex.def Info: querys/25_query.png  used on input line 336.
 (pdftex.def)             Requested size: 207.0021pt x 181.54228pt.
-<querys/25_result1.png, id=208, 1697.5922pt x 505.13719pt>
+<querys/25_result1.png, id=204, 1697.5922pt x 505.13719pt>
 File: querys/25_result1.png Graphic file (type png)
 <use querys/25_result1.png>
 Package pdftex.def Info: querys/25_result1.png  used on input line 340.
 (pdftex.def)             Requested size: 345.0pt x 102.65968pt.
-<querys/25_result2.png, id=209, 1698.345pt x 523.20468pt>
+<querys/25_result2.png, id=205, 1698.345pt x 523.20468pt>
 File: querys/25_result2.png Graphic file (type png)
 <use querys/25_result2.png>
 Package pdftex.def Info: querys/25_result2.png  used on input line 343.
@@ -742,12 +742,12 @@ Package pdftex.def Info: querys/25_result2.png  used on input line 343.
 
 
 [19 <./querys/24_query.png> <./querys/24_result.png> <./querys/25_query.png>]
-<querys/26_query.png, id=222, 703.12688pt x 490.83376pt>
+<querys/26_query.png, id=218, 703.12688pt x 490.83376pt>
 File: querys/26_query.png Graphic file (type png)
 <use querys/26_query.png>
 Package pdftex.def Info: querys/26_query.png  used on input line 352.
 (pdftex.def)             Requested size: 207.0021pt x 144.49512pt.
-<querys/26_result_tabla.png, id=223, 383.18156pt x 328.22626pt>
+<querys/26_result_tabla.png, id=219, 383.18156pt x 328.22626pt>
 File: querys/26_result_tabla.png Graphic file (type png)
 <use querys/26_result_tabla.png>
 Package pdftex.def Info: querys/26_result_tabla.png  used on input line 356.
@@ -759,30 +759,7 @@ Overfull \hbox (2.21pt too wide) in paragraph at lines 350--358
 
 
 
-[20 <./querys/25_result1.png> <./querys/25_result2.png> <./querys/26_query.png> <./querys/26_result_tabla.png>]
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 364.
- (./querys/querys_noSQL.js
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 8.
-
-
-[21]
-
-[22]
-
-[23]
-
-[24]
-
-[25]
-
-[26]
-
-[27]
-
-[28])
-
-[29] (./HugoGomezSabucedo_NoSQL.aux
+[20 <./querys/25_result1.png> <./querys/25_result2.png> <./querys/26_query.png> <./querys/26_result_tabla.png>] (./HugoGomezSabucedo_NoSQL.aux
 LaTeX Info: Redefining \. on input line 13.
 LaTeX Info: Redefining \% on input line 13.
 )
@@ -791,21 +768,21 @@ LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
 Package rerunfilecheck Info: File `HugoGomezSabucedo_NoSQL.out' has not changed.
-(rerunfilecheck)             Checksum: 5C17A74502EAB5A45912AB0BA9596F80;265.
+(rerunfilecheck)             Checksum: 6D78FB9418EB64E3ED1A042465B046E9;93.
  ) 
 Here is how much of TeX's memory you used:
- 19698 strings out of 473362
- 312182 string characters out of 5725050
- 1090772 words of memory out of 5000000
- 41760 multiletter control sequences out of 15000+600000
- 614215 words of font info for 300 fonts, out of 8000000 for 9000
+ 18617 strings out of 473362
+ 299098 string characters out of 5725050
+ 789772 words of memory out of 5000000
+ 41118 multiletter control sequences out of 15000+600000
+ 608547 words of font info for 286 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,1102b,2206s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo_NoSQL.pdf (29 pages, 2312774 bytes).
+ 75i,12n,79p,1102b,887s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on HugoGomezSabucedo_NoSQL.pdf (20 pages, 2220152 bytes).
 PDF statistics:
- 819 PDF objects out of 1000 (max. 8388607)
- 691 compressed objects within 7 object streams
- 492 named destinations out of 1000 (max. 500000)
- 74447 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 276 PDF objects out of 1000 (max. 8388607)
+ 166 compressed objects within 2 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 65223 words of extra memory for PDF output out of 74296 (max. 10000000)
 

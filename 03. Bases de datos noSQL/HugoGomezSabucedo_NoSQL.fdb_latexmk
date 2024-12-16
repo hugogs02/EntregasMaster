@@ -1,9 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1734383656.67849 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/03. Bases de datos noSQL/HugoGomezSabucedo_NoSQL.tex" "HugoGomezSabucedo_NoSQL.pdf" "HugoGomezSabucedo_NoSQL" 1734383660.37674 0
-  "HugoGomezSabucedo_NoSQL.aux" 1734383660 830 6b64097be4e3184e653ac2f59cc22003 "pdflatex"
-  "HugoGomezSabucedo_NoSQL.out" 1734383660 265 5c17a74502eab5a45912ab0ba9596f80 "pdflatex"
-  "HugoGomezSabucedo_NoSQL.tex" 1734383655 19202 cd66eb3a4b447c9bd5da06d07fa261c4 ""
-  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/03. Bases de datos noSQL/HugoGomezSabucedo_NoSQL.tex" 1734383655 19202 cd66eb3a4b447c9bd5da06d07fa261c4 ""
+["pdflatex"] 1734386401.49854 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/03. Bases de datos noSQL/HugoGomezSabucedo_NoSQL.tex" "HugoGomezSabucedo_NoSQL.pdf" "HugoGomezSabucedo_NoSQL" 1734386405.02446 0
+  "HugoGomezSabucedo_NoSQL.aux" 1734386404 581 caafdc7bd6051e77800e57a5c1e41556 "pdflatex"
+  "HugoGomezSabucedo_NoSQL.out" 1734386404 93 6d78fb9418eb64e3ed1a042465b046e9 "pdflatex"
+  "HugoGomezSabucedo_NoSQL.tex" 1734386204 19099 8bfaac3c3923c0677546dcaaaf0df869 ""
+  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/03. Bases de datos noSQL/HugoGomezSabucedo_NoSQL.tex" 1734386204 19099 8bfaac3c3923c0677546dcaaaf0df869 ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1731688753 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1731688002 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1731689966 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -16,8 +16,6 @@
   "c:/texlive/2024/texmf-dist/fonts/tfm/adobe/palatino/pplrc9e.tfm" 1731691793 11504 0aee68a3cffe19441de3ef8908532348 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm" 1731691793 2720 70000d5e623e601132eab3cded5b819b ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/adobe/palatino/pplri9e.tfm" 1731691793 4636 04bb79b19bf5315ced00732a1dac5509 ""
-  "c:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ecit0900.tfm" 1731689038 1536 2a581b33e8ae2f16b1d733398b528242 ""
-  "c:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ectt0900.tfm" 1731689038 1536 ae7aab2f8a4bc9edfce2899f53ba88c3 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm" 1731689038 1536 06717a2b50de47d4087ac0e6cd759455 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/public/mathpazo/fplmb.tfm" 1731691339 984 3dcde7360ef3d34302e591b511cba83c ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm" 1731691339 1032 7fa31d93ecd4cbdfac02c7a1ebc6facc ""
@@ -26,8 +24,6 @@
   "c:/texlive/2024/texmf-dist/fonts/tfm/public/mathpazo/zplmr7t.tfm" 1731691339 1828 bb8add3bd19426549f9267c88b0cb8bd ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/public/mathpazo/zplmr7v.tfm" 1731691339 1012 955c4ca523d7827d33db91a33412b048 ""
   "c:/texlive/2024/texmf-dist/fonts/tfm/public/mathpazo/zplmr7y.tfm" 1731691339 1316 b4037e9c09961a72f8476628774e1ec1 ""
-  "c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb" 1731688002 158366 f792fea28d8bec2307f4dc985e715ed7 ""
-  "c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb" 1731688002 170827 b1cb46f82d978af2aeb6bf26777fa82d ""
   "c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb" 1731688002 169201 651a6333c3213b38091f54d2ab2d2cd6 ""
   "c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb" 1731690106 62231 526da4dbddad40f1a015252940f23e5c ""
   "c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb" 1731691793 52406 dad2f72863a03727d5f536c64a69c452 ""
@@ -166,7 +162,6 @@
   "querys/7.png" 1733079999 21756 3261eb2ec70ebd8be051ca32111523e4 ""
   "querys/8.png" 1733080204 41316 fb3f4832941280a70e6a333224f6d4fc ""
   "querys/9.png" 1733080248 21695 7f540950bca4ce2a00bf8cd19db892a1 ""
-  "querys/querys_noSQL.js" 1734380018 10229 dcabcf9d9e782717ceb906e4e4a27a3d ""
   (generated)
   "HugoGomezSabucedo_NoSQL.aux"
   "HugoGomezSabucedo_NoSQL.log"
