@@ -1,0 +1,113 @@
+\documentclass[a4paper,onecolumn]{article}
+\usepackage[page,toc,titletoc,title]{appendix}
+\usepackage{url}
+\usepackage{subfigure}
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[utf8]{inputenc} % Use utf-8 as encoding
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage[spanish, activeacute]{babel}
+ \decimalpoint
+% \usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document marginshttps://www.overleaf.com/project/60211b96f72a79d4c7515e93
+% \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{verbatim} % comentarios
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    inputencoding=utf8,
+    language=SQL,
+    frame=single,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    identifierstyle=\color{black},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakindent=0pt,
+    breakatwhitespace=false,
+    tabsize=2,
+    captionpos=b
+}
+\setlength{\parskip}{0.8em}
+\usepackage{natbib}
+\usepackage{enumitem}
+% \setlist[itemize]{noitemsep} % Make itemize lists more compact
+% \usepackage{abstract} % Allows abstract customization
+% \renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+% \renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+\usepackage{titlesec}
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{}
+\lhead{Hugo Gómez Sabucedo}
+\rhead{Minería de datos y modelización predictiva}
+
+\renewcommand{\footrulewidth}{0.2pt}
+\usepackage{titling} % Customizing the title section
+\usepackage[breaklinks=true]{hyperref} % For hyperlinks in the PDF
+%\usepackage{array}
+%\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{graphicx}
+%\usepackage{lipsum} % NO NECESARIO LUEGO
+%\usepackage{amsmath}
+%\usepackage{wrapfig}
+%\usepackage{multicol}
+%\usepackage{bm}
+
+
+\let\stdsection\section
+\renewcommand\section{\newpage\stdsection}
+
+%-------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------
+
+\setlength{\droptitle}{-4\baselineskip} % Move the title up
+
+
+
+\title{\begin{center} \Huge Minería de datos y modelización predictiva \end{center}} % Article title
+\author{
+    \textsc{\Huge Hugo Gómez Sabucedo} \\ % Your name
+    \large \href{mailto:hugogomezsabucedo@gmail.com}{hugogomezsabucedo@gmail.com} \\ [2ex] % Your email address
+    \Large \textbf{Máster Big Data, Data Science \& Inteligencia Artificial} \\
+    \normalsize Curso 2024-2025 \\
+    \large Universidad Complutense de Madrid
+}
+\date{} % Leave empty to omit a date
+
+\begin{document}
+% Print the title
+\maketitle
+\tableofcontents
+\begin{sloppypar}
+
+%-------------------------------------------------------------------------
+%	DOCUMENT
+%-------------------------------------------------------------------------
+
+\section{Introducción} \label{enunciado}
+En esta práctica se nos pide, a partir de un archivo con datos sobre diferentes resultados electorales, seleccionar unas variables, con el objetivo
+de construir tanto un modelo de regresión lineal, a partir de una variable objetivo continua; como un modelo de regresión logística, a partir de una
+variable binaria. Para ello, se deberán asignar correctamente los tipos de los datos y realizar un análisis de los mismos, con el objetivo inicial 
+de depurarlos, para asegurarnos que no tenemos variables incoherentes o que no se ajusten al modelo. A continuación, se corregirán los errores que se 
+hayan detectado, así como los valores atípicos y perdidos. Una vez con los datos limpios, podremos analizar las relaciones entre las distintas variables 
+input y las variables objetivo, para poder proceder con la creación de los dos modelos solicitados, para cada una de las variables.
+
+Los 
+
+
+\appendix
+%\section{Anexo: Script de SQL}\label{anexo1}
+%\lstinputlisting{HugoGomezSabucedo.sql}
+
+\end{sloppypar}
+\end{document}
