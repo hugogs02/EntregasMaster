@@ -52,7 +52,6 @@ def curva_roc(x_test_modelo, y_test, modelo):
     
     return AUC
 
-
 def analizar_variables_categoricas(datos):
     """
     Analiza variables categóricas en un DataFrame.
@@ -139,8 +138,6 @@ def frec_variables_num(datos, NumCat):
     
     return resultados
 
-
-
 def atipicosAmissing(varaux):
     """
     Esta función identifica valores atípicos en una serie de datos y los reemplaza por NaN.
@@ -177,7 +174,6 @@ def atipicosAmissing(varaux):
     
     # Retorna la serie con valores atípicos reemplazados y el número de valores atípicos identificados
     return [var, sum(criterio1 & criterio2)]
-
 
 def patron_perdidos(datos_input):
     """
@@ -269,7 +265,6 @@ def ImputacionCuali(var, tipo):
 
     return vv
 
-
 def Vcramer(v, target):
     """
     Calcula el coeficiente V de Cramer entre dos variables. Si alguna de ellas es continua, la discretiza.
@@ -308,7 +303,6 @@ def Vcramer(v, target):
     v_cramer = np.sqrt(chi2 / (n * (min(tabla_cruzada.shape) - 1)))
 
     return v_cramer
-
     
 def graficoVcramer(matriz, target):
     """
@@ -334,7 +328,6 @@ def graficoVcramer(matriz, target):
     plt.xlabel('V de Cramer')
     plt.show()
 
-    
 def mosaico_targetbinaria(var, target, nombre_eje):
     """
     Genera un gráfico de mosaico (mosaic plot) que muestra la relación entre una variable 'var' y una variable objetivo binaria 'target'.
@@ -370,10 +363,7 @@ def mosaico_targetbinaria(var, target, nombre_eje):
 
     # Mostrar el gráfico de mosaico
     plt.show()
-    
-   
-    
-    
+
 def boxplot_targetbinaria(var, target, nombre_ejeX, nombre_ejeY):
     """
     Genera un boxplot para una variable 'var' en función de una variable objetivo binaria 'target'.
@@ -401,7 +391,6 @@ def boxplot_targetbinaria(var, target, nombre_ejeX, nombre_ejeY):
     # Mostrar el gráfico
     plt.show()    
 
-    
 def hist_targetbinaria(var, target, nombre_eje):
     """
     Genera un histograma de densidad para una variable 'var' en función de una variable objetivo binaria 'target'.
@@ -437,7 +426,6 @@ def hist_targetbinaria(var, target, nombre_eje):
     # Mostrar el gráfico
     plt.show()
 
-
 def hist_target_categorica(varCont, varCat, nombre_ejeX, nombre_ejeY):
     """
     Genera un histograma de densidad para una variable 'varCont' en función de una variable categórica 'varCat'.
@@ -471,7 +459,6 @@ def hist_target_categorica(varCont, varCat, nombre_ejeX, nombre_ejeY):
 
     # Mostrar el gráfico
     plt.show()
-
 
 def mejorTransfCorr(vv, target):
     """
@@ -515,7 +502,6 @@ def mejorTransfCorr(vv, target):
     return [max_corr_idx, posibles_transf[max_corr_idx]]
   
 # Busca la transformacion de variables input de intervalo que maximiza la V de Cramer con la objetivo binaria
-
 def mejorTransfVcramer(vv, target):
     """
     Esta función busca la mejor transformación para una variable cuantitativa que maximice el coeficiente V de Cramer con una variable objetivo categórica.
@@ -556,7 +542,6 @@ def mejorTransfVcramer(vv, target):
     max_corr_idx = cor_values.idxmax()
 
     return [max_corr_idx, posibles_transf[max_corr_idx]]
-
 
 def Transf_Auto(matriz, target):
     """
