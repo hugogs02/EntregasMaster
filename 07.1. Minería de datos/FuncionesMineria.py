@@ -190,7 +190,7 @@ def patron_perdidos(datos_input):
     mask = np.triu(np.ones_like(correlation_matrix, dtype=bool))
     
     # Configuro el tamaño de la figura y el tamaño de la fuente en el gráfico
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(12, 10))
     sns.set(font_scale=1.2)
     
     # Genero un mapa de calor (heatmap) de la matriz de correlación de valores ausentes
@@ -199,7 +199,7 @@ def patron_perdidos(datos_input):
     # 'fmt=".2f"' formatea los valores como números de punto flotante con dos decimales
     # 'cbar=False' oculta la barra de color (escala) en el lado derecho
     # 'mask=mask' aplica la máscara para ocultar la mitad superior de la matriz
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", cbar=False, mask=mask)
+    sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', fmt=".2f", cbar=True, mask=mask)
     
     # Establezco el título del gráfico
     plt.title("Matriz de correlación de valores ausentes")

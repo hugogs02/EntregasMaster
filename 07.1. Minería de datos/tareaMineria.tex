@@ -104,6 +104,25 @@ input y las variables objetivo, para poder proceder con la creación de los dos 
 
 Los 
 
+Todas las variables correcatmente asignadas.
+Frecuencia en categoricas. algunos ayuntamieentos repetidos, tiene sentido (mieres en cataluña y asturias).
+CCAA:hay mas valores en unas que otras,pero tiene sentido. actividadppal agrupamos construccion e industria en otros. vemos valores perdidos en densidad (?)
+abstencion alta, izquierda y derecha dos valores: normal. hay valores perdidos en todos los casos, pero puede deberse a perdidos o a valores repetidos
+
+variables numericas. todas tienen suficientes valores distintos.
+poblacion:aplicamos transformacion logaritmica, ya que tienen un rango muy alto debido a municipios que tienen mucha poblacion. lo mismo con censo, inmueble y pob2010.
+ageover65pt, foreignerspt tienen valores minimos negativos. deben eliminarse, no es posible. age1965pt, samecomautpt tienen>100. imposible.
+explotaciones tiene max 99999. fuera de rango? tratar
+tenemos varios nan: totalempresas, industria, construccion, comercttehost, servicios, inmuebles, pob2010, pobchange_pct (estos dos 7 los dos), personasinmueble. tratar
+
+definimos como identificadora NAme y codprovincia
+
+relacion entre valores perdidos: inmuebles y personasinmueble, pob2010 y pobchange, totalcensus y personasinmueble
+casi todas las variables tienen valores perdidos. los analizamos. ninguna tiene mas de un 50% (max 9%)
+la observacion que mas variables perdidas tiene es un 34por ciento, pero no se elimina (el minimo es 50). pero transformamos la variable a categoricas
+
+datos faltantes en totalEmpresas, industria, construccion, comercttehosteleria, servicios, inmuebles, pob2010, superficie, pobchangeÑ_pct, personasinmueble
+
 
 \appendix
 %\section{Anexo: Script de SQL}\label{anexo1}
