@@ -48,9 +48,9 @@ modeloManual['Modelo'].summary()
 # R-squared del modelo para train
 Rsq(modeloManual['Modelo'], y_train, modeloManual['X'])
 # Preparo datos test
-x_test_modeloManual = crear_data_modelo(x_test, [], ['Clasificacion', 'Etiqueta', 'CalifProductor'])
+y_test_modelo = crear_data_modelo(y_test, [], ['Clasificacion', 'Etiqueta', 'CalifProductor'])
 # R-squared del modelo para test
-Rsq(modeloManual['Modelo'], y_test, x_test_modeloManual)
+Rsq(modeloManual['Modelo'], y_test, y_test_modelo)
 
 # Como la categoría 2 de la varaibles CalifProductor no es significativa
 # la unimos con la categoría '0-1' 
