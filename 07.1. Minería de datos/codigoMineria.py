@@ -14,7 +14,7 @@ from FuncionesMineria import *
 # Leemos los datos, los mostramos y mostramos sus tipos
 datos = pd.read_excel("DatosElecciones.xlsx", sheet_name='DatosEleccionesEspaña')
 print(datos.head(5))
-print(datos.dtypes)
+print(datos[['Izquierda', 'Derecha', 'AbstencionAlta']].dtypes)
 
 # Dividimos las variables en categóricas y numéricas, y comprobamos que tengan el tipo correcto.
 variables = list(datos.columns)
@@ -49,18 +49,29 @@ print(erroresCenso[['Name', 'TotalCensus', 'Population']])
 print(datos[variables].isna().sum())
 
 # Corregimos los errores
-for v in categoricas:
-    datos[v] = datos[v].replace('nan', np.nan)
-    
-datos['Explotaciones'] = datos['Explotaciones'].replace(99999,np.nan)
 
 # Categoricas
 # Agrupamos construccion e industria en otro
 datos['ActividadPpal'] = datos['ActividadPpal'].replace({'Construccion': 'Otro', 'Industria': 'Otro'})
 
+# Supongamos que tu DataFrame se llama df y tiene las columnas 'CCAA' y 'abstentionptge'
+promedio_abstencion = datos.groupby('CCAA')['AbstentionPtge'].mean().reset_index()
+promedio_abstencion.sort_values(by='AbstentionPtge')
+
 # Transformamos CCAA
-densidad_ccaa = datos.groupby(['CCAA', 'Densidad']).size().unstack(fill_value=0)
-densidad_ccaa = densidad_ccaa.div(densidad_ccaa.sum(axis=1), axis=0)
+datos['CCAA'] = datos['CCAA'].replace({'Canarias': 'Can-Ast-Bal-PV', 'Asturias': 'Can-Ast-Bal-PV',
+                                       'Baleares': 'Can-Ast-Bal-PV', 'PaísVasco': 'Can-Ast-Bal-PV',
+                                       'Galicia': 'Galicia-Navarra', 'Navarra': 'Galicia-Navarra',
+                                       'Murcia': 'Mur-Can-Ext', 'Cantabria': 'Mur-Can-Ext', 'Extremadura': 'Mur-Can-Ext',
+                                       'Madrid': 'Madrid-Aragón', 'Aragón': 'Madrid-Aragón',
+                                       'Rioja': 'Rioja-ComValenciana', 'ComValenciana': 'Rioja-ComValenciana'})
+# Revisamos de nuevo las frecuencias
+print(analizar_variables_categoricas(datos)['CCAA'])
+
+for v in categoricas:
+    datos[v] = datos[v].replace('nan', np.nan)
+    
+datos['Explotaciones'] = datos['Explotaciones'].replace(99999,np.nan)
 
 # Numericas
 # Transformamos población
@@ -100,7 +111,6 @@ for x in numericas_input:
     
 # Visualizamos relacion entre ausentes y missing
 patron_perdidos(datos_input)
-print(datos_input['TotalCensus'].unique())
 
 datos_input[variables_input].isna().sum()
 prop_missingsVars = datos_input.isna().sum()/len(datos_input)
@@ -175,6 +185,8 @@ sns.heatmap(matriz_corr, annot=True, cmap='coolwarm', fmt=".1f", cbar=True, mask
 plt.title("Matriz de correlación")
 plt.show()
 
+datos_input.drop(['Population', 'totalEmpresas', 'Age_under19_Ptge', 'Age_over65_pct'], inplace=True, axis=1)
+
 todo_cont = pd.concat([datos_input, varObjCont], axis = 1)
 todo_bin = pd.concat([datos_input, varObjBin], axis = 1)
 
@@ -185,17 +197,13 @@ todo_bin = pd.concat([datos_input, varObjBin], axis = 1)
 x_train, x_test, y_train, y_test = train_test_split(todo_cont, varObjCont,
                                                     test_size = 0.2, random_state = 29112002)
 
-# Variables reducidas
-var_cont = ['TotalCensus', 'UnemployLess25_Ptge', 'Unemploy25_40_Ptge', 'AgricultureUnemploymentPtge', 
-            'IndustryUnemploymentPtge', 'ConstructionUnemploymentPtge', 'ServicesUnemploymentPtge',
-            'totalEmpresas', 'PobChange_pct', 'WomanPopulationPtge', 'Age_19_65_pct', 'Explotaciones']
-var_categ = ['CCAA', 'ActividadPpal', 'Densidad']
 
-# Variables con mas cantidad
-var_cont = ['TotalCensus', 'Age_over65_pct', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 
+var_cont = ['TotalCensus', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 
             'Unemploy25_40_Ptge', 'UnemployMore40_Ptge', 'AgricultureUnemploymentPtge',
             'IndustryUnemploymentPtge', 'ConstructionUnemploymentPtge', 'ServicesUnemploymentPtge',
-            'totalEmpresas', 'PobChange_pct', 'PersonasInmueble', 'Explotaciones']
+            'PobChange_pct', 'PersonasInmueble', 'Explotaciones']
+var_categ = ['CCAA', 'ActividadPpal', 'Densidad']
+
 
 interacciones = var_cont #+ var_categ
 interacciones_unicas = list(itertools.combinations(interacciones, 2))
@@ -255,14 +263,14 @@ x_test_FBIC = crear_data_modelo(x_test,modeloForwBIC['Variables']['cont'],
 Rsq(modeloForwBIC['Modelo'], y_test, x_test_FBIC)
 len(modeloForwBIC['Modelo'].params)
 
-ganador = modeloStepBIC
+ganador = modeloBackBIC
 
 
 ######### SELECCION ALEATORIA
 # Inicializar un diccionario para almacenar las fórmulas y variables seleccionadas.
 variables_seleccionadas = {'Formula': [],'Variables': []}
 
-for x in range(20):
+for x in range(30):
     print('---------------------------- iter: ' + str(x))
     
     # Dividir los datos de entrenamiento en conjuntos de entrenamiento y prueba.
@@ -294,7 +302,7 @@ ganador['Variables']
 
 # Selección del ganador
 results = pd.DataFrame({'Rsquared': [], 'Resample': [], 'Modelo': []})
-for rep in range(20):
+for rep in range(50):
     modelo1 = validacion_cruzada_lm(5, x_train, y_train, ganador['Variables']['cont']
               , ganador['Variables']['categ'], ganador['Variables']['inter'])
     modelo2 = validacion_cruzada_lm(5, x_train, y_train, var_1['cont'], var_1['categ'], var_1['inter'])
@@ -321,6 +329,9 @@ plt.xlabel('Modelo')  # Etiqueta del eje x
 plt.ylabel('Rsquared')  # Etiqueta del eje y
 plt.show()  # Muestra el gráfico  
 
+# Construir el modelo si uno de los ganadores es el de aleatoria
+modelo = lm(y_train, x_train, var_2['cont'], var_2['categ'], var_2['inter'])
+modelo['Modelo'].summary()
 
 
 ###############################################################################
@@ -329,8 +340,143 @@ plt.show()  # Muestra el gráfico
 # Comprobamos que izquierda solo toma valor 1 y 0
 pd.DataFrame({'n': varObjBin.value_counts(), '%': varObjBin.value_counts(normalize = True)})
 
-# Obtengo la particion
-x_train, x_test, y_train, y_test = train_test_split(todo, varObjBin, test_size = 0.2, random_state = 29112002)
-# Indico que la variable respuesta es numérica (hay que introducirla en el algoritmo de phython tal y como la va a tratar)
-y_train, y_test = y_train.astype(int), y_test.astype(int)
 
+# Obtengo la particion
+x_train_log, x_test_log, y_train_log, y_test_log = train_test_split(todo_bin, varObjBin, test_size = 0.2, random_state = 29112002)
+# Indico que la variable respuesta es numérica (hay que introducirla en el algoritmo de phython tal y como la va a tratar)
+y_train_log, y_test_log = y_train_log.astype(int), y_test_log.astype(int)
+
+var_cont_log = ['TotalCensus', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 
+                'Unemploy25_40_Ptge', 'UnemployMore40_Ptge', 'AgricultureUnemploymentPtge', 'Explotaciones']
+var_categ_log = ['CCAA', 'ActividadPpal', 'Densidad']
+
+interacciones_log = var_cont_log #+ var_categ_log
+interacciones_unicas_log = list(itertools.combinations(interacciones_log, 2))
+
+modeloLogStepAIC = glm_stepwise(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogStepBIC = glm_stepwise(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+modeloLogForwAIC = glm_forward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogForwBIC = glm_forward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+modeloLogBackAIC = glm_backward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogBackBIC = glm_backward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+
+
+#(modeloLogStepAIC['Modelo'], y_train_log, modeloLogStepAIC['X'])
+pseudoR2(modeloLogStepAIC['Modelo'], modeloLogStepAIC['X'], y_train_log)
+x_test_LSAIC = crear_data_modelo(x_test_log,modeloLogStepAIC['Variables']['cont'],
+                                modeloLogStepAIC['Variables']['categ'], modeloLogStepAIC['Variables']['inter'])
+pseudoR2(modeloLogStepAIC['Modelo'], x_test_LSAIC, y_test_log)
+len(modeloLogStepAIC['Modelo'].coef_[0])
+
+
+#summary_glm(modeloLogBackAIC['Modelo'], y_train_log, modeloLogBackAIC['X'])
+pseudoR2(modeloLogBackAIC['Modelo'], modeloLogBackAIC['X'], y_train_log)
+x_test_LBAIC = crear_data_modelo(x_test_log,modeloLogBackAIC['Variables']['cont'],
+                                modeloLogBackAIC['Variables']['categ'], modeloLogBackAIC['Variables']['inter'])
+pseudoR2(modeloLogBackAIC['Modelo'], x_test_LBAIC, y_test_log)
+len(modeloLogBackAIC['Modelo'].coef_[0])
+
+
+#summary_glm(modeloLogForwAIC['Modelo'], y_train_log, modeloLogForwAIC['X'])
+pseudoR2(modeloLogForwAIC['Modelo'], modeloLogForwAIC['X'], y_train_log)
+x_test_LFAIC = crear_data_modelo(x_test_log,modeloLogForwAIC['Variables']['cont'],
+                                modeloLogForwAIC['Variables']['categ'], modeloLogForwAIC['Variables']['inter'])
+pseudoR2(modeloLogForwAIC['Modelo'], x_test_LFAIC, y_test_log)
+len(modeloLogForwAIC['Modelo'].coef_[0])
+
+
+#summary_glm(modeloLogStepBIC['Modelo'], y_train_log, modeloLogStepBIC['X'])
+pseudoR2(modeloLogStepBIC['Modelo'], modeloLogStepBIC['X'], y_train_log)
+x_test_LSBIC = crear_data_modelo(x_test_log,modeloLogStepBIC['Variables']['cont'],
+                                modeloLogStepBIC['Variables']['categ'], modeloLogStepBIC['Variables']['inter'])
+pseudoR2(modeloLogStepBIC['Modelo'], x_test_LSBIC, y_test_log)
+len(modeloLogStepBIC['Modelo'].coef_[0])
+
+
+#summary_glm(modeloLogBackBIC['Modelo'], y_train_log, modeloLogBackBIC['X'])
+pseudoR2(modeloLogBackBIC['Modelo'], modeloLogBackBIC['X'], y_train_log)
+x_test_LBBIC = crear_data_modelo(x_test_log,modeloLogBackBIC['Variables']['cont'],
+                                modeloLogBackBIC['Variables']['categ'], modeloLogBackBIC['Variables']['inter'])
+pseudoR2(modeloLogBackBIC['Modelo'], x_test_LBBIC, y_test_log)
+len(modeloLogBackBIC['Modelo'].coef_[0])
+
+
+#summary_glm(modeloLogForwBIC['Modelo'], y_train_log, modeloLogForwBIC['X'])
+pseudoR2(modeloLogForwBIC['Modelo'], modeloLogForwBIC['X'], y_train_log)
+x_test_LFBIC = crear_data_modelo(x_test_log,modeloLogForwBIC['Variables']['cont'],
+                                modeloLogForwBIC['Variables']['categ'], modeloLogForwBIC['Variables']['inter'])
+pseudoR2(modeloLogForwBIC['Modelo'], x_test_LFBIC, y_test_log)
+len(modeloLogForwBIC['Modelo'].coef_[0])
+
+
+ganador_log = modeloLogStepAIC
+
+######### SELECCION ALEATORIA
+# Inicializar un diccionario para almacenar las fórmulas y variables seleccionadas.
+variables_seleccionadas_log = {'Formula': [],'Variables': []}
+
+for x in range(10):
+    print('---------------------------- iter: ' + str(x))
+    
+    # Dividir los datos de entrenamiento en conjuntos de entrenamiento y prueba.
+    x_train_log2, x_test_log2, y_train_log2, y_test_log2 = train_test_split(x_train_log, y_train_log, 
+                                                            test_size = 0.3, random_state = 29112002 + x)
+    
+    # Realizar la selección stepwise utilizando el criterio BIC en la submuestra.
+    modelo = lm_stepwise(y_train_log2.astype(int), x_train_log2, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+    
+    # Almacenar las variables seleccionadas y la fórmula correspondiente.
+    variables_seleccionadas_log['Variables'].append(modelo['Variables'])
+    variables_seleccionadas_log['Formula'].append(sorted(modelo['Modelo'].model.exog_names))
+    
+variables_seleccionadas_log['Formula'] = list(map(lambda x: '+'.join(x), variables_seleccionadas_log['Formula']))
+
+# Calcular la frecuencia de cada fórmula y ordenarlas por frecuencia.
+frecuencias_log = Counter(variables_seleccionadas_log['Formula'])
+frec_ordenada_log = pd.DataFrame(list(frecuencias_log.items()), columns = ['Formula', 'Frecuencia'])
+frec_ordenada_log = frec_ordenada_log.sort_values('Frecuencia', ascending = False).reset_index()
+
+# Identificar las dos modelos más frecuentes y las variables correspondientes.
+var_1_log = variables_seleccionadas_log['Variables'][variables_seleccionadas_log['Formula'].index(frec_ordenada_log['Formula'][0])]
+var_2_log = variables_seleccionadas_log['Variables'][variables_seleccionadas_log['Formula'].index(frec_ordenada_log['Formula'][1])]
+
+# Salidas de los modelos que más se repiten
+var_1_log
+var_2_log
+ganador_log['Variables']
+
+
+results_log = pd.DataFrame({'Rsquared': [], 'Resample': [], 'Modelo': []})
+for rep in range(20):
+    modelo1 = validacion_cruzada_lm(5, x_train_log, y_train_log, ganador_log['Variables']['cont']
+              , ganador_log['Variables']['categ'], ganador_log['Variables']['inter'])
+    modelo2 = validacion_cruzada_lm(5, x_train_log, y_train_log, var_1['cont'], var_1['categ'], var_1['inter'])
+    modelo3 = validacion_cruzada_lm(5, x_train_log, y_train_log, var_2['cont'], var_2['categ'], var_2['inter'])
+    
+    results_rep = pd.DataFrame({
+        'Rsquared': modelo1 + modelo2 + modelo3 
+        , 'Resample': ['Rep' + str((rep + 1))]*5*3
+        , 'Modelo': [1]*5 + [2]*5 + [3]*5 
+    })
+    results = pd.concat([results, results_rep], axis = 0)
+    
+#### Determinamos el ganador
+# Hacemos el boxplot
+plt.figure(figsize=(10, 6))  # Crea una figura de tamaño 10x6
+plt.grid(True)  # Activa la cuadrícula en el gráficoç
+# Agrupa los valores de Rsquared por modelo
+grupo_metrica = results.groupby('Modelo')['Rsquared']
+# Organiza los valores de R-squared por grupo en una lista
+boxplot_data = [grupo_metrica.get_group(grupo).tolist() for grupo in grupo_metrica.groups]
+# Crea un boxplot con los datos organizados
+plt.boxplot(boxplot_data, labels=grupo_metrica.groups.keys())  # Etiqueta los grupos en el boxplot
+# Etiqueta los ejes del gráfico
+plt.xlabel('Modelo')  # Etiqueta del eje x
+plt.ylabel('Rsquared')  # Etiqueta del eje y
+plt.show()  # Muestra el gráfico  
+
+
+# Calculamos el ROC
+
+
+# Calculamos el AUC o area bajo la curva

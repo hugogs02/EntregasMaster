@@ -1,0 +1,17 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{3}{section.1}%
+\contentsline {section}{\numberline {2}Importación de datos y análisis descriptivo}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Importación}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Análisis descriptivo}{4}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Corrección de errores}{6}{section.3}%
+\contentsline {section}{\numberline {4}Análisis de valores atípicos}{8}{section.4}%
+\contentsline {section}{\numberline {5}Análisis de valores perdidos}{8}{section.5}%
+\contentsline {section}{\numberline {6}Detección de relaciones entre variables}{10}{section.6}%
+\contentsline {section}{\numberline {7}Regresión lineal}{12}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Selección clásica}{12}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Selección aleatoria}{14}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Modelo ganador}{16}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Regresión logística}{17}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Selección clásica}{17}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Selección aleatoria}{17}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Modelo ganador}{17}{subsection.8.3}%
