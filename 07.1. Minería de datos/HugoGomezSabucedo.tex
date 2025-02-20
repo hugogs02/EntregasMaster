@@ -79,7 +79,7 @@
 
 
 \let\stdsection\section
-%\renewcommand\section{\newpage\stdsection}
+\renewcommand\section{\newpage\stdsection}
 
 %-------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -102,9 +102,9 @@
 \begin{document}
 % Print the title
 \maketitle
-\newpage
+%\newpage
 \tableofcontents
-\newpage
+%\newpage
 \begin{sloppypar}
 
 %-------------------------------------------------------------------------
@@ -121,7 +121,7 @@ input y las variables objetivo, para poder proceder con la creación de los dos 
 
 Cada registro del archivo viene identificado por Name y CodigoProvincia (ya que, observando el conjunto de datos, se han encontrado municipios con el mismo
 nombre pero en provincias diferentes). Adicionalmente, contienen información sobre la CCAA a la que pertenecen. Por otra parte, tenemos las variables objetivo,
-que se dividen en las variables continuas (AbstentionPtge, el porcentaje de abstención; IdaPct, el porcentaje de votos a partidos de izquierdas; DchaPct, el
+que se dividen en las variables continuas (AbstentionPtge, el porcentaje de abstención; IzdaPct, el porcentaje de votos a partidos de izquierdas; DchaPct, el
 porcentaje de votos a partidos de derechas; y OtrosPct, el porcentaje de votos a otros partidos); y las variables binarias o dicotómicas (AbstencionAlta, que 
 vale 1 si el porcentaje de abstención es mayor al 30\% o 0 en otro caso; Izquierda, que toma valor 1 si la suma de votos a los partidos de izquierda es 
 superior a la suma de votos a derchas y otros, y 0 en caso contrario; y Derecha, análoga a la anterior, pero para partidos de derechas). De estas, se
@@ -178,7 +178,7 @@ Podemos hacer de nuevo un print de `categoricas` para comprobar que las variable
 Puesto que todas las variables están ya correctamente asignadas, podemos pasar directamente al análisis descriptivo de las mismas.
 
 \subsection{Análisis descriptivo}\label{analisis}
-\begin{wrapfigure}[9]{l}{4.5cm}
+\begin{wrapfigure}[11]{l}{4.75cm}
     \includegraphics[width=4.5cm]{ejecuciones/analizar_categoricas.png}
 \end{wrapfigure}
 
@@ -270,14 +270,14 @@ promedio_abstencion = datos.groupby('CCAA')['AbstentionPtge'].mean().reset_index
 
 Las agrupaciones que realizaremos serán entonces: Canarias, Asturias, Baleares y País Vasco; Galicia y Navarra; Murcia, Cantabria y Extremadura; Madrid y Aragón; 
 y Rioja y la Comunidad Valenciana. Si ahora volvemos a analizar la frecuencia de los valores para la variable, vemos en la figura \ref{fig:CCAAreagrupada} que 
-la nueva \"CCAA\" con menos frecuencia es la agrupación de Canarias, Asturias, Baleares y País Vasco, con un $5.96\%$.
+la nueva ''CCAA'' con menos frecuencia es la agrupación de Canarias, Asturias, Baleares y País Vasco, con un $5.96\%$.
 
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.35\textwidth}
         \centering
         \includegraphics[width=0.75\textwidth]{ejecuciones/CCAA_porabst.png}
-        \caption{CCAA agrupadas por abstención}
+        \caption{Abstención promedio por CCAA}
         \label{fig:CCAAbypct}
     \end{minipage}%
     \hspace{0.05\textwidth} % Espacio entre las imágenes
@@ -313,7 +313,7 @@ variables numericas\_input y categoricas\_input con la división en categóricas
 
 \section{Análisis de valores atípicos}\label{atipicos}
 Para tratar los valores atípicos, en primer lugar, mediremos la proporción de valores missing que hay por cada variable, y tratándolos con la función 
-atipicosAmissing, empleando para ello el código:
+\texttt{atipicosAmissing}, empleando para ello el código:
 \begin{lstlisting}[language=Python]
 resultados = {x: atipicosAmissing(datos_input[x])[1] / len(datos_input) for x in numericas_input}
 for x in numericas_input:
@@ -322,8 +322,8 @@ for x in numericas_input:
 Así, nos encontramos con los siguientes porcentajes de valores atípicos que, como podemos observar, se encuentran preesentes en la mayoría de variables. Cabe 
 destacar el elevado número de valores atípicos en, por ejemplo, Population o TotalCensus que, como comentamos en el \ref{analisis}, se debe a ciudades con 
 mucha población, y que en este caso serán tratados como atípicos y, por tanto, convertidos a missing. Otra opción podría haber sido hacer una transformación 
-logarítmica de los datos, pero se observó que, aun realizándola, se seguían detectando numerosos valores atípicos, por lo que lo más adecuado parece dejar
-que sean tratados directamente como atípicos.
+logarítmica de los datos, pero se observó que, aun realizándola, se seguían detectando numerosos valores atípicos, por lo que lo más adecuado parece ser 
+dejar que sean tratados directamente como atípicos.
 \begin{lstlisting}[numbers=none]
 {'Population': 0.05297523715658495, 'TotalCensus': 0.050880867315510656, 'Age_0-4_Ptge': 0.0, 'Age_under19_Ptge': 0.0, 'Age_19_65_pct': 0.00012319822594554638, 'Age_over65_pct': 0.0, 'WomanPopulationPtge': 0.0, 'ForeignersPtge': 0.006036713071331773, 'SameComAutonPtge': 0.00012319822594554638, 'SameComAutonDiffProvPtge': 0.0024639645189109276, 'DifComAutonPtge': 0.00012319822594554638, 'UnemployLess25_Ptge': 0.0, 'Unemploy25_40_Ptge': 0.0, 'UnemployMore40_Ptge': 0.0, 'AgricultureUnemploymentPtge': 0.0013551804854010103, 'IndustryUnemploymentPtge': 0.0, 'ConstructionUnemploymentPtge': 0.0, 'ServicesUnemploymentPtge': 0.0, 'totalEmpresas': 0.10484169027965998, 'Industria': 0.09239866945915978, 'Construccion': 0.0903042996180855, 'ComercTTEHosteleria': 0.09868177898238266, 'Servicios': 0.11851669335961562, 'inmuebles': 0.09042749784403105, 'Pob2010': 0.0974497967229272, 'SUPERFICIE': 0.027103609708020206, 'PobChange_pct': 0.0012319822594554638, 'PersonasInmueble': 0.0, 'Explotaciones': 0.050880867315510656}
 \end{lstlisting}
@@ -425,18 +425,20 @@ Como se ve, la variable que más relación tiene con ambas variables objetivo es
 la V de Cramer inferior a 0.1, en caso de la binaria, o de 0.15, en caso de la continua. De momento, no realizaremos nada con las variables, pero estos dos 
 gráficos nos servirán para, al momento de seleccionar las variables para ambas regresiones, ver cuáles debemos descartar o no.
 
-Lo que sí haremos en este punto es dibujar la matriz de correlación entre las variables continuas, para ver si hay alguna variable que debamos eliminar. Lo 
-primero que observamos es que tenemos numerosas variables con un valor de 1 en esta matriz, lo cual nos indica una correlación perfecta entre las mismas. Son,
-concretamente, las variables TotalEmpresas, Industria, Construccion, ComercTTEHosteleria, Servicios, Inmuebles y Pob2010. Esto se debe a que dichas variables 
-se refieren al número de empresas de x tipo que hay en el municipio, por lo que es de esperar que estén relacionadas no sólo con TotalEmpresas, sino también 
-entre sí. Además, como es de esperar, encontramos una alta relación entre Population y totalCensus, así como entre Age\_under19\_Ptge y Age\_0-4\_Pctge, y 
-Age\_over65\_pct, que presenta una elevada correlación negativa con el resto de variables referidas a los porcentajes de edad. Todas estas variables no serán
-tenidas en cuenta a la hora de pasar las variables a los modelos y, además, serán eliminadas. Concretamente, eliminaremos Population, TotalEmpresas,
-Age\_under19\_Ptge y Age\_over65\_pct.
+Lo que sí haremos en este punto es dibujar la \hyperref[fig:fig:matCorr]{matriz de correlación} entre las variables continuas, para ver si hay alguna variable
+que debamos eliminar. Lo primero que observamos es que tenemos numerosas variables con un valor de 1 en esta matriz, lo cual nos indica una correlación perfecta 
+entre las mismas. Son, concretamente, las variables TotalEmpresas, Industria, Construccion, ComercTTEHosteleria, Servicios, Inmuebles y Pob2010. Esto se debe a 
+que dichas variables se refieren al número de empresas de x tipo que hay en el municipio, por lo que es de esperar que estén relacionadas no sólo con TotalEmpresas, 
+sino también entre sí. Además, como es de esperar, encontramos una alta relación entre Population y totalCensus, así como entre Age\_under19\_Ptge y 
+Age\_0-4\_Pctge, y Age\_over65\_pct, que presenta una elevada correlación negativa con el resto de variables referidas a los porcentajes de edad. Todas estas 
+variables no serán tenidas en cuenta a la hora de pasar las variables a los modelos y, además, serán eliminadas. Concretamente, eliminaremos Population, 
+TotalEmpresas, Age\_under19\_Ptge y Age\_over65\_pct.
 
 \begin{center}
     \begin{figure}[h!]
+        \centering
         \includegraphics[width=0.7\textwidth]{ejecuciones/matCorr.png}
+        \caption{Matriz de correlación de variables continuas}
         \label{fig:matCorr}
     \end{figure}
 \end{center}
@@ -538,7 +540,7 @@ Por otra parte, se nos pide realizar una selección aleatoria de las variables. 
 sobre ellas una selección de variables clásica y generar un resumen de los modelos que se han generado, de forma que se elegirán los modelos que hayan sido 
 generados más veces, ya que son más estables y buenos candidatos a que se les aplique la validación cruzada.
 
-Para la selección aleatoria, el código empleado es el que se muestra a continuación, en el que se realizan 30 iteraciones para generar los modelos. Se ha 
+Para la selección aleatoria, el código empleado es el que se muestra a continuación, en el que se realizan 20 iteraciones para generar los modelos. Se ha 
 elegido el método stepwise, porque es el más completo, ya que combina las ventajas del método forward con las del backward, permitiendo ''replantearse'' si 
 una variable debe entrar al modelo o no con cada iteración
 \begin{lstlisting}[language=Python]
@@ -624,7 +626,8 @@ plt.show()
 
 \begin{center}
     \begin{figure}[h!]
-        \includegraphics[width=0.5\textwidth]{ejecuciones/boxplot_lineal.png}
+        \centering
+        \includegraphics[width=0.6\textwidth]{ejecuciones/boxplot_lineal.png}
         \caption{Validación cruzada para regresión lineal}
         \label{fig:boxplotlin}
     \end{figure}
@@ -635,13 +638,22 @@ sí es cierto que presenta un variabilidad mayor, si observamos el número de pa
 para los otros dos (\texttt{len(frec\_ordenada[`Formula`][0].split(`+`))} y \texttt{len(frec\_ordenada[`Formula`][1].split(`+`))}) es de 490 y 565, por lo que 
 esta ligera mejora en la variabilidad no justifica en absoluto el aumento desmedido del número de parámetros.
 
-Por motivos de espacio no podemos incluir aquí el output completo del summary del modelo, pero analizaremos algunos de los parámetros que nos devuelve con el 
-objetivo de justificar por qué es el ganador. Como se indicó su $R^2$ para el conjunto de train es de 0.383, mientras que el $R^2$ ajustado es de 0.380, lo cual 
-nos indica que aproximadamente el 38\% de variabilidad en el porcentaje de abstención se explica por las variables incluidas en el modelo. Es un porcentaje bajo,
-pero hay que tener en cuenta que datos como los de las elecciones son muy sensibles y dependen de muchos factores, incluso personales. Con 35 parámetros, tiene 
-un buen equilibro entre capacidad explicativa y sencillez, evitando también el sobreajuste. Analizando la contribución de cada variable al $R^2$, vemos que la 
-que más aporta (la que más influencia tiene) es la CCAA, con un $R^2$ de 0.211; mientras que las que tienen una aportación más marginal son, por ejemplo, 
-IndustryUnemploymentPtge\_PersonasInmueble o ConstructionUnemploymentPtge\_Explotaciones, ambas con 0.0009.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.7\textwidth]{ejecuciones/ganador_lineal.png}
+        \caption{Resumen del modelo ganador de regresión lineal}
+        \label{fig:summarylin}
+    \end{figure}
+\end{center}
+
+Analizaremos algunos de los parámetros que nos devuelve el summary del modelo ganador con el objetivo de justificar por qué es el ganador. Como se indicó su 
+$R^2$ para el conjunto de train es de 0.383, mientras que el $R^2$ ajustado es de 0.380, lo cual nos indica que aproximadamente el 38\% de variabilidad en el 
+porcentaje de abstención se explica por las variables incluidas en el modelo. Es un porcentaje bajo, pero hay que tener en cuenta que datos como los de las 
+elecciones son muy sensibles y dependen de muchos factores, incluso personales. Con 35 parámetros, tiene un buen equilibro entre capacidad explicativa y 
+sencillez, evitando también el sobreajuste. Analizando la contribución de cada variable al $R^2$, vemos que la que más aporta (la que más influencia tiene) es 
+la CCAA, con un $R^2$ de 0.211; mientras que las que tienen una aportación más marginal son, por ejemplo, IndustryUnemploymentPtge\_PersonasInmueble o 
+ConstructionUnemploymentPtge\_Explotaciones, ambas con 0.0009.
 
 Por otra parte, el summary nos devuelve los coeficientes para cada variable. Para la variable binaria CCAA\_Cataluña, tenemos un coeficiente de 7.4754 con un 
 p < 0.01, lo cual indica que el resultado es altamente significativo. Esto significa que, en promedio, ser de Cataluña se asocia con un incremento aproximado
@@ -651,14 +663,61 @@ que cada aumento de 1 punto porcentual en el porcentaje de mujeres de un municip
 abstención. Esto nos sugiere que allí donde hay más presencia femenina hay menor abstención, ya que las mujeres suelen estar mucho más movilizadas a la hora 
 de votar.
 
-En cuanto a su calidad
+En cuanto a su calidad, para evaluarla nos basamos en tres parámetros. Por una parte tenemos el estadístico de Durbin-Watson, que mide la autocorrelación de 
+los residuos del modelo, con valores entre 0 y 4, donde valores próximos a 0 indican una autocorrelación positiva y valores cercanos a 4 una autocorrelación 
+negativa, mientras que valores en torno a 2 indican que no presentan una autocorrelación significativa. Por otra parte, tenemos la prueba de Jarque-Bera, que 
+evalúa si los residuos siguen una distribución normal empleando para ello la asimetría (si están equilibrados alrededor de la media) y la curtosis (si las colas 
+son más aplanadas o no respecto a la normal). Un valor  de probabilidad bajo, menor que 0.05, implicaría que los residuos no siguen una distribución normal.
+Por último, el número de condición, que mide la multicolinealidad del modelo, donde valores inferiores a 30 indican que no hay problemas de multicolinealidad, 
+entre 30 y 100 una multicolinealidad moderada, y superiores a 100 indican que hay variables fuertemente correlacionadas.
 
-%%%%%%%%%
-POR QUE GANADOR? CALIDAD? INTERPRETAR COEFICIENTES DE DOS VARIABLES (BINARIA Y CONTINUA)
-%%%%%%%%%%%%%%
+Como podemos ver en la imagen \ref{fig:summarylin}, el valor de Durbin-Watson es de 2.016, lo que indica que no hay autocorrelación entre los residuos del modelo.
+Sin embargo, el valor de la probabilidad de la prueba de Jarque-Bera es prácticamente nulo ($1*10^{-154}$), indicando que los residuos no siguen una distribución normal.
+Sin embargo, esto puede que no genere problemas en una muestra tan grande como la nuestra, ya que según el Teorema del Límite Central, las variables se 
+aproximarían a una distribución normal. Por último, el número de condición es extremadamente alto, de $3.36*10^6$, lo que sugiere una multicolinealidad fuerte.
+Esto podría generar problemas en la predicción o dificultad para interpretar coeficientes. Podrían usarse técnicas para regularizar los coeficientes, o volver
+a revisar las correlaciones, para corregir estos errores. En general, el modelo, si bien podría ser útil para realizar predicciones, no sirve mucho para 
+interpretar las relaciones causales entre las variables, pero esto biene causado también por la naturaleza de los datos, ya que la abstención es un fenómeno 
+que en general resulta difícil de predecir.
 
 \section{Regresión logística}\label{logistica}
+Respecto a la regresión logística, este apartado es muy similar al de la \hyperref[lineal]{regresión lineal}, por lo que aquí solo explicaremos los cambios 
+más relevantes respecto al mismo.
+
+Al igual que en dicho apartado, emplearemos la partición de datos en entrenamiento y test, renombrando las variables con un ''\_log'' para diferenciarlas. 
+Además, en este caso, ya que tratamos con una variable dicotómica, comprobamos que efectivamente toma sólo dos valores, viendo que el valor 0 se registra un total de 6308 veces, y el 1 un total de 1809. No es una distribución simétrica,
+pero sí que tomma los valores esperados, a fin de cuentas.
+\begin{lstlisting}[language=Python, numbers=none]
+pd.DataFrame({'n': varObjBin.value_counts(), '%': varObjBin.value_counts(normalize = True)})
+\end{lstlisting}
+
 \subsection{Selección clásica}\label{logclasica}
+En este caso, igual que en la selección clásica para la lineal, se deben eliminar una serie de variables en base al valor de la V de Cramer que obtuvimos en
+\ref{relaciones}, puesto que son variables poco significativas, y dado que la capacidad computacional de la que disponemos es limitada, debemos prescindir de 
+ellas para poder generar los modelos en un tiempo razonable. Así, la lista de variables seleccionadas es la siguiente:
+\begin{lstlisting}[language=Python]
+var_cont_log = ['TotalCensus', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 'Explotaciones', 'Unemploy25_40_Ptge', 'UnemployMore40_Ptge', 'AgricultureUnemploymentPtge']
+var_categ_log = ['CCAA', 'ActividadPpal', 'Densidad']
+\end{lstlisting}
+Creamos también las interacciones entre las variables, aunque en este caso, claro, serán bastante más inferiores. Para generar los modelos, empleamos 
+también funciones, pero en este caso las de glm, para generar los 6 modelos de la misma forma.
+\begin{lstlisting}[language=Python]
+modeloLogStepAIC = glm_stepwise(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogStepBIC = glm_stepwise(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+modeloLogForwAIC = glm_forward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogForwBIC = glm_forward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+modeloLogBackAIC = glm_backward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'AIC')
+modeloLogBackBIC = glm_backward(y_train_log, x_train_log, var_cont_log, var_categ_log, interacciones_unicas_log, 'BIC')
+\end{lstlisting}
+
+Una vez generados los modelos, empleamos el siguiente código para crear la tabla con los valores del $R^2$ y del número de parámetros. Con este código,
+obtenemos los valores de la tabla \ref{table:tablalogistica}.
+\begin{lstlisting}[language=Python]
+pseudoR2(modelo['Modelo'], modelo['X'], y_train_log)
+x_test = crear_data_modelo(x_test_log,modelo['Variables']['cont'], modelo['Variables']['categ'], modelo['Variables']['inter'])
+pseudoR2(modelo['Modelo'], x_test, y_test_log)
+len(modelo['Modelo'].coef_[0])
+\end{lstlisting}
 
 \begin{table}[h!]
     \begin{center}
@@ -666,20 +725,163 @@ POR QUE GANADOR? CALIDAD? INTERPRETAR COEFICIENTES DE DOS VARIABLES (BINARIA Y C
         \hline
         \textbf{Método} & \textbf{Métrica} & \textbf{$R^{2}$ test} & \textbf{$R^{2}$ train} & \textbf{Nº parámetros} \\
         \hline 
-        Backward & AIC &  &  &  \\ 
-        Backward & BIC &  &  &  \\ 
-        Stepwise & AIC &  &  &  \\ 
-        Stepwise & BIC &  &  &  \\ 
-        Forward & AIC &  &  &  \\ 
-        Forward & BIC &  &  &  \\ 
+        Backward & AIC & 0.269145 & 0.290712 & 15 \\ 
+        Backward & BIC & 0.269145 & 0.290712 & 15 \\ 
+        Stepwise & AIC & 0.270345 & 0.291749 & 15 \\ 
+        Stepwise & BIC & 0.270345 & 0.291749 & 15 \\ 
+        Forward & AIC & 0.271167 & 0.291983 & 19 \\ 
+        Forward & BIC & 0.271167 & 0.291983 & 19 \\ 
         \hline
         \end{tabular}
-        \caption{Comparación de modelos de regresión lineal}
+        \caption{Comparación de modelos de regresión logística}
         \label{table:tablalogistica}
     \end{center}
 \end{table}
+
+En base a los parámetros obtenidos, lo primero que observamos es que aplicar la métrica AIC o BIC es completamente indiferente, ya que obtenemos los mismos 
+resultados con una y con otra. Esto sugiere que los modelos tienen un buen balance entre ajuste y complejidad. También cabe destacar que el $R^2$ para train 
+es siempre mayor que el de test, es decir, que generalizan mejor los datos nuevos. Para elegir el ganador, en primer lugar, descartamos el método backward, ya 
+que es el que menor $R^2$ presenta (aunque cabe recalcar que la diferencia entre todos los $R^2$ es muy pequeña). Así, entre el método stepwise y el forward,
+que presentan valores de $R^2$ de test y train prácticamente similares, elegiremos el modelo de Stepwise como el ganador, por presentar el menor número de 
+parámetros. Entre el criterio AIC y el BIC, esta vez elegiremos el AIC, ya que puesto que emplean el mismo número de parámetros, minimiza la pérdida de 
+información y nos da un enfoque más predictivo.
+
 \subsection{Selección aleatoria}\label{logaleatoria}
+Se nos pide igualmente hacer una selección aleatoria de variables, para lo cual se ha elegido también el método stepwise, como en el apartado \ref{linaleatoria},
+por ser el más completo. Para ello, se emplea exactamente el mismo código que en dicho apartado, tanto para generar los modelos con selección aleatoria, como 
+para calcular la frecuencia de cada fórmula. Si vemos las salidas de los modelos que se repiten, estas son:
+\begin{lstlisting}[numbers=none]
+{'cont': [],
+'categ': ['CCAA'],
+'inter': [('Explotaciones', 'UnemployMore40_Ptge'), ('TotalCensus', 'Unemploy25_40_Ptge'), ('TotalCensus', 'UnemployLess25_Ptge'), ('TotalCensus', 'AgricultureUnemploymentPtge')]
+}
+\end{lstlisting}
+\begin{lstlisting}[numbers=none]
+{'cont': [],
+'categ': ['CCAA'],
+'inter': [('Explotaciones', 'UnemployMore40_Ptge'), ('TotalCensus', 'UnemployLess25_Ptge'), ('TotalCensus', 'Unemploy25_40_Ptge'), ('WomanPopulationPtge', 'AgricultureUnemploymentPtge')]
+}
+\end{lstlisting}
+
 \subsection{Modelo ganador}\label{logganador}
+Una vez determinado el modelo ganador de la selección clásica, y con los dos de la selección aleatoria, realizaremos la validación cruzada para determinar el
+modelo ganador. Para ello, se crean los tres modelos (resultantes del modelo ganador, y los dos de las variables elegidas mediante selección aleatoria),
+y se definen para ellos el conjunto de test, mediante la función \texttt{crear\_data\_modelo}, y se crean los boxplot empleando el siguiente código:
+\begin{lstlisting}[language=Python]
+results_log = pd.DataFrame({'AUC': [], 'Resample': [], 'Modelo': []})
+for rep in range(10):
+    # Realiza validación cruzada en cuatro modelos diferentes y almacena sus R-squared en listas separadas
+    modelo1VC = validacion_cruzada_glm(5, x_train_log, y_train_log, var_1_log['cont'], var_1_log['categ'], var_1_log['inter'])
+    modelo2VC = validacion_cruzada_glm(5, x_train_log, y_train_log, var_2_log['cont'], var_2_log['categ'], var_2_log['inter'])
+    modelo3VC = validacion_cruzada_glm(5, x_train_log, y_train_log, ganador_log['Variables']['cont'], ganador_log['Variables']['categ'], ganador_log['Variables']['inter'])
+    
+    # Crea un DataFrame con los resultados de validación cruzada para esta repetición
+    results_rep = pd.DataFrame({
+        'AUC': modelo1VC + modelo2VC + modelo3VC
+        , 'Resample': ['Rep' + str((rep + 1))]*5*3  # Etiqueta de repetición (5 repeticiones 6 modelos)
+        , 'Modelo': [1]*5 + [2]*5 + [3]*5  # Etiqueta de modelo (6 modelos 5 repeticiones)
+    })
+    results_log = pd.concat([results_log, results_rep], axis = 0)
+\end{lstlisting}
+
+Con ello, creamos el boxplot igual que hicimos antes, pero dibujando el Área bajo la curva ROC (esto es, cómo varía el rendimiento del modelo según se cambia
+el punto de corte o umbral para predecir la variable objetivo, que en nuestro caso era que la suma de los votos de izquierda fuese mayor a los de derecha; un 
+valor de 1 indica un rendimiento perfecto, e inferior a 0.5 indica que el modelo hace más prediciones incorrectas que buenas), y obtenemos el siguiente boxplot, 
+donde determinamos que el modelo ganador es el segundo. Si vemos el AUC, vemos que es ligeramente superior a la del modelo 1, e igual a la del modelo 3, pero 
+tiene menos desviación que el modelo3, por lo que se elige este modelo como ganador.
+\begin{center}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.6\textwidth]{ejecuciones/boxplot_logistica.png}
+        \caption{Validación cruzada para regresión logística}
+        \label{fig:boxplotlog}
+    \end{figure}
+\end{center}
+
+A continuación empleamos el siguiente código para encontrar los puntos de corte, los cuales mostramos en el plot \ref{fig:puntoscorte}. Estos puntos de corte,
+como comentamos, definen la probabilidad a partir de la cual se considera que un caso pertenece a la clase positiva (es decir, un municipio mayoritariamente de
+izquierdas). Por una parte, el índice de Youden, que prioriza la sensibilidad (detectar la mayoría de casos positivos) es de 0.23, mientras que el de Accuracy 
+(maximizando la precisión global del modelo) es de 0.5. Ya que, como analizamos en \ref{logistica}, el conjunto de datos estaba desbalanceado (había más valores 
+para el 0 que para el 1), elegiremos el punto de corte basado en Youden, ya que es la mejor opción en un conjunto desbalanceado porque garantiza que el modelo
+detecte ambos valores o clases de forma razonable, balanceando la sensibilidad con la especifidad. 
+\begin{lstlisting}[language=Python]
+posiblesCortes = np.arange(0, 1.01, 0.01).tolist()  # Generamos puntos de corte de 0 a 1 con intervalo de 0.01
+rejilla = pd.DataFrame({'PtoCorte': [], 'Accuracy': [], 'Sensitivity': [], 'Specificity': [], 'PosPredValue': [], 'NegPredValue': []})
+for pto_corte in posiblesCortes:  # Iteramos sobre los puntos de corte
+    rejilla = pd.concat(
+        [rejilla, sensEspCorte(modelo2['Modelo'], x_test_log, y_test_log, pto_corte, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])],
+        axis=0
+    )  # Calculamos las métricas para el punto de corte actual y lo agregamos al DataFrame
+
+rejilla['Youden'] = rejilla['Sensitivity'] + rejilla['Specificity'] - 1  # Calculamos el índice de Youden
+rejilla.index = list(range(len(rejilla)))  # Reindexamos el DataFrame para que los índices sean consecutivos    
+\end{lstlisting}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ejecuciones/cortesY.png}
+    \end{minipage}%
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ejecuciones/cortesA.png}
+    \end{minipage}
+    \caption{Puntos de corte para Youden y Accuracy}
+    \label{fig:puntoscorte}
+\end{figure}
+
+Una vez decidido el modelo ganador, vemos las variables más importantes del mismo, las que más aportan. En este caso, vemos que claramente la más importante es 
+la CCAA, es decir, que podríamos decir que hay comunidades más de izquierdas que de derechas (algo que se suele ver en los resultados en general de las elecciones),
+seguido de las interacciones entre TotalCensus y UnemployLess25\_Ptge y Unemploy25\_40\_Ptge, pero con muy poca aportación.
+\begin{center}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\textwidth]{ejecuciones/variables_log.png}
+        \caption{Variables más importantes del modelo}
+        \label{fig:variables}
+    \end{figure}
+\end{center}
+
+Analizamos también la diferencia en el área bajo la curva para train y test (imagen \ref{fig:ROC}), donde vemos una curva bastante similar en ambos casos, y que 
+se encuentra a medio camino entre la línea punteada azul (que representaría un área de 0.5) y el área completa.
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ejecuciones/ROC_train.png}
+    \end{minipage}%
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ejecuciones/ROC_test.png}
+    \end{minipage}
+    \caption{Área bajo la curva para train (izq.) y test (der.)}
+    \label{fig:ROC}
+\end{figure}
+
+Por último, sólo queda analizar los coeficientes de dos variables y medir la calidad. La variable CCAA\_Cataluña tiene un coeficiente de -5.2996, el más 
+negativo de todos. Esto quiere decir que los municipios que pertenecen a esta CCAA tienen menos posibilidades de que la Izquierda sea mayoritaria. Además, con 
+un p-valor de 0, nos indica que el efecto es estadísticamente significativo. Por otra parte, la variable TotalCensus\_UnemployLess25\_Ptge tieneun coeficiente 
+de 0.000067, positivo, lo que indica que conforme aumenta el porcentaje de desempleados menores de 25 en el censo total, aumenta la probabilidad de que el 
+municipio sea de izquierdas. Con un p-valor de 0 también, es un efecto significativo, aunque el coeficiente tan pequeño indica que el impacto es bastante 
+marginal en comparación con otras variables.
+
+\begin{center}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\textwidth]{ejecuciones/ganado_logistica.png}
+        \caption{Resumen del modelo ganador de regresión logística}
+        \label{fig:summarylog}
+    \end{figure}
+\end{center}
+
+Sólo nos resta analizar la calidad, con la función \texttt{summary\_glm}, cuya ejecución se ve en la imagen \ref{fig:summarylog}. Obtenemos un AIC de $6277.87$, un BIC de 
+$6291.87$ y un LLK de $-3136.93$. El LLK, o Log-Likelihood, mide qué tan bien los valores que predice el modelo explican los datos observados. Valores altos 
+indican mejor ajuste, y valores negativos indican que el modelo no detecta bien los patrones en los datos. En este caso, el LLK sugiere un ajuste que no es 
+óptimo, pero que podríamos considerar como moderado. Sin embargo, los valores de AIC y BIC tan elevados, lo que nos indica que podría estar sobreajustado o 
+contener variables poco relevantes. Sería interesante poder probar otras técnicas de selección de variables para poder optimizar el modelo, pero sin dejar 
+de tener en cuenta que estamos intentando predecir variables que dependen de muchos más factores a parte de aquellos que se nos han dado, por lo que son 
+difíciles de predecir.
 
 \end{sloppypar}
 \end{document}

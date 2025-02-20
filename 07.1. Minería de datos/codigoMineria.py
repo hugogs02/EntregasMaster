@@ -329,9 +329,22 @@ plt.xlabel('Modelo')  # Etiqueta del eje x
 plt.ylabel('Rsquared')  # Etiqueta del eje y
 plt.show()  # Muestra el gráfico  
 
+num_params = [len(ganador['Modelo'].params), 
+                 len(frec_ordenada['Formula'][0].split('+')),
+                 len(frec_ordenada['Formula'][1].split('+'))]
+
 # Construir el modelo si uno de los ganadores es el de aleatoria
 modelo = lm(y_train, x_train, var_2['cont'], var_2['categ'], var_2['inter'])
 modelo['Modelo'].summary()
+
+ganador['Modelo'].summary()
+Rsq(ganador['Modelo'], y_train, ganador['X'])
+x_testw = crear_data_modelo(x_test, ganador['Variables']['cont'], 
+                                                ganador['Variables']['categ'], 
+                                                ganador['Variables']['inter'])
+Rsq(ganador['Modelo'], y_test, x_testw)
+modelEffectSizes(ganador, y_train, x_train, ganador['Variables']['cont'], 
+                  ganador['Variables']['categ'], ganador['Variables']['inter'])
 
 
 ###############################################################################
@@ -346,8 +359,8 @@ x_train_log, x_test_log, y_train_log, y_test_log = train_test_split(todo_bin, va
 # Indico que la variable respuesta es numérica (hay que introducirla en el algoritmo de phython tal y como la va a tratar)
 y_train_log, y_test_log = y_train_log.astype(int), y_test_log.astype(int)
 
-var_cont_log = ['TotalCensus', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 
-                'Unemploy25_40_Ptge', 'UnemployMore40_Ptge', 'AgricultureUnemploymentPtge', 'Explotaciones']
+var_cont_log = ['TotalCensus', 'WomanPopulationPtge', 'UnemployLess25_Ptge', 'Explotaciones', 
+                'Unemploy25_40_Ptge', 'UnemployMore40_Ptge', 'AgricultureUnemploymentPtge']
 var_categ_log = ['CCAA', 'ActividadPpal', 'Densidad']
 
 interacciones_log = var_cont_log #+ var_categ_log
@@ -415,7 +428,7 @@ ganador_log = modeloLogStepAIC
 # Inicializar un diccionario para almacenar las fórmulas y variables seleccionadas.
 variables_seleccionadas_log = {'Formula': [],'Variables': []}
 
-for x in range(10):
+for x in range(20):
     print('---------------------------- iter: ' + str(x))
     
     # Dividir los datos de entrenamiento en conjuntos de entrenamiento y prueba.
@@ -446,37 +459,100 @@ var_2_log
 ganador_log['Variables']
 
 
-results_log = pd.DataFrame({'Rsquared': [], 'Resample': [], 'Modelo': []})
-for rep in range(20):
-    modelo1 = validacion_cruzada_lm(5, x_train_log, y_train_log, ganador_log['Variables']['cont']
-              , ganador_log['Variables']['categ'], ganador_log['Variables']['inter'])
-    modelo2 = validacion_cruzada_lm(5, x_train_log, y_train_log, var_1['cont'], var_1['categ'], var_1['inter'])
-    modelo3 = validacion_cruzada_lm(5, x_train_log, y_train_log, var_2['cont'], var_2['categ'], var_2['inter'])
+modelow = glm(varObjBin, todo_bin, ganador_log['Variables']['cont'], ganador_log['Variables']['categ'], ganador_log['Variables']['inter'])
+modelo1 = glm(varObjBin, todo_bin, var_1_log['cont'], var_1_log['categ'], var_1_log['inter'])
+modelo2 = glm(varObjBin, todo_bin, var_2_log['cont'], var_2_log['categ'], var_2_log['inter'])
+
+x_test_logw = crear_data_modelo(x_test_log, modelow['Variables']['cont'], modelow['Variables']['categ'], modelow['Variables']['inter'])
+x_test_log1 = crear_data_modelo(x_test_log, modelo1['Variables']['cont'], modelo1['Variables']['categ'], modelo1['Variables']['inter'])
+x_test_log2 = crear_data_modelo(x_test_log, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])
+
+
+results_log = pd.DataFrame({'AUC': [], 'Resample': [], 'Modelo': []})
+for rep in range(10):
+    # Realiza validación cruzada en cuatro modelos diferentes y almacena sus R-squared en listas separadas
+    modelo1VC = validacion_cruzada_glm(5, x_train_log, y_train_log, var_1_log['cont'], var_1_log['categ'], var_1_log['inter'])
+    modelo2VC = validacion_cruzada_glm(5, x_train_log, y_train_log, var_2_log['cont'], var_2_log['categ'], var_2_log['inter'])
+    modelo3VC = validacion_cruzada_glm(5, x_train_log, y_train_log, ganador_log['Variables']['cont'], ganador_log['Variables']['categ'], ganador_log['Variables']['inter'])
     
+    # Crea un DataFrame con los resultados de validación cruzada para esta repetición
     results_rep = pd.DataFrame({
-        'Rsquared': modelo1 + modelo2 + modelo3 
-        , 'Resample': ['Rep' + str((rep + 1))]*5*3
-        , 'Modelo': [1]*5 + [2]*5 + [3]*5 
+        'AUC': modelo1VC + modelo2VC + modelo3VC
+        , 'Resample': ['Rep' + str((rep + 1))]*5*3  # Etiqueta de repetición (5 repeticiones 6 modelos)
+        , 'Modelo': [1]*5 + [2]*5 + [3]*5  # Etiqueta de modelo (6 modelos 5 repeticiones)
     })
-    results = pd.concat([results, results_rep], axis = 0)
+    results_log = pd.concat([results_log, results_rep], axis = 0)
     
 #### Determinamos el ganador
 # Hacemos el boxplot
 plt.figure(figsize=(10, 6))  # Crea una figura de tamaño 10x6
 plt.grid(True)  # Activa la cuadrícula en el gráficoç
-# Agrupa los valores de Rsquared por modelo
-grupo_metrica = results.groupby('Modelo')['Rsquared']
+# Agrupa los valores de AUC por modelo
+grupo_metrica = results_log.groupby('Modelo')['AUC']
 # Organiza los valores de R-squared por grupo en una lista
 boxplot_data = [grupo_metrica.get_group(grupo).tolist() for grupo in grupo_metrica.groups]
 # Crea un boxplot con los datos organizados
 plt.boxplot(boxplot_data, labels=grupo_metrica.groups.keys())  # Etiqueta los grupos en el boxplot
 # Etiqueta los ejes del gráfico
 plt.xlabel('Modelo')  # Etiqueta del eje x
-plt.ylabel('Rsquared')  # Etiqueta del eje y
+plt.ylabel('AUC')  # Etiqueta del eje y
 plt.show()  # Muestra el gráfico  
 
 
-# Calculamos el ROC
+# Calculamos el AUC
+results_log.groupby('Modelo')['AUC'].mean()
+results_log.groupby('Modelo')['AUC'].std()    
+num_params = [len(modelow['Modelo'].coef_[0]), len(modelo1['Modelo'].coef_[0]), len(modelo2['Modelo'].coef_[0])]
+num_params
 
+coeficientes = modelo2['Modelo'].coef_
 
-# Calculamos el AUC o area bajo la curva
+# Calculamos el punto de corte
+posiblesCortes = np.arange(0, 1.01, 0.01).tolist()  # Generamos puntos de corte de 0 a 1 con intervalo de 0.01
+rejilla = pd.DataFrame({
+    'PtoCorte': [],
+    'Accuracy': [],
+    'Sensitivity': [],
+    'Specificity': [],
+    'PosPredValue': [],
+    'NegPredValue': []
+})
+for pto_corte in posiblesCortes:  # Iteramos sobre los puntos de corte
+    rejilla = pd.concat(
+        [rejilla, sensEspCorte(modelo2['Modelo'], x_test_log, y_test_log, pto_corte, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])],
+        axis=0
+    )  # Calculamos las métricas para el punto de corte actual y lo agregamos al DataFrame
+
+rejilla['Youden'] = rejilla['Sensitivity'] + rejilla['Specificity'] - 1  # Calculamos el índice de Youden
+rejilla.index = list(range(len(rejilla)))  # Reindexamos el DataFrame para que los índices sean consecutivos
+
+plt.plot(rejilla['PtoCorte'], rejilla['Youden'])
+plt.xlabel('Posibles Cortes')
+plt.ylabel('Youden')
+plt.title('Youden')
+plt.show()
+
+plt.plot(rejilla['PtoCorte'], rejilla['Accuracy'])
+plt.xlabel('Posibles Cortes')
+plt.ylabel('Accuracy')
+plt.title('Accuracy')
+plt.show()
+
+rejilla['PtoCorte'][rejilla['Youden'].idxmax()]
+rejilla['PtoCorte'][rejilla['Accuracy'].idxmax()]
+
+sensEspCorte(modelo2['Modelo'], x_test_log, y_test_log, 0.23, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])
+sensEspCorte(modelo2['Modelo'], x_test_log, y_test_log, 0.5, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])
+
+impVariablesLog(modelo2, y_train_log, x_train_log, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter'])
+
+curva_roc(crear_data_modelo(x_train_log, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter']), y_train_log, modelo2)
+curva_roc(x_test_log2, y_test_log, modelo2)
+
+coeficientes = modelo2['Modelo'].coef_
+nombres_caracteristicas = crear_data_modelo(x_train_log, modelo2['Variables']['cont'], modelo2['Variables']['categ'], modelo2['Variables']['inter']).columns  # Suponiendo que X_train es un DataFrame de pandas
+# Imprime los nombres de las características junto con sus coeficientes
+for nombre, coef in zip(nombres_caracteristicas, coeficientes[0]):
+    print(f"Variable: {nombre}, Coeficiente: {coef}")
+
+summary_glm(modelo2['Modelo'], varObjBin, modelo2['X'])

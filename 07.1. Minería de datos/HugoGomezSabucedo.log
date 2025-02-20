@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  20 FEB 2025 00:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  20 FEB 2025 22:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -495,23 +495,23 @@ Package hyperref Info: Link coloring OFF on input line 102.
 \@outlinefile=\write3
 \openout3 = `HugoGomezSabucedo.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 105.
+LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 106.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 105.
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 106.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 105.
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 106.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 105.
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 106.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 105.
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 106.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
@@ -539,6 +539,8 @@ LaTeX Info: Redefining \% on input line 1.
 
 
 [2]
+
+[3]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
@@ -546,20 +548,18 @@ Package microtype Info: Loading generic protrusion settings for font family
  (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
-
-[3{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 158.
-<ejecuciones/analizar_categoricas.png, id=103, 717.43031pt x 699.36281pt>
+<ejecuciones/analizar_categoricas.png, id=101, 717.43031pt x 699.36281pt>
 File: ejecuciones/analizar_categoricas.png Graphic file (type png)
 <use ejecuciones/analizar_categoricas.png>
 Package pdftex.def Info: ejecuciones/analizar_categoricas.png  used on input line 182.
 (pdftex.def)             Requested size: 128.0374pt x 124.81273pt.
 
 
-[4 <./ejecuciones/analizar_categoricas.png>]
+[4{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
 
-[5]
+[5 <./ejecuciones/analizar_categoricas.png>]
 <ejecuciones/descriptivos.png, id=157, 965.10562pt x 1178.90437pt>
 File: ejecuciones/descriptivos.png Graphic file (type png)
 <use ejecuciones/descriptivos.png>
@@ -748,17 +748,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 253--256
 
 
 [6 <./ejecuciones/descriptivos.png>]
-<ejecuciones/CCAA_porabst.png, id=181, 273.27094pt x 314.67563pt>
+<ejecuciones/CCAA_porabst.png, id=178, 273.27094pt x 314.67563pt>
 File: ejecuciones/CCAA_porabst.png Graphic file (type png)
 <use ejecuciones/CCAA_porabst.png>
 Package pdftex.def Info: ejecuciones/CCAA_porabst.png  used on input line 279.
 (pdftex.def)             Requested size: 109.79349pt x 126.4298pt.
-<ejecuciones/CCAA_reagrupadas.png, id=182, 294.34969pt x 170.88844pt>
+<ejecuciones/CCAA_reagrupadas.png, id=179, 294.34969pt x 170.88844pt>
 File: ejecuciones/CCAA_reagrupadas.png Graphic file (type png)
 <use ejecuciones/CCAA_reagrupadas.png>
 Package pdftex.def Info: ejecuciones/CCAA_reagrupadas.png  used on input line 286.
 (pdftex.def)             Requested size: 146.39133pt x 84.99028pt.
 
+
+[7 <./ejecuciones/CCAA_porabst.png> <./ejecuciones/CCAA_reagrupadas.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 310--313
 []\T1/pplx/m/n/10 (+20) Una vez he-cho es-to, de-fi-ni-mos las va-ria-bles ob-je-ti-vo \T1/cmtt/m/n/10 varObjCont =
  []
@@ -770,88 +772,158 @@ Underfull \hbox (badness 6032) in paragraph at lines 310--313
 
 
 
-[7 <./ejecuciones/CCAA_porabst.png> <./ejecuciones/CCAA_reagrupadas.png>]
-<ejecuciones/perdidos.png, id=203, 841.64438pt x 787.44188pt>
+[8]
+
+[9]
+<ejecuciones/perdidos.png, id=217, 841.64438pt x 787.44188pt>
 File: ejecuciones/perdidos.png Graphic file (type png)
 <use ejecuciones/perdidos.png>
 Package pdftex.def Info: ejecuciones/perdidos.png  used on input line 338.
 (pdftex.def)             Requested size: 209.12683pt x 195.65845pt.
-<ejecuciones/perdidos_porvar.png, id=204, 294.34969pt x 555.57562pt>
+<ejecuciones/perdidos_porvar.png, id=218, 294.34969pt x 555.57562pt>
 File: ejecuciones/perdidos_porvar.png Graphic file (type png)
 <use ejecuciones/perdidos_porvar.png>
 Package pdftex.def Info: ejecuciones/perdidos_porvar.png  used on input line 345.
 (pdftex.def)             Requested size: 83.64944pt x 157.8829pt.
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-
-[8]
-
-[9 <./ejecuciones/perdidos.png> <./ejecuciones/perdidos_porvar.png>]
+[10 <./ejecuciones/perdidos.png> <./ejecuciones/perdidos_porvar.png>]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 391.
-<ejecuciones/vcramer_bin.png, id=236, 774.895pt x 386.94562pt>
+
+
+[11]
+<ejecuciones/vcramer_bin.png, id=254, 774.895pt x 386.94562pt>
 File: ejecuciones/vcramer_bin.png Graphic file (type png)
 <use ejecuciones/vcramer_bin.png>
 Package pdftex.def Info: ejecuciones/vcramer_bin.png  used on input line 412.
 (pdftex.def)             Requested size: 209.12683pt x 104.42357pt.
-<ejecuciones/vcramer_cont.png, id=237, 774.895pt x 386.94562pt>
+<ejecuciones/vcramer_cont.png, id=255, 774.895pt x 386.94562pt>
 File: ejecuciones/vcramer_cont.png Graphic file (type png)
 <use ejecuciones/vcramer_cont.png>
 Package pdftex.def Info: ejecuciones/vcramer_cont.png  used on input line 418.
 (pdftex.def)             Requested size: 209.12683pt x 104.42357pt.
 
 
+LaTeX Warning: Hyper reference `fig:fig:matCorr' on page 12 undefined on input line 428.
+
+<ejecuciones/matCorr.png, id=256, 962.09438pt x 739.26187pt>
+File: ejecuciones/matCorr.png Graphic file (type png)
+<use ejecuciones/matCorr.png>
+Package pdftex.def Info: ejecuciones/matCorr.png  used on input line 440.
+(pdftex.def)             Requested size: 292.77629pt x 224.97256pt.
+
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 
-[10]
-<ejecuciones/matCorr.png, id=252, 962.09438pt x 739.26187pt>
-File: ejecuciones/matCorr.png Graphic file (type png)
-<use ejecuciones/matCorr.png>
-Package pdftex.def Info: ejecuciones/matCorr.png  used on input line 439.
-(pdftex.def)             Requested size: 292.77629pt x 224.97256pt.
+[12 <./ejecuciones/vcramer_bin.png> <./ejecuciones/vcramer_cont.png>]
 
+[13 <./ejecuciones/matCorr.png>]
 
-[11 <./ejecuciones/vcramer_bin.png> <./ejecuciones/vcramer_cont.png> <./ejecuciones/matCorr.png>]
-
-[12]
-
-[13]
+[14]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 517.
+               Default added (so using `tbp') on input line 519.
 
-LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 521.
+LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 523.
 (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
 )
 
-[14]
-
 [15]
-<ejecuciones/boxplot_lineal.png, id=343, 620.81938pt x 383.4325pt>
+
+[16]
+
+[17]
+<ejecuciones/boxplot_lineal.png, id=354, 620.81938pt x 383.4325pt>
 File: ejecuciones/boxplot_lineal.png Graphic file (type png)
 <use ejecuciones/boxplot_lineal.png>
-Package pdftex.def Info: ejecuciones/boxplot_lineal.png  used on input line 627.
-(pdftex.def)             Requested size: 209.12683pt x 129.16008pt.
+Package pdftex.def Info: ejecuciones/boxplot_lineal.png  used on input line 630.
+(pdftex.def)             Requested size: 250.95476pt x 154.99678pt.
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Underfull \hbox (badness 2351) in paragraph at lines 633--637
+Underfull \hbox (badness 2351) in paragraph at lines 636--640
 \T1/pplx/m/n/10 (+20) mien-tras que pa-ra los otros dos (\T1/cmtt/m/n/10 len(frec_ordenada[`Formula`][0].split(`+`)) \T1/pplx/m/n/10 (+20) y
  []
 
 
 
-[16]
+[18 <./ejecuciones/boxplot_lineal.png>]
+<ejecuciones/ganador_lineal.png, id=386, 1017.8025pt x 986.9372pt>
+File: ejecuciones/ganador_lineal.png Graphic file (type png)
+<use ejecuciones/ganador_lineal.png>
+Package pdftex.def Info: ejecuciones/ganador_lineal.png  used on input line 644.
+(pdftex.def)             Requested size: 292.77629pt x 283.90036pt.
 
-[17 <./ejecuciones/boxplot_lineal.png>] (./HugoGomezSabucedo.aux
+
+[19 <./ejecuciones/ganador_lineal.png>]
+
+[20]
+
+[21]
+
+[22]
+<ejecuciones/boxplot_logistica.png, id=438, 620.81938pt x 383.4325pt>
+File: ejecuciones/boxplot_logistica.png Graphic file (type png)
+<use ejecuciones/boxplot_logistica.png>
+Package pdftex.def Info: ejecuciones/boxplot_logistica.png  used on input line 795.
+(pdftex.def)             Requested size: 250.95476pt x 154.99678pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+
+[23]
+<ejecuciones/cortesY.png, id=462, 390.96063pt x 287.0725pt>
+File: ejecuciones/cortesY.png Graphic file (type png)
+<use ejecuciones/cortesY.png>
+Package pdftex.def Info: ejecuciones/cortesY.png  used on input line 823.
+(pdftex.def)             Requested size: 209.12683pt x 153.55817pt.
+<ejecuciones/cortesA.png, id=463, 390.96063pt x 287.0725pt>
+File: ejecuciones/cortesA.png Graphic file (type png)
+<use ejecuciones/cortesA.png>
+Package pdftex.def Info: ejecuciones/cortesA.png  used on input line 827.
+(pdftex.def)             Requested size: 209.12683pt x 153.55817pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[24 <./ejecuciones/boxplot_logistica.png>]
+<ejecuciones/variables_log.png, id=482, 852.68562pt x 383.4325pt>
+File: ejecuciones/variables_log.png Graphic file (type png)
+<use ejecuciones/variables_log.png>
+Package pdftex.def Info: ejecuciones/variables_log.png  used on input line 839.
+(pdftex.def)             Requested size: 313.69025pt x 141.06041pt.
+<ejecuciones/ROC_train.png, id=484, 502.87875pt x 398.48875pt>
+File: ejecuciones/ROC_train.png Graphic file (type png)
+<use ejecuciones/ROC_train.png>
+Package pdftex.def Info: ejecuciones/ROC_train.png  used on input line 852.
+(pdftex.def)             Requested size: 188.21288pt x 149.14105pt.
+<ejecuciones/ROC_test.png, id=485, 502.87875pt x 398.48875pt>
+File: ejecuciones/ROC_test.png Graphic file (type png)
+<use ejecuciones/ROC_test.png>
+Package pdftex.def Info: ejecuciones/ROC_test.png  used on input line 856.
+(pdftex.def)             Requested size: 188.21288pt x 149.14105pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<ejecuciones/ganado_logistica.png, id=486, 840.89156pt x 318.43968pt>
+File: ejecuciones/ganado_logistica.png Graphic file (type png)
+<use ejecuciones/ganado_logistica.png>
+Package pdftex.def Info: ejecuciones/ganado_logistica.png  used on input line 872.
+(pdftex.def)             Requested size: 313.69025pt x 118.79263pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+
+[25 <./ejecuciones/cortesY.png> <./ejecuciones/cortesA.png> <./ejecuciones/variables_log.png>]
+
+[26 <./ejecuciones/ROC_train.png> <./ejecuciones/ROC_test.png> <./ejecuciones/ganado_logistica.png>] (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -859,22 +931,26 @@ LaTeX Info: Redefining \% on input line 12.
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: 438A6674808207E04AC662795C85F34D;2627.
  ) 
 Here is how much of TeX's memory you used:
- 19043 strings out of 473362
- 302280 string characters out of 5725050
- 1157971 words of memory out of 5000000
- 41358 multiletter control sequences out of 15000+600000
- 620670 words of font info for 321 fonts, out of 8000000 for 9000
+ 19239 strings out of 473362
+ 306209 string characters out of 5725050
+ 1152689 words of memory out of 5000000
+ 41466 multiletter control sequences out of 15000+600000
+ 624129 words of font info for 341 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,1171b,2278s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (17 pages, 1295991 bytes).
+ 75i,12n,79p,1171b,2298s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on HugoGomezSabucedo.pdf (26 pages, 1764405 bytes).
 PDF statistics:
- 466 PDF objects out of 1000 (max. 8388607)
- 408 compressed objects within 5 object streams
- 220 named destinations out of 1000 (max. 500000)
- 88755 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 606 PDF objects out of 1000 (max. 8388607)
+ 520 compressed objects within 6 object streams
+ 288 named destinations out of 1000 (max. 500000)
+ 91355 words of extra memory for PDF output out of 106986 (max. 10000000)
 
