@@ -24,9 +24,13 @@ penguins_nums = penguins[variables_numericas]
 # Obtenemos los descriptivos
 descriptivos = penguins_nums.describe().T
 for num in variables_numericas:
+    descriptivos.loc[num, "Rango"] = np.ptp(penguins_nums[num].dropna().values)
+    descriptivos.loc[num, "Asimetria"] = penguins_nums[num].skew()
     descriptivos.loc[num, "Varianza"] = penguins_nums[num].var()
     descriptivos.loc[num, "Coef. Variación"] = (penguins_nums[num].std() / penguins_nums[num].mean() )
     descriptivos.loc[num, "Missing"] = (penguins_nums[num].isna().sum())
+
+print(descriptivos.to_string())
 
 # Eliminamos las filas con variablers NAN (solo hay 11, no perdemos cantidad significativa de datos)
 penguins.dropna(inplace=True)
@@ -54,7 +58,7 @@ penguins_std = pd.DataFrame(StandardScaler().fit_transform(penguins),
 penguins_std.head()
 
 #Creamos el PCA y lo aplicamos
-pca1 = PCA(n_components=len(variables))
+pca1 = PCA(n_components=4)
 fit1 = pca1.fit(penguins_std)
 autovalores = fit1.explained_variance_ # Obtenemos autovalores
 autovalores
@@ -111,6 +115,43 @@ plot_corr_cos(fit.n_components, correlaciones_penguins_con_cp)
 plot_cos2_bars(cos2)
 plot_pca_scatter(pca, penguins_std, fit.n_components)
 
+# Dibujamos un scatter plot pero marcando las especies 
+componentes_principales = pca.transform(penguins_std)
+n_components = componentes_principales.shape[1]
+penguins_std['species'] = penguins_original['species']
+penguins_std['sex'] = penguins_original['sex'].map({0: 'male', 1: 'female'})
+
+for i in range(n_components):
+    for j in range(i + 1, n_components):  # Evitar pares duplicados
+        # Crear el gráfico de dispersión
+        plt.figure(figsize=(10, 6))  # Ajusta el tamaño de la figura si es necesario
+        
+        # Colorear los puntos según la especie y cambiar la forma según el sexo
+        sns.scatterplot(
+            x=componentes_principales[:, i],  # Eje X: Componente i
+            y=componentes_principales[:, j],  # Eje Y: Componente j
+            hue=penguins_std['species'],  # Colorear por especie
+            style=penguins_std['sex'],    # Cambiar forma según el sexo
+            palette='viridis',  # Paleta de colores para las especies
+            s=100,              # Tamaño de los puntos
+            markers={'male': 'o', 'female': 's'}  # Marcadores para machos y hembras
+        )
+        
+        # Dibujar líneas discontinuas que representen los ejes
+        plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+        plt.axvline(0, color='black', linestyle='--', linewidth=0.8)
+        
+        # Etiquetar los ejes
+        plt.xlabel(f'Componente Principal {i + 1}')
+        plt.ylabel(f'Componente Principal {j + 1}')
+        
+        # Establecer el título del gráfico
+        plt.title(f'Gráfico de Dispersión de Observaciones en PCA')
+        
+        # Mostrar la leyenda
+        plt.legend(title='Especie/Sexo', bbox_to_anchor=(1.05, 1), loc='upper left')
+        
+        plt.show()
 
 ##############################################################################
 ############### CLUSTERING #############
@@ -281,7 +322,7 @@ plt.show()
 
 # Aplicamos el método de las siluetas  ############ REVISAR
 silhouette_scores = []
-for k in range(2, 10):
+for k in range(2, 11):
     kmeans = KMeans(n_clusters=k, random_state=0)
     kmeans.fit(penguins_std)
     labels = kmeans.labels_
@@ -289,7 +330,7 @@ for k in range(2, 10):
     silhouette_scores.append(silhouette_avg)
 
 plt.figure(figsize=(8, 6))
-plt.plot(range(2, 10), silhouette_scores, marker='o', linestyle='-', color='b')
+plt.plot(range(2, 11), silhouette_scores, marker='o', linestyle='-', color='b')
 plt.title('Método de la silueta')
 plt.xlabel('Número de Clusters (K)')
 plt.ylabel('Silhouette Score')
@@ -330,23 +371,23 @@ plt.grid(True)
 plt.show()
 
 # Caracterizamos los clusters
-penguins_std['label'] = labels
-penguins_std_sort = penguins_std.sort_values(by="label")
+penguins_std['cluster'] = labels
+penguins_std_sort = penguins_std.sort_values(by="cluster")
 penguins_std = penguins_std.set_index(labels)
-penguins_std_sort['label']
+penguins_std_sort['cluster']
 
 # Calculamos los centroides
-cluster_centroids = penguins_std_sort.groupby('label').mean()
+cluster_centroids = penguins_std_sort.groupby('cluster').mean()
 cluster_centroids.round(2)
 
 
 # Repetimos pero con los datos originales, sin estandarizar
-penguins['label'] = labels
-penguins_sort = penguins.sort_values(by="label")
+penguins['cluster'] = labels
+penguins_sort = penguins.sort_values(by="cluster")
 penguins = penguins.set_index(labels)
-penguins_sort['label']
+penguins_sort['cluster']
 
-cluster_centroids = penguins_sort.groupby('label').mean()
+cluster_centroids = penguins_sort.groupby('cluster').mean()
 cluster_centroids.round(2)
 
 penguins_original['cluster'] = labels

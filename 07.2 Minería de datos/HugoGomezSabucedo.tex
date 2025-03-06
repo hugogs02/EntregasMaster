@@ -1,0 +1,392 @@
+\documentclass[a4paper,onecolumn]{extarticle}
+\usepackage{geometry}
+\usepackage[page,toc,titletoc,title]{appendix}
+\usepackage{url}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{subcaption}
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[utf8]{inputenc} % Use utf-8 as encoding
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage[spanish, activeacute]{babel}
+ \decimalpoint
+% \usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document marginshttps://www.overleaf.com/project/60211b96f72a79d4c7515e93
+% \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{verbatim} % comentarios
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{wrapfig}
+\lstset{
+    inputencoding=utf8,
+    frame=single,
+    basicstyle=\fontsize{7}{10}\selectfont\ttfamily,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    identifierstyle=\color{black},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakindent=0pt,
+    breakatwhitespace=false,
+    tabsize=2,
+    captionpos=b,
+    literate={á}{{\'a}}1
+        {ã}{{\~a}}1
+        {é}{{\'e}}1
+        {ó}{{\'o}}1
+        {í}{{\'i}}1
+        {ñ}{{\~n}}1
+        {¡}{{!`}}1
+        {¿}{{?`}}1
+        {ú}{{\'u}}1
+        {Í}{{\'I}}1
+        {Ó}{{\'O}}1
+}
+\setlength{\parskip}{0.8em}
+\usepackage{natbib}
+\usepackage{enumitem}
+% \setlist[itemize]{noitemsep} % Make itemize lists more compact
+% \usepackage{abstract} % Allows abstract customization
+% \renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+% \renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+\usepackage{titlesec}
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{}
+\lhead{Hugo Gómez Sabucedo}
+\rhead{Minería de datos y modelización predictiva}
+
+\renewcommand{\footrulewidth}{0.2pt}
+\usepackage{titling} % Customizing the title section
+\usepackage[breaklinks=true]{hyperref} % For hyperlinks in the PDF
+%\usepackage{array}
+%\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{graphicx}
+%\usepackage{lipsum} % NO NECESARIO LUEGO
+%\usepackage{amsmath}
+%\usepackage{wrapfig}
+%\usepackage{multicol}
+%\usepackage{bm}
+
+
+\let\stdsection\section
+\renewcommand\section{\newpage\stdsection}
+
+%-------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------
+
+\setlength{\droptitle}{-4\baselineskip} % Move the title up
+
+
+
+\title{\begin{center} \Huge Minería de datos y modelización predictiva \end{center}} % Article title
+\author{
+    \textsc{\Huge Hugo Gómez Sabucedo} \\ % Your name
+    \large \href{mailto:hugogomezsabucedo@gmail.com}{hugogomezsabucedo@gmail.com} \\ [2ex] % Your email address
+    \Large \textbf{Máster Big Data, Data Science \& Inteligencia Artificial} \\
+    \normalsize Curso 2024-2025 \\
+    \large Universidad Complutense de Madrid
+}
+\date{} % Leave empty to omit a date
+
+\begin{document}
+% Print the title
+\maketitle
+%\newpage
+\tableofcontents
+%\newpage
+\begin{sloppypar}
+
+%-------------------------------------------------------------------------
+%	DOCUMENT
+%-------------------------------------------------------------------------
+
+\section{Introducción y análisis} \label{introduccion}
+\subsection{Introducción} \label{intro}
+En este ejercicio analizaremos el conjunto de datos de \texttt{penguins} disponible en la librería \texttt{seaborn} de Python. Este conjunto de datos contiene
+observaciones de diferentes ejemplares de pingüinos, para cada uno de los cuales se recoge su especie (`Adelie`, `Chinstrap` o `Gentoo`) la isla en la que se 
+encuentra (`Biscoe`, `Dream` y `Torgensen`), la longitud de su pico (\textit{bill\_length\_mm}, en milímetros), la profundidad de su pico 
+(\textit{bill\_depth\_mm}, también en milímetros), la longitud de su aleta (\textit{flipper\_length\_mm}, en milímetros), su masa corporal 
+(\textit{body\_mass\_g}, en gramos), y su género (que puede ser `Male` para macho, `Female` para hembra, o `NaN` si no está disponible). El objetivo de este 
+ejercicio es aplicar las diferentes técnicas de reducción de dimensionalidad y de agrupamiento, para ver si se pueden definir grupos de pingüinos con 
+características similares.
+
+En primer lugar, observamos una pequeña muestra de los datos para comprobar su estructura. Haciendo un \texttt{.head(5)} vemos los 5 primeros registros, en 
+donde se observan algunos detalles interesantes. Observamos que hay valores perdidos (NaN) no sólo en el género, sino que hay un pingüinp que tiene todos 
+los valores perdidos, para el que no tenemos ningún dato. Tendremos que analizar la mejor estrategia para tratar este caso.
+\begin{table}[h!]
+    \begin{tabular}{|c c c c c c c|}
+        \hline
+        \textbf{species} & \textbf{island} & \textbf{bill\_length\_mm} & \textbf{...} & \textbf{flipper\_length\_mm} & \textbf{body\_mass\_g} & \textbf{sex} \\
+        \hline
+        Adelie & Torgersen & 39.1 & ... & 181.0 & 3750.0 & Male \\
+        Adelie & Torgersen & 39.5 & ... & 186.0 & 3800.0 & Female \\
+        Adelie & Torgersen & 40.3 & ... & 195.0 & 3250.0 & Female \\
+        Adelie & Torgersen & NaN & ... & NaN & NaN & NaN \\
+        Adelie & Torgersen & 36.7 & ... & 193.0 & 3450.0 & Female \\
+        \hline
+    \end{tabular}
+    \caption{}
+    \label{tab:headDF}
+\end{table}
+
+En la figura \ref{fig:descriptivos} se puede observar un análisis descriptivo de las variables numéricas. Lo primero a destacar es que se observan 2 NaN en 
+cada variable, lo cual nos podría indicar que tenemos, además del pingüino que vimos anteriormente, otro con todos los datos faltantes. Esto se refuerza 
+viendo que el conteo de las variables es de 342, cuando en el conjunto de datos tenemos 344 pingüinos. Respecto a la distribución de los datos, vemos que las 
+dos primeras variables son bastante simétricas, con coeficientes de asimetría próximos a 0. Para las otras dos variables, se observa una simetría positiva, 
+un poco más pronunciada en el caso del peso, pero en general es una distribución también simétrica. Tampoco se observan valores atípicos en los datos.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\textwidth]{graficos/descriptivos.png}
+        \caption{Análisis descriptivo de los datos}
+        \label{fig:descriptivos}
+    \end{figure}
+\end{center}
+
+Respecto al tratamiento de los valores NaN, se han decidido eliminar por completo aquellos registros con algún valor missing, ya que la cantidad que se ha 
+observado de los mismos es realmente pequeña. Como se comentó, se detectan dos ejemplares con todos los datos missing, además de nueve de ellos para los que 
+falta el sexo. Es una proporción escasa de los datos, por lo que su eliminación no supondría una gran pérdida de información. Aún así, se recalca que, para 
+el tratamiento de los valores missing, se podría aplicar algún algoritmo que los imputase manteniendo la proporción de género que hay originalmente. Se observa 
+una distribución prácticamente simétrica, con 165 pingüinos hembra y 168 machos, por lo que, de los 9 pingüinos que tienen el sexo missing, podríamos establecer 
+para cinco de ellos el sexo `Female`, y el sexo `Male` para cuatro de ellos, manteniendo así el equilibrio.
+
+Por último, convertiremos los valores de la variable sexo, ya que es dicotómica, mapeando el género macho como 1 y el género hembra como 0, de forma que 
+podamos usar esta variable también en el análisis, proporcionándonos una nueva característica para los datos. De esta forma, sólo quedarían como variables 
+categóricas la especie y la isla, las cuales se eliminarán también, ya que no tendría sentido mantenerlas. De todas formas, se guarda una copia del dataframe, 
+ya que resultará útil de cara al análisis de los resultados ver en qué isla o de que especie es cada pingüino y cuál predomina en cada grupo.
+
+\subsection{Correlaciones entre las variables}\label{correlaciones}
+\begin{wrapfigure}[15]{l}{7cm}
+    \includegraphics[width=7cm]{graficos/correlacion.png}
+    \small{\caption{Matriz de correlacion}}
+    \label{correlacion}
+\end{wrapfigure} 
+Si representamos la matriz de correlaciones, observamos una relación positiva fuerte entre el peso y la longitud de la aleta, así como entre la longitud del 
+pico y el peso y la longitud de la aleta. Esto significa, por ejemplo, que los pingüinos que tienen mayor peso tienden a tener una aleta más larga. Sin embargo, 
+entre el peso y la longitud de la aleta se observa una correlación negativa con la profundidad del pico, lo que nos indica que, cuanto más profundo es el pico, 
+menos pesa y más corta tiene la aleta el pingüino. Cabe destacar también la relación negativa entre la longitud y la anchura del pico, lo cual indicaría que 
+los pingüinos tienen picos anchos y cortos, o largos y estrechos.
+
+\section{Análisis PCA} \label{analisisPCA}
+\subsection{Análisis inicial} \label{PCAinicial}
+Para comenzar con el análisis PCA o de componentes principales, lo primero que haremos será estandarizar los datos, ya que las escalas de las variables originales 
+son distintas (unas unidades en mm, otras en gramos...), y uno de los requisitos para poder aplicar el PCA es que los datos estén en la misma escala o 
+estandarizados. Como vimos en \ref{intro}, los datos no presentan valores atípicos, y también se han limpiado de valores perdidos, por lo que los datos cumplen 
+todos los requisitos para aplicar el PCA.
+
+Creamos el PCA con cuatro componentes, el número máximo que se indica, y calculamos los autovalores, la varianza explicada y la varianza acumulada, recogiéndose 
+en la tabla \ref{tab:autovalores}.
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        & \textbf{Autovalores} & \textbf{Varianza explicada} & \textbf{Varianza Acumulada} \\
+        \hline
+        Componente 1 & 2.844160 & 0.567124 & 0.567124 \\
+        Componente 2 & 1.411420 & 0.281436 & 0.848560 \\
+        Componente 3 & 0.486707 & 0.097049 & 0.945609 \\
+        Componente 4 & 0.172850 & 0.034466 & 0.980075 \\
+        \hline
+    \end{tabular} 
+    \caption{Tabla con autovalores}
+    \label{tab:autovalores}
+\end{table}
+
+\begin{wrapfigure}[14]{l}{7.5cm}
+    \includegraphics[width=7.5cm]{graficos/varExplicada.png}
+    \small{\caption{Variabilidad Explicada} \label{fig:varExplicada}}
+\end{wrapfigure} 
+Respecto a los autovalores, nos indican la cantidad de varianza explicada por cada uno de los componentes, de forma que cuanto mayor sea implica que esa 
+componente retiene una gran cantidad de información de los datos originales. Estos valores son más elevados para los dos primeros componentes, que, además,
+si analizamos la varianza explicada (también en la figura \ref{fig:varExplicada}) y la acumulada, vemos que entre los dos explican casi el 85\% de la 
+variabilidad de las variables originales. Para elegir el número adecuado de componentes, tenemos en cuenta los siguientes criterios:
+\\
+\\
+\begin{itemize}
+    \item Que los autovalores de las componentes sean mayores a 1. En este caso, sólo lo cumplen las componentes 1 y 2.
+    \item Que los componentes expliquen al menos entre el 80\% y el 90\% de los datos originales (usando la varianza acumulada). Con las dos primeras
+    componentes tenemos un 84.5\% de la varianza explicada.
+    \item Observando el gráfico del codo (figura \ref{fig:varExplicada}).
+\end{itemize}
+
+Por lo tanto, aplicando todos estos criterios, y viendo que en la tercera componente del gráfico del codo ya no se aprecia una ganancia significativa de 
+información (contribuye apenas en un 10\%), se determina que el \textbf{número adecuado de componentes es 2}.
+
+\subsection{PCA sobre los datos estandarizados} \label{PCAest}
+Una vez que hemos determinado el número de componentes adecuados como 2, repetimos el PCA con este número de componentes principales. Obtenemos los autovectores
+para cada componente, así como las correlaciones entre cada componente y las variables originales (para ver que variables tienen más peso en cada componente), 
+y el cuadrado de esta correlación (para ver qué proporción de la varianza de esa variable es explicada por ese componente). Los resultados obtenidos se recogen 
+en la tabla \ref{tab:tablaPCA}. Sus representaciones gráficas se encuentras englobadas en la figura \ref{fig:multiplesGraficas}.
+\begin{table}[h!]
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Variable} & \textbf{Autovector 1} & \textbf{Autovector 2} & \textbf{Corr. C1}  & \textbf{Corr. C2} & \textbf{$cos^2$ C1} & \textbf{$cos^2$ C2} \\
+        \hline
+        bill\_length\_mm\_z    & 0.462289  & 0.168869  & 0.778463  & 0.200320  & 0.606004 & 0.040128 \\
+        bill\_depth\_mm\_z     & -0.331708 & 0.652723  & -0.558574 & 0.774291  & 0.312005 & 0.599527 \\
+        flipper\_length\_mm\_z & 0.563897  & -0.094552 & 0.949563  & -0.112162 & 0.901669 & 0.012580 \\
+        body\_mass\_g\_z       & 0.554251  & 0.047941  & 0.933320  & 0.056869  & 0.871085 & 0.003234 \\
+        sex\_z                 & 0.226018  & 0.730888  & 0.380598  & 0.867013  & 0.144855 & 0.751712 \\
+        \hline
+    \end{tabular} 
+    \caption{Métricas del PCA}
+    \label{tab:tablaPCA}
+\end{table}
+
+En lo que respeta a la interpretación de los resultados, por un lado tenemos los autovectores, que indican la contribución de cada variable original a una 
+componente en concreto. Esto lo vemos también en la figura \ref{fig:cargas}, donde vemos que las variables que más contribuyen en el autovector 1 son 
+`flipper\_length\_mm\_z`, `body\_mass\_g\_z` y `bill\_length\_mm\_z`, mientras que `sex\_z` y `bill\_depth\_mm\_z` tienen una menor contribución. Lo contrario 
+ocurre en el caso del autovector 2. Apoyándonos también en la figura \ref{fig:vectores}, esto nos sugiere que la primera componente está relacionada con el 
+tamaño en general del pingüino (longitud de la aleta y masa, así como longitud de pico), mientras que la segunda componente captura más información sobre las 
+diferencias entre los pingüinos machos y hembra. De esta forma, las especies de pingüinos más grandes tomarán también valores más grandes en la componente 1, 
+mientras que en la componente 2 tomarán valores más altos aquellas especies con picos más profundos o que tengan diferencias más marcadas entre los machos y 
+las hembras. También observamos la varianza explicada de cada variable (figura \ref{fig:varExplicada}) y el gráfico de dispersión de las observaciones en 
+base a cada variable (figura \ref{fig:dispersionBasico}).
+
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{graficos/cargasComponentes.png}
+            \caption{\small{Cargas en las componentes principales}}
+            \label{fig:cargas}
+        \end{minipage}
+        \hspace{0.005\textwidth} % Espacio entre las imágenes
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{graficos/correlacionVectores.png}
+            \caption{\small{Autovectores para componentes principales}}
+            \label{fig:vectores}
+        \end{minipage}
+        \centering
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{graficos/VarExplicadaCos.png}
+            \caption{\small{Varianza explicada de cada variable}}
+            \label{fig:varExplicada}
+        \end{minipage}
+        \hspace{0.005\textwidth} % Espacio entre las imágenes
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{graficos/dispersionBasico.png}
+            \caption{\small{Gráfico de dispersión de las observaciones}}
+            \label{fig:dispersionBasico}
+        \end{minipage}
+        \caption{Conjunto de gráficas}
+        \label{fig:multiplesGraficas}
+    \end{figure}
+\end{center}
+
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.7\textwidth]{graficos/dispersionEspecies.png}
+        \caption{Gráfico de dispersión por especie}
+        \label{fig:dispersionEspecies}
+    \end{figure}
+\end{center}
+
+Además, en la figura \ref{fig:dispersionEspecies}, podemos ver el mismo gráfico de la figura \ref{fig:dispersionBasico}, pero con cada observación coloreada 
+en función de la especie a la que pertenece, y con una forma distinta en función del género del pingüino (y eliminando también el índice de cada pingüino, 
+para hacer el gráfico más legible y que se aprecien más las diferencias entre especies). El código de este gráfico, que parte de la función plot\_pca\_scatter,
+puede observarse en \ref{lst:code}.
+
+Inicialmente, observamos cuatro grupos diferenciados, dos de los cuales se corresponden exclusivamente con la especie \textit{Gentoo}. Para esta especie, 
+vemos que todos sus individuos presentan un comportamiento similar para la componente 1 (que, como dijimos, está relacionada con el tamaño de los pingüinos). 
+Además, curiosamente, los dos subgrupos que se observan se encuentran justo en lados opuestos de la componente 2, que era la que definimos como el marcador 
+de género, y podemos observar que todos los Gentoo hembra toman valores de la componente 2 positivos, mientras que los Gentoo macho toman valores negativos. 
+Esto nos sugiere nuestras suposiciones iniciales sobre lo que representaba cada componente.
+
+Además, para las especies \textit{Adelie} y \textit{Chinstrap} se observa una situación parecida: ambas toman valores similares para la componente 1, lo que 
+nos sugiere que son individuos con características físicas y de peso similares; y están polarizadas, aunque con menos diferencia que los Gentoo, en función 
+del género del pingüino. Estas especies son las que destacan menos en la primera componente, o las que destacan más ''negativamente'' (indicando, quizás, 
+individuos de menor tamaño que los Gentoo).
+
+\begin{lstlisting}[language=Python, label={lst:code}, caption={Código para la obtención del gráfico de dispersión}]
+    penguins_std['species'] = penguins_original['species']
+    penguins_std['sex'] = penguins_original['sex'].map({0: 'male', 1: 'female'})
+
+    for i in range(n_components):
+        for j in range(i + 1, n_components):  # Evitar pares duplicados
+            # Crear el gráfico de dispersión
+            plt.figure(figsize=(10, 6))  # Ajusta el tamaño de la figura si es necesario
+            
+            # Colorear los puntos según la especie y cambiar la forma según el sexo
+            sns.scatterplot(
+                x=componentes_principales[:, i], 
+                y=componentes_principales[:, j],  
+                hue=penguins_std['species'],  # Colorear por especie
+                style=penguins_std['sex'],    # Cambiar forma según el sexo
+                palette='viridis',  # Paleta de colores para las especies
+                s=100,              # Tamaño de los puntos
+                markers={'male': 'o', 'female': 's'}  # Marcadores para machos y hembras
+            )
+            
+            # Dibujar líneas discontinuas que representen los ejes
+            plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
+            plt.axvline(0, color='black', linestyle='--', linewidth=0.8)
+            
+            # Etiquetar los ejes
+            plt.xlabel(f'Componente Principal {i + 1}')
+            plt.ylabel(f'Componente Principal {j + 1}')
+            
+            # Establecer el título del gráfico
+            plt.title(f'Gráfico de Dispersión de Observaciones en PCA')
+            
+            # Mostrar la leyenda
+            plt.legend(title='Especie/Sexo', bbox_to_anchor=(1.05, 1), loc='upper left')
+            
+            plt.show()
+\end{lstlisting}
+
+Para valorar conjuntamente las características físicas de los pingüinos, podemos construir un índice que considere ambas componentes. Una primera aproximación 
+podría ser construirlo en base a una combinación ponderada de las dos componentes principales, basándose en el cos2 que tiene cada uno de las componentes 
+(que vimos en \ref{PCAinicial}), de forma que tendríamos algo como $Índice = w1*CP1 + w2*CP2$ (donde w1 y w2 son la suma del cos2 para CP1 y CP2). 
+
+Para calcular el índice para, por ejemplo, Adelie, podemos emplear el siguiente código, donde se calcula en primer lugar los valores de las componentes 
+principales para esta especie, para a continuación aplicar el índice que hemos calculado. De esta forma, obtenemos un valor de -3.653316 para el índice, lo que 
+nos indica que los pingüinos de esta especie tienden a tener valores bajos en ambas componentes, lo que sugiere que son más pequeños en tamaño, con picos menos 
+profundos, y menos diferencia entre géneros.
+
+Si repetimos el proceso para Chinstrap, obtenemos un índice de -0.161348, y para Gentoo de 4.574419. Si observamos 
+la gráfica \ref{fig:dispersionEspecies}, podemos corroborar esto, ya que vemos que los pingüinos más pequeños son claramente los Adelie, con un tamaño similar 
+a los Chinstrap, pero con estos últimos presentando un mayor marcaje de género; mientras que los Gentoo son tanto los más grandes como los que más marcaje de 
+género presentan.
+\begin{lstlisting}[language=Python]
+    w1 = cos2['Componente 1'].sum()  # Peso para CP1
+    w2 = cos2['Componente 2'].sum()  # Peso para CP2
+    resultados_pca = pd.DataFrame(componentes_principales, columns=['Componente 1', 'Componente 2'])
+    resultados_pca['Índice'] = (w1 * resultados_pca['Componente 1']) + (w2 * resultados_pca['Componente 2'])
+    
+    adelie_data = penguins_std[penguins_std['species'] == 'Adelie']
+    adelie_cp = pca.transform(adelie_data.drop(columns=['species', 'sex']))
+    adelie_cp_df = pd.DataFrame(adelie_cp, columns=['Componente 1', 'Componente 2'])
+    adelie_cp_df['Índice'] = (w1 * adelie_cp_df['Componente 1']) + (w2 * adelie_cp_df['Componente 2'])
+    print(f"Índice Adelie: {adelie_cp_df['Índice'].mean()}")
+\end{lstlisting}
+
+\section{Clustering} \label{clustering}
+\subsection{Agrupamiento jerárquico} \label{jerarquico}
+
+\subsection{Agrupamiento K-means} \label{kmeans}
+
+\subsection{Validación del agrupamiento} \label{validacion}
+
+\subsection{Comparación entre agrupamiento jerárquico y K-means} \label{comparacion}
+
+\section{Interpretación de los resultados} \label{resultados}
+
+\end{sloppypar}
+\end{document}

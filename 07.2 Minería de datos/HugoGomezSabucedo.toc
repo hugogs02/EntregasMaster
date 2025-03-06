@@ -1,0 +1,13 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción y análisis}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Introducción}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Correlaciones entre las variables}{4}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Análisis PCA}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Análisis inicial}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}PCA sobre los datos estandarizados}{6}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Clustering}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Agrupamiento jerárquico}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Agrupamiento K-means}{10}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Validación del agrupamiento}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Comparación entre agrupamiento jerárquico y K-means}{10}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Interpretación de los resultados}{11}{section.4}%
