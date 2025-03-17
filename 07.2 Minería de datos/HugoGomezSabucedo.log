@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  6 MAR 2025 01:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  6 MAR 2025 22:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -385,10 +385,6 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 ) (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
-
-
-LaTeX Warning: Label `fig:varExplicada' multiply defined.
-
 )
 \openout1 = `HugoGomezSabucedo.aux'.
 
@@ -645,16 +641,114 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
 
 [8 <./graficos/dispersionEspecies.png>]
 
-LaTeX Warning: Command \' invalid in math mode on input line 356.
-
-Missing character: There is no Í in font pplr9t!
-
-
 [9]
+<graficos/mapaCalor.png, id=189, 715.17188pt x 715.17188pt>
+File: graficos/mapaCalor.png Graphic file (type png)
+<use graficos/mapaCalor.png>
+Package pdftex.def Info: graficos/mapaCalor.png  used on input line 380.
+(pdftex.def)             Requested size: 209.12683pt x 209.12964pt.
+<graficos/matrizDistancias.png, id=190, 451.6875pt x 378.41376pt>
+File: graficos/matrizDistancias.png Graphic file (type png)
+<use graficos/matrizDistancias.png>
+Package pdftex.def Info: graficos/matrizDistancias.png  used on input line 387.
+(pdftex.def)             Requested size: 188.21288pt x 157.68547pt.
+<graficos/matrizEnlace.png, id=193, 716.17563pt x 716.17563pt>
+File: graficos/matrizEnlace.png Graphic file (type png)
+<use graficos/matrizEnlace.png>
+Package pdftex.def Info: graficos/matrizEnlace.png  used on input line 401.
+(pdftex.def)             Requested size: 209.12683pt x 209.11717pt.
 
-[10]
 
-[11] (./HugoGomezSabucedo.aux
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[10 <./graficos/mapaCalor.png> <./graficos/matrizDistancias.png>]
+<graficos/dendograma.png, id=205, 374.39874pt x 260.975pt>
+File: graficos/dendograma.png Graphic file (type png)
+<use graficos/dendograma.png>
+Package pdftex.def Info: graficos/dendograma.png  used on input line 420.
+(pdftex.def)             Requested size: 188.21288pt x 131.196pt.
+<graficos/PCAClusters.png, id=206, 616.3025pt x 394.47375pt>
+File: graficos/PCAClusters.png Graphic file (type png)
+<use graficos/PCAClusters.png>
+Package pdftex.def Info: graficos/PCAClusters.png  used on input line 427.
+(pdftex.def)             Requested size: 209.12683pt x 133.85445pt.
+
+
+[11 <./graficos/matrizEnlace.png> <./graficos/dendograma.png> <./graficos/PCAClusters.png>]
+<graficos/metodoCodo.png, id=216, 508.39937pt x 393.97188pt>
+File: graficos/metodoCodo.png Graphic file (type png)
+<use graficos/metodoCodo.png>
+Package pdftex.def Info: graficos/metodoCodo.png  used on input line 446.
+(pdftex.def)             Requested size: 209.12683pt x 162.05852pt.
+<graficos/PCAKmeans4.png, id=219, 616.3025pt x 394.47375pt>
+File: graficos/PCAKmeans4.png Graphic file (type png)
+<use graficos/PCAKmeans4.png>
+Package pdftex.def Info: graficos/PCAKmeans4.png  used on input line 461.
+(pdftex.def)             Requested size: 250.95476pt x 160.62775pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[12 <./graficos/metodoCodo.png>]
+<graficos/PCAKmeans6.png, id=230, 616.3025pt x 394.47375pt>
+File: graficos/PCAKmeans6.png Graphic file (type png)
+<use graficos/PCAKmeans6.png>
+Package pdftex.def Info: graficos/PCAKmeans6.png  used on input line 475.
+(pdftex.def)             Requested size: 250.95476pt x 160.62775pt.
+
+
+[13 <./graficos/PCAKmeans4.png> <./graficos/PCAKmeans6.png>]
+<graficos/metodoSilueta.png, id=241, 505.38812pt x 393.97188pt>
+File: graficos/metodoSilueta.png Graphic file (type png)
+<use graficos/metodoSilueta.png>
+Package pdftex.def Info: graficos/metodoSilueta.png  used on input line 493.
+(pdftex.def)             Requested size: 209.12683pt x 163.02637pt.
+<graficos/siluetaPuntuaciones.png, id=243, 502.37688pt x 394.47375pt>
+File: graficos/siluetaPuntuaciones.png Graphic file (type png)
+<use graficos/siluetaPuntuaciones.png>
+Package pdftex.def Info: graficos/siluetaPuntuaciones.png  used on input line 507.
+(pdftex.def)             Requested size: 250.95476pt x 197.04979pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: graficos/PCAClusters.png Graphic file (type png)
+<use graficos/PCAClusters.png>
+Package pdftex.def Info: graficos/PCAClusters.png  used on input line 519.
+(pdftex.def)             Requested size: 204.9466pt x 131.17592pt.
+File: graficos/PCAKmeans4.png Graphic file (type png)
+<use graficos/PCAKmeans4.png>
+Package pdftex.def Info: graficos/PCAKmeans4.png  used on input line 525.
+(pdftex.def)             Requested size: 204.9466pt x 131.17592pt.
+
+
+[14 <./graficos/metodoSilueta.png>]
+
+[15 <./graficos/siluetaPuntuaciones.png>]
+<graficos/centroides.png, id=262, 644.4075pt x 115.93312pt>
+File: graficos/centroides.png Graphic file (type png)
+<use graficos/centroides.png>
+Package pdftex.def Info: graficos/centroides.png  used on input line 541.
+(pdftex.def)             Requested size: 334.60422pt x 60.19888pt.
+<graficos/agrupacionSencilla.png, id=265, 214.55156pt x 278.54062pt>
+File: graficos/agrupacionSencilla.png Graphic file (type png)
+<use graficos/agrupacionSencilla.png>
+Package pdftex.def Info: graficos/agrupacionSencilla.png  used on input line 553.
+(pdftex.def)             Requested size: 167.2989pt x 217.19705pt.
+<graficos/agrupacionConSex.png, id=266, 256.70906pt x 379.4175pt>
+File: graficos/agrupacionConSex.png Graphic file (type png)
+<use graficos/agrupacionConSex.png>
+Package pdftex.def Info: graficos/agrupacionConSex.png  used on input line 560.
+(pdftex.def)             Requested size: 167.2989pt x 247.27264pt.
+
+
+[16 <./graficos/centroides.png> <./graficos/agrupacionSencilla.png> <./graficos/agrupacionConSex.png>]
+
+[17] (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -662,26 +756,22 @@ LaTeX Info: Redefining \% on input line 12.
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
 Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: ECD66FF648E9EE7A1AF6BC0A151128C3;2195.
  ) 
 Here is how much of TeX's memory you used:
- 18670 strings out of 473362
- 296650 string characters out of 5725050
- 1149098 words of memory out of 5000000
- 41154 multiletter control sequences out of 15000+600000
- 619988 words of font info for 303 fonts, out of 8000000 for 9000
+ 18822 strings out of 473362
+ 300262 string characters out of 5725050
+ 1117915 words of memory out of 5000000
+ 41259 multiletter control sequences out of 15000+600000
+ 622215 words of font info for 336 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,1094b,2356s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,1094b,1562s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfit0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (11 pages, 706881 bytes).
+Output written on HugoGomezSabucedo.pdf (17 pages, 2209930 bytes).
 PDF statistics:
- 269 PDF objects out of 1000 (max. 8388607)
- 219 compressed objects within 3 object streams
- 78 named destinations out of 1000 (max. 500000)
- 88713 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 342 PDF objects out of 1000 (max. 8388607)
+ 260 compressed objects within 3 object streams
+ 83 named destinations out of 1000 (max. 500000)
+ 88778 words of extra memory for PDF output out of 89155 (max. 10000000)
 

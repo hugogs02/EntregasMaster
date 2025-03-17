@@ -1,18 +1,9 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import datetime as dt
 import matplotlib.pyplot as plt
-import os
-import scipy.cluster.hierarchy as sch
-os.chdir('C:\\Users\\Hugo\\OneDrive\\Desktop\\Entregas\\EntregasMaster\\07.2 Minería de datos')
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
-from sklearn.cluster import DBSCAN
-from sklearn.metrics import silhouette_score
-from sklearn.metrics import silhouette_samples
-from scipy.spatial import distance
-from FuncionesMineria2 import *
+
 
 # Importamos el archivo, extraemos las variables
 penguins = sns.load_dataset("penguins")

@@ -4,7 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import scipy.cluster.hierarchy as sch
-os.chdir('C:\\Users\\Hugo\\OneDrive\\Desktop\\Entregas\\EntregasMaster\\07.2 Minería de datos')
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
