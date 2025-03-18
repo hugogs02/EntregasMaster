@@ -1,12 +1,19 @@
+import warnings
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import datetime as dt
+import pmdarima as pm
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
+
 from tabulate import tabulate
+from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing, Holt
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Cargamos y formateamos la fecha
 viajeros = pd.read_excel('viajerosMD.xlsx')
@@ -156,10 +163,96 @@ plt.tight_layout()
 plt.show()
 
 
+# Dibujamos el correlograma
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+plot_acf(train, lags=20, ax=ax1)
+ax1.set_title('Función de Autocorrelación (ACF) de viajeros')
+plot_pacf(train, lags=20, ax=ax2)
+ax2.set_title('Función de Autocorrelación Parcial (PACF) de viajeros')
+plt.tight_layout()
+plt.show()
+
+# Creamos el modelo manual
+modelo_arima = sm.tsa.ARIMA(train, order=(1, 1, 1), seasonal_order=(0, 1, 1, 12))
+resultados = modelo_arima.fit()
+print(resultados.summary())
+
+# Comprobamos que los residuos estén incorrelados
+resultados.plot_diagnostics(figsize=(12, 8))
+plt.show()
+
+print(resultados.mse)
+
+# Calculamos predicciones
+prediciones = resultados.get_forecast(steps=12)
+predi_test=prediciones.predicted_mean
+print(predi_test)
+
+# Graficamos las predicciones
+plt.figure(figsize=(12, 8))
+plt.plot(train, label='Train', color='gray')
+plt.plot(test, label='Test', color='blue')
+plt.plot(prediciones.predicted_mean, label='Predicciones', color='orange')
+plt.xlabel('fecha')
+plt.ylabel('Viajeros')
+plt.title('Modelo ARIMA')
+plt.legend()
+plt.show()
+
+# Graficamos añadiendo los intervalos de confianza
+intervalos_confianza = prediciones.conf_int()
+plt.figure(figsize=(12, 8))
+plt.plot(intervalos_confianza['lower Viajeros'], label='UCL', color='gray')
+plt.plot(intervalos_confianza['upper Viajeros'], label='LCL', color='gray')
+plt.plot(predi_test, label='Predicciones', color='orange')
+plt.plot(test, label='Test', color='blue')
+plt.xlabel('Fecha')
+plt.ylabel('Viajeros')
+plt.title('Modelo ARIMA')
+plt.legend()
+plt.show()
 
 
+# Ahora creamos el modelo automático
+modelo_auto= pm.auto_arima(train, m=12, d=None, D=1, 
+                           start_p=0, max_p=3, start_q=0, max_q=3,
+                           start_P=0, max_P=2, start_Q=0, max_Q=2,
+                           seasonal=True, trace=True,
+                           error_action='ignore', suppress_warnings=True,
+                           stepwise=True) 
+
+# Imprimimos el modelo y estudiamos sus residuos
+print(modelo_auto.summary())
+best_arima = sm.tsa.ARIMA(train, order=(0, 1, 1), seasonal_order=(0, 1, 1, 12))
+resultados_a = best_arima.fit()
+
+resultados_a.plot_diagnostics(figsize=(12, 8))
+plt.show()
+
+# Calculamos las predicciones y las comparamos con los datos test
+prediciones_a = resultados_a.get_forecast(steps=12)
+predi_test_a=prediciones_a.predicted_mean
+intervalos_confianza_a = prediciones_a.conf_int()
+plt.figure(figsize=(12, 8))
+plt.plot(train, label='Train', color='gray')
+plt.plot(test, label='Test', color='blue')
+plt.plot(prediciones_a.predicted_mean, label='Predicciones', color='orange')
+plt.xlabel('Periodo')
+plt.ylabel('Viajeros')
+plt.title('Modelo ARIMA')
+plt.legend()
+plt.show()
 
 
-
+plt.figure(figsize=(12, 8))
+plt.plot(intervalos_confianza_a['lower Viajeros'], label='UCL', color='gray')
+plt.plot(intervalos_confianza_a['upper Viajeros'], label='LCL', color='gray')
+plt.plot(predi_test, label='Predicciones', color='orange')
+plt.plot(test, label='Test', color='blue')
+plt.xlabel('Fecha')
+plt.ylabel('Viajeros')
+plt.title('Modelo ARIMA')
+plt.legend()
+plt.show()
 
 
