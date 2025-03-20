@@ -42,27 +42,22 @@ plt.legend(title='Año', loc='upper left', bbox_to_anchor=(1, 1))
 plt.show()
 viajeros.drop('Año', axis=1, inplace=True) # Eliminamos la columna que habíamos añadido
 
-# Hacemos la descomposición estacional aditiva
-add_decomp = seasonal_decompose(viajeros, model='additive', period=12)
-plt.rc("figure", figsize=(16,12))
-fig = add_decomp.plot()
-
-# Representamos la tendencia y la serie ajustada estacionalmente
-viajeros_ajustada = viajeros['Viajeros'] - add_decomp.seasonal
-plt.figure(figsize=(12, 8))
-plt.plot(viajeros, label='Datos', color='gray')
-plt.plot(add_decomp.trend, label='Tendencia', color='blue') # Tendencia
-plt.plot(viajeros_ajustada, label='Estacionalmente ajustada', color='red') # Serie ajustada
-plt.xlabel('Fecha')
-plt.ylabel('Viajeros')
-plt.title('Viajeros en Media Distancia')
-plt.legend(loc='best')
-plt.show()
-
 # Hacemos la descomposición estacional multiplicativa
 mult_decomp = seasonal_decompose(viajeros, model='multiplicative', period=12)
 plt.rc("figure", figsize=(16,12))
 fig = mult_decomp.plot()
+
+# Representamos la tendencia y la serie ajustada estacionalmente
+viajeros_ajustada = viajeros['Viajeros'] - mult_decomp.seasonal
+plt.figure(figsize=(12, 8))
+plt.plot(viajeros, label='Datos', color='gray')
+plt.plot(mult_decomp.trend, label='Tendencia', color='blue') # Tendencia
+plt.plot(viajeros_ajustada, label='Estacionalmente ajustada', color='red') # Serie ajustada
+plt.xlabel('Fecha')
+plt.ylabel('Viajeros (miles)')
+plt.title('Viajeros en Media Distancia')
+plt.legend(loc='best')
+plt.show()
 
 # Separamos los datos en train y test, guardando el último año como test
 train = viajeros[:-12]
@@ -78,21 +73,20 @@ plt.show()
 
 # Aplicamos el suavizado exponencial simple
 model = SimpleExpSmoothing(train, initialization_method="estimated").fit()
+print(model.params_formatted)
 fcast = model.forecast(12)
 
 plt.figure(figsize=(12, 8))
-# Serie original
 plt.plot(train, label='Datos train', color='gray')
-plt.plot(test, label='Datos test', color='yellow')
+plt.plot(test, label='Datos test', color='orange')
 plt.plot(model.fittedvalues, label='Suavizado', color='blue')
 plt.plot(fcast, label='Forecast', color='red')
 plt.xlabel('Año')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Suavizado simple')
 plt.legend()
 plt.show()
 
-print(model.params_formatted)
 
 
 # Aplicamos el método de Holt
@@ -103,11 +97,11 @@ print(fcast1)
 
 plt.figure(figsize=(12, 8))
 plt.plot(train, label='Datos train', color='gray')
-plt.plot(test, label='Datos test', color='yellow')
+plt.plot(test, label='Datos test', color='orange')
 plt.plot(model1.fittedvalues, label='Suavizado', color='blue')
 plt.plot(fcast1, label='Forecast', color='red')
 plt.xlabel('Año')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Suavizado Holt')
 plt.legend()
 plt.show()
@@ -115,16 +109,17 @@ plt.show()
 
 # Aplicamos el método de la tendencia amortiguada
 model2 = Holt(train,damped_trend=True, initialization_method="estimated").fit()
-fcast2 = model2.forecast(5)
+fcast2 = model2.forecast(12)
 print(model2.params_formatted)
 
 plt.figure(figsize=(12, 8))
-plt.plot(viajeros, label='Datos', color='gray')
+plt.plot(train, label='Datos train', color='gray')
+plt.plot(test, label='Datos test', color='orange')
 plt.plot(fcast, label='ses', color='red')
 plt.plot(fcast1, label='Holt', color='blue')
-plt.plot(fcast2,label="Damped",color='green')
+plt.plot(fcast2, label="Damped",color='green')
 plt.xlabel('Año')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Comparativa suavizados')
 plt.legend()
 plt.show()
@@ -138,11 +133,11 @@ print(fcast3)
 
 plt.figure(figsize=(12, 8))
 plt.plot(train, label='Train', color='gray')
-plt.plot(test, label='Test', color='yellow')
-plt.plot(model3.fittedvalues, label='suavizado', color='blue')
+plt.plot(test, label='Test', color='blue')
+plt.plot(model3.fittedvalues, label='Suavizado', color='blue')
 plt.plot(fcast3,color='red', label="Prediciones")
 plt.xlabel('Año')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Holt-Winter Aditivo')
 plt.legend()
 
@@ -194,7 +189,7 @@ plt.plot(train, label='Train', color='gray')
 plt.plot(test, label='Test', color='blue')
 plt.plot(prediciones.predicted_mean, label='Predicciones', color='orange')
 plt.xlabel('fecha')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Modelo ARIMA')
 plt.legend()
 plt.show()
@@ -207,7 +202,7 @@ plt.plot(intervalos_confianza['upper Viajeros'], label='LCL', color='gray')
 plt.plot(predi_test, label='Predicciones', color='orange')
 plt.plot(test, label='Test', color='blue')
 plt.xlabel('Fecha')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Modelo ARIMA')
 plt.legend()
 plt.show()
@@ -238,7 +233,7 @@ plt.plot(train, label='Train', color='gray')
 plt.plot(test, label='Test', color='blue')
 plt.plot(prediciones_a.predicted_mean, label='Predicciones', color='orange')
 plt.xlabel('Periodo')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Modelo ARIMA')
 plt.legend()
 plt.show()
@@ -250,7 +245,7 @@ plt.plot(intervalos_confianza_a['upper Viajeros'], label='LCL', color='gray')
 plt.plot(predi_test, label='Predicciones', color='orange')
 plt.plot(test, label='Test', color='blue')
 plt.xlabel('Fecha')
-plt.ylabel('Viajeros')
+plt.ylabel('Viajeros (miles)')
 plt.title('Modelo ARIMA')
 plt.legend()
 plt.show()
