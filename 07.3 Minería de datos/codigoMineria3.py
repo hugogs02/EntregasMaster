@@ -126,14 +126,14 @@ plt.show()
 
 
 # Aplicamos el método de Holt-Winters
-model3 = ExponentialSmoothing(train, seasonal_periods=12, trend="add", 
-                              seasonal="add", initialization_method="estimated").fit()
+model3 = ExponentialSmoothing(train, seasonal_periods=12, trend="mul", 
+                              seasonal="mul", initialization_method="estimated").fit()
 fcast3 = model3.forecast(12)
 print(fcast3)
 
 plt.figure(figsize=(12, 8))
 plt.plot(train, label='Train', color='gray')
-plt.plot(test, label='Test', color='blue')
+plt.plot(test, label='Test', color='orange')
 plt.plot(model3.fittedvalues, label='Suavizado', color='blue')
 plt.plot(fcast3,color='red', label="Prediciones")
 plt.xlabel('Año')
@@ -167,8 +167,27 @@ ax2.set_title('Función de Autocorrelación Parcial (PACF) de viajeros')
 plt.tight_layout()
 plt.show()
 
+# Diferenciamos la serie
+diferencias = train.diff().dropna()
+plt.figure(figsize=(12, 6))
+plt.plot(diferencias)
+plt.axhline(y=0, color='black', linestyle='--', alpha=0.5)
+plt.title('Diferencias de viajeros')
+plt.xlabel('Año')
+plt.ylabel('Viajeros (miles)')
+plt.show()
+
+# Dibujamos el correlograma
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+plot_acf(diferencias, lags=20, ax=ax1)
+ax1.set_title('Función de Autocorrelación (ACF) de viajeros')
+plot_pacf(diferencias, lags=20, ax=ax2)
+ax2.set_title('Función de Autocorrelación Parcial (PACF) de viajeros')
+plt.tight_layout()
+plt.show()
+
 # Creamos el modelo manual
-modelo_arima = sm.tsa.ARIMA(train, order=(1, 1, 1), seasonal_order=(0, 1, 1, 12))
+modelo_arima = sm.tsa.ARIMA(train, order=(0, 1, 1), seasonal_order=(0, 1, 1, 12))
 resultados = modelo_arima.fit()
 print(resultados.summary())
 
@@ -209,9 +228,8 @@ plt.show()
 
 
 # Ahora creamos el modelo automático
-modelo_auto= pm.auto_arima(train, m=12, d=None, D=1, 
+modelo_auto = pm.auto_arima(train, m=12, d=0, D=1, 
                            start_p=0, max_p=3, start_q=0, max_q=3,
-                           start_P=0, max_P=2, start_Q=0, max_Q=2,
                            seasonal=True, trace=True,
                            error_action='ignore', suppress_warnings=True,
                            stepwise=True) 
@@ -250,4 +268,15 @@ plt.title('Modelo ARIMA')
 plt.legend()
 plt.show()
 
+# Calculamos predicciones a futuro (para los próximos cinco años)
+prediciones = resultados.get_forecast(steps=72)
 
+# Graficamos las predicciones
+plt.figure(figsize=(12, 8))
+plt.plot(viajeros, label='Datos viajeros', color='gray')
+plt.plot(prediciones.predicted_mean, label='Predicciones', color='orange')
+plt.xlabel('Fecha')
+plt.ylabel('Viajeros (miles)')
+plt.title('Modelo ARIMA')
+plt.legend()
+plt.show()

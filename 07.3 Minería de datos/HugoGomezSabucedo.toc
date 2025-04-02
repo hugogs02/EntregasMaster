@@ -8,4 +8,7 @@
 \contentsline {subsection}{\numberline {2.3}Modelo de tendencia amortiguada}{8}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Modelo de suavizado de Holt-Winters}{10}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Modelos ARIMA}{12}{section.3}%
-\contentsline {section}{\numberline {A}Anexo: Código de la práctica}{13}{appendix.Alph1}%
+\contentsline {subsection}{\numberline {3.1}Autocorrelogramas y modelo ARIMA manual}{12}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Modelo autoARIMA}{16}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Comparación y conclusiones}{17}{subsection.3.3}%
+\contentsline {section}{\numberline {A}Anexo: Código de la práctica}{21}{appendix.Alph1}%

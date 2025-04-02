@@ -322,6 +322,238 @@ tendencia creciente que es siempre más difícil de predecir.
 En esta sección crearemos, por una parte, un modelo ARIMA de forma manual, ajustando los parámetros en base a lo observado en los correlogramas; y por otra 
 parte, un modelo ARIMA de forma automática, empleando las funciones proporcionadas en Python.
 
+\subsection{Autocorrelogramas y modelo ARIMA manual}\label{ARIMAman}
+Para decidir que modelo ARIMA ajustaremos, primero vamos a analizar los autocorrelogramas, analizando la función de autocorrelación simple (ACF) y la función 
+de autocorrelación parcial (PACF). La primera, la ACF, mide la correlación entre la serie y sus valores pasados, y se usa para identificar si la serie sigue un  
+modelo MA o de medias móviles. De esta forma, una disminución lenta de la misma nos indicaría que la serie no es estacionaria. La segunda función, la PACF, se 
+utiliza para identificar si la serie sigue un modelo AR o autoregresivo, ya que representa la relación de la serie entre el valor k y el actual, pero omitiendo 
+el efecto de los valores intermedios entre k-1 y el actual. Así, los valores iniciales serán elevados, y el momento en que se corte será el orden del modelo.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\textwidth]{imgs/correlogramas.png}
+        \caption{Autocorrelogramas} \label{fig:autocorrelogramas}
+    \end{figure}
+\end{center}
+En nuestro caso, si analizamos el ACF, vemos que decrece lentamente, lo que nos indica que la serie no es estacionaria y que requeriría diferenciación (es decir, 
+un $d>0$). Respecto al PACF, vemos un descenso brusco en el primer retardo, mientras que a partir del segundo se puede considerar que es 0, por lo que nos sugiere
+un modelo \texttt{AR(1)}. Sin embargo, como hemos visto que el ACF desciende lentamente, esto nos sugería que es necesario diferenciar la serie. Esto lo haremos
+con el siguiente código:
+\begin{lstlisting}[language=Python]
+    diferencias = train.diff().dropna()
+\end{lstlisting}
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\textwidth]{imgs/diferenciada.png}
+        \caption{Diferenciación de la serie} \label{fig:diferenciacion}
+    \end{figure}
+\end{center}
+En la figura \ref{fig:diferenciacion} vemos la diferenciación que acabamos de hacer, donde ya se ve que la serie tiene una media constante. Vamos a analizar de 
+nuevo el ACF y el PACF, para determinar los parámetros del modelo, en la figura \ref{fig:autocorrelogramasDif}. En este caso, vemos que la serie tiene ya un 
+comportamiento estacionario, ya que cae rápidamente tras el primer retardo, mientras que los valores de la PACF son casi todos 0, por lo que podemos concluir 
+que la diferenciacón ha sido efectiva. Esto nos dice que es un proceso integrado de orden $d=1$.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\textwidth]{imgs/correlogramasDif.png}
+        \caption{Autocorrelogramas de la serie diferenciada} \label{fig:autocorrelogramasDif}
+    \end{figure}
+\end{center}
+
+Por lo tanto, para elegir el modelo, aplicaremos la metodología Box-Jenkins, que se resume en cuatro etapas:
+\begin{enumerate}
+    \item Identificar el modelo.
+    \item Estimar los parámetros.
+    \item Probar el modelo.
+    \item Realizar predicciones.
+\end{enumerate}
+
+Para estimar el modelo, se emplean los resultados de los ACF y los PACF, para crear el modelo $ARIMA(p,q,d)(P,Q,D)s$. Tenemos que tener en cuenta, también, que 
+hemos tenido que realizar una diferenciación para hacer que la serie fuese estacionaria, lo cual nos implica un $d=1$, y se observó un comportamiento estacional 
+en el mismo, por lo que $D=1$. De los gráficos de la ACF y la PACF deducimos que p y q deberían ser 1. Por lo tanto, se selecciona un modelo 
+\texttt{ARIMA$(1,1,1)(0,1,1)_{12}$}. Ajustamos el modelo en Python mediante el siguiente código. 
+\begin{lstlisting}[language=Python]
+    modelo_arima = sm.tsa.ARIMA(train, order=(1, 1, 1), seasonal_order=(0, 1, 1, 12))
+    resultados = modelo_arima.fit()
+    print(resultados.summary())
+\end{lstlisting}
+Sin embargo, al analizar los parámetros, se ve que, si bien el modelo captura bien la dinámica de la serie, los residuos no son normales, y tenemos un p-valor 
+para el AR(1) de $0.575$, lo que nos indica que este coeficiente no es significativo. Respecto a los residuos, vemos que el test de Jarque-Bera, que nos permite 
+comprobar si los datos siguen la asimetría y curtosis de una normal, tiene un p-valor de 0, menor que 0.05, por lo que se rechaza la hipótesis de la normalidad. 
+Además, tenemos un AIC de 2293.991, un BIC de 2306.164 y un HQIC de 2298.935, lo que nos indica un modelo bueno, pero ligeramente complejo. Vamos a ajustar, por 
+tanto, otro modelo, eliminando el parámetro AR(1), haciendo un \texttt{ARIMA$(0,1,1)(0,1,1)_{12}$}.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.85\textwidth]{imgs/residuos_arima.png}
+        \caption{Estudio de los residuos del modelo ARIMA} \label{fig:residuos_arima}
+    \end{figure}
+\end{center}
+En este modelo, tenemos los parámetros que se ven en la figura \ref{fig:parametrosArima}, que se estiman mediante máxima verosimilitud. Como todos los p-valores 
+son menores que 0.05, podemos concluir que, ahora sí, todos son estadísticamente significativos, y se incluyen en el modelo. Por otra parte, en el gráfico 
+\ref{fig:residuos_arima}, donde analizamos los residuos, vemos que, no muestran un patrón, se ajustan más o menos a la normal (aunque con una ligera asimetría), 
+son incorrelados (pues están dentro de las bandas de confianza), y se observan algunas desviaciones en el gráfico Q-Q, que se deben con toda seguridad al año 
+de la pandemia. Respecto a las métricas de ajuste, el AIC es de 2292.115, el BIC es de 2301.246 y el HQIC es de 2295.824, todos menores que en el anterior modelo, 
+lo que nos indica que es mejor en términos de parsimonia y de ajuste. Es decir, es un modelo más sencillo, y que ajusta mejor. Si analizamos también el contraste 
+de Ljung-Box, este toma un valor de 0.02 con una probabilidad de 0.90. Ya que la probabilidad es alta, mayor que 0.05, esto nos indica que los residuos son 
+independientes (es decir, ruido blanco) y, por tanto, que el modelo es adecuado.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\textwidth]{imgs/parametrosArima.png}
+        \caption{Parámetros del modelo ARIMA} \label{fig:parametrosArima}
+    \end{figure}
+\end{center}
+
+\subsection{Modelo autoARIMA}\label{autoARIMA}
+Ahora ajustaremos el modelo automático, lo cual haremos mediante el siguiente comando:
+\begin{lstlisting}[language=Python]
+    modelo_auto = pm.auto_arima(train, m=12, d=0, D=1, start_p=0, max_p=3, start_q=0, max_q=3,seasonal=True, trace=True,error_action='ignore', suppress_warnings=True,stepwise=True) 
+\end{lstlisting}
+Esto nos proporciona el siguiente output:
+\begin{lstlisting}[numbers=none]
+    Performing stepwise search to minimize aic
+    ARIMA(0,0,0)(1,1,1)[12] intercept   : AIC=2532.302, Time=0.16 sec
+    ARIMA(0,0,0)(0,1,0)[12] intercept   : AIC=2529.758, Time=0.02 sec
+    ARIMA(1,0,0)(1,1,0)[12] intercept   : AIC=2326.242, Time=0.29 sec
+    ARIMA(0,0,1)(0,1,1)[12] intercept   : AIC=2430.942, Time=0.32 sec
+    ARIMA(0,0,0)(0,1,0)[12]             : AIC=2531.202, Time=0.02 sec
+    ARIMA(1,0,0)(0,1,0)[12] intercept   : AIC=2330.791, Time=0.12 sec
+    ARIMA(1,0,0)(2,1,0)[12] intercept   : AIC=2327.524, Time=0.78 sec
+    ARIMA(1,0,0)(1,1,1)[12] intercept   : AIC=2323.603, Time=0.62 sec
+    ARIMA(1,0,0)(0,1,1)[12] intercept   : AIC=2324.114, Time=0.41 sec
+    ARIMA(1,0,0)(2,1,1)[12] intercept   : AIC=2325.603, Time=1.15 sec
+    ARIMA(1,0,0)(1,1,2)[12] intercept   : AIC=2325.603, Time=1.19 sec
+    ARIMA(1,0,0)(0,1,2)[12] intercept   : AIC=2324.340, Time=0.99 sec
+    ARIMA(1,0,0)(2,1,2)[12] intercept   : AIC=2326.882, Time=1.45 sec
+    ARIMA(2,0,0)(1,1,1)[12] intercept   : AIC=2316.942, Time=0.81 sec
+    ARIMA(2,0,0)(0,1,1)[12] intercept   : AIC=2317.061, Time=0.56 sec
+    ARIMA(2,0,0)(1,1,0)[12] intercept   : AIC=2323.214, Time=0.35 sec
+    ARIMA(2,0,0)(2,1,1)[12] intercept   : AIC=2318.875, Time=1.30 sec
+    ARIMA(2,0,0)(1,1,2)[12] intercept   : AIC=2318.933, Time=1.34 sec
+    ARIMA(2,0,0)(0,1,0)[12] intercept   : AIC=2330.780, Time=0.12 sec
+    ARIMA(2,0,0)(0,1,2)[12] intercept   : AIC=2317.058, Time=1.02 sec
+    ARIMA(2,0,0)(2,1,0)[12] intercept   : AIC=2322.958, Time=0.75 sec
+    ARIMA(2,0,0)(2,1,2)[12] intercept   : AIC=inf, Time=1.71 sec
+    ARIMA(3,0,0)(1,1,1)[12] intercept   : AIC=2318.228, Time=1.01 sec
+    ARIMA(2,0,1)(1,1,1)[12] intercept   : AIC=2318.370, Time=1.01 sec
+    ARIMA(1,0,1)(1,1,1)[12] intercept   : AIC=2316.413, Time=0.72 sec
+    ARIMA(1,0,1)(0,1,1)[12] intercept   : AIC=2316.201, Time=0.58 sec
+    ARIMA(1,0,1)(0,1,0)[12] intercept   : AIC=2331.178, Time=0.05 sec
+    ARIMA(1,0,1)(0,1,2)[12] intercept   : AIC=2316.479, Time=1.48 sec
+    ARIMA(1,0,1)(1,1,0)[12] intercept   : AIC=2323.333, Time=0.36 sec
+    ARIMA(1,0,1)(1,1,2)[12] intercept   : AIC=2318.390, Time=1.37 sec
+    ARIMA(2,0,1)(0,1,1)[12] intercept   : AIC=2318.191, Time=0.87 sec
+    ARIMA(1,0,2)(0,1,1)[12] intercept   : AIC=2318.191, Time=0.84 sec
+    ARIMA(0,0,0)(0,1,1)[12] intercept   : AIC=2530.616, Time=0.09 sec
+    ARIMA(0,0,2)(0,1,1)[12] intercept   : AIC=2388.834, Time=0.64 sec
+    ARIMA(2,0,2)(0,1,1)[12] intercept   : AIC=inf, Time=1.00 sec
+    ARIMA(1,0,1)(0,1,1)[12]             : AIC=2314.686, Time=0.38 sec
+    ARIMA(1,0,1)(0,1,0)[12]             : AIC=2329.101, Time=0.04 sec
+    ARIMA(1,0,1)(1,1,1)[12]             : AIC=2315.315, Time=0.48 sec
+    ARIMA(1,0,1)(0,1,2)[12]             : AIC=2315.310, Time=0.77 sec
+    ARIMA(1,0,1)(1,1,0)[12]             : AIC=2321.435, Time=0.18 sec
+    ARIMA(1,0,1)(1,1,2)[12]             : AIC=2317.277, Time=1.15 sec
+    ARIMA(0,0,1)(0,1,1)[12]             : AIC=2431.070, Time=0.21 sec
+    ARIMA(1,0,0)(0,1,1)[12]             : AIC=2322.608, Time=0.26 sec
+    ARIMA(2,0,1)(0,1,1)[12]             : AIC=2316.682, Time=0.47 sec
+    ARIMA(1,0,2)(0,1,1)[12]             : AIC=2316.683, Time=0.46 sec
+    ARIMA(0,0,0)(0,1,1)[12]             : AIC=2531.484, Time=0.14 sec
+    ARIMA(0,0,2)(0,1,1)[12]             : AIC=2388.587, Time=0.42 sec
+    ARIMA(2,0,0)(0,1,1)[12]             : AIC=2315.577, Time=0.36 sec
+    ARIMA(2,0,2)(0,1,1)[12]             : AIC=2317.649, Time=0.89 sec
+   
+   Best model:  ARIMA(1,0,1)(0,1,1)[12]          
+   Total fit time: 31.727 seconds
+\end{lstlisting}
+De esta forma, el método autoARIMA ha determinado que el mejor modelo es un \texttt{ARIMA$(1,0,1)(0,1,1)_{12}$}, el cual es ligeramente parecido al que habíamos 
+probado nosotros en el método manual, tanto el primero como el segundo. Sus parámetros están en la figura \ref{fig:parametros_autoArima}. De nuevo, todos los 
+parámetros son significativos, puesto que su p-valor es 0. Además, en la figura \label{fig:residuos_auto} vemos el análisis de los residuos, que son prácticamente 
+iguales a los del modelo manual. Obtenemos también una probabilidad alta en la prueba de Ljunb-Box, por lo que los residuos son ruido blanco, y podemos concluir 
+que el modelo es también adecuado.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.75\textwidth]{imgs/parametros_autoArima.png}
+        \caption{Parámetros del modelo autoARIMA} \label{fig:parametros_autoArima}
+    \end{figure}
+\end{center}
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.85\textwidth]{imgs/residuos_auto.png}
+        \caption{Estudio de los residuos del modelo autoARIMA} \label{fig:residuos_auto}
+    \end{figure}
+\end{center}
+
+\subsection{Comparación y conclusiones}\label{compConcl}
+Para determinar el mejor modelo, tenemos que analizar los resultados del \hyperref[modelo manual]{ARIMAman} y del \hyperref[modelo automático]{autoARIMA} (ya que 
+está claro que los modelos de suavizado no van a ser los mejores, ya que vimos que no ajustaban bien los datos [exceptuando el de Holt-Winters, que en cualquier 
+caso tiene peor ajuste que los modelos que venimos de analizar con el modelado de ARIMA]). Para determinar el mejor modelo, realizaremos una comparación basada 
+en los parámetros de ambos, que recordamos que eran un \texttt{ARIMA$(0,1,1)(0,1,1)_{12}$} en el manual y un \texttt{ARIMA$(1,0,1)(0,1,1)_{12}$} en el 
+automático. Si vemos los valores de AIC, tenemos 2292.115 para el manual y 2314.686 para el automático; para el BIC, 2301.246 para el manual y 2326.886 para 
+el automático; y para el HQIC, 2295.824 para el manual y 2319.641 para el automático. Aunque la diferencia no es elevada, los tres valores son más bajos en el 
+caso del manual, lo que nos sugiere que este podría ser el mejor modelo. Además, los parámetros en ambos modelos son estadísticamente significativos, ya que 
+su p-valor es menor que 0.05. Sin embargo, en el modelo automático, el coeficiente del término autorregresivo AR(1) es de 0.94, muy próximo a 1, lo que podría 
+sugerir que el modelo está captando una tendencia en vez de una dependencia temporal. La prueba de Ljung-Box es satisfactoria en ambos casos, al igual que la 
+de Jarque-Bera; esta última, sin embargo, es mejor en el caso del modelo manual, ya que indica que se ajusta mejor a una distribución normal. Por lo tanto, y 
+basándonos en todo esto, determinamos que el modelo manual es el mejor de entre los dos.
+
+La expresión algebraica del modelo es, por tanto, la siguiente:
+\begin{equation}
+(1 - B)y_t = (1 + 0.3774B)(1+0.6293B^{12})e_t
+\end{equation}
+Donde el término $(1 - B)y_t$ es la diferencia de primer orden de la serie; $(1 + 0.3774B)$ es la parte de la media móvil no estacional, y $(1+0.6293B^{12})$ 
+la parte de la media móvil estacional.
+
+Calculamos las predicciones para este modelo manual, empleando para ello el método \texttt{get\_forecast}, para el año 2024 (que es el que reservamos para los 
+datos de test), y graficamos tanto la predicción del número de viajeros como los datos de test que teníamos, para compararlos. En la figura \ref{fig:prediccionesManual} 
+vemos estas predicciones en la serie global, con todos los datos, mientras que en la figura \ref{fig:prediccionesManualConf} vemos también los intervalos de 
+confianza, representados de forma gráfica, como se solicitaba en el enunciado del trabajo. Como podemos ver, las predicciones realizadas se ajustan bastante 
+bien a los datos de test que teníamos. En los primeros meses del año capta los resultados y las tendencias bastante bien, detectando también el pico de viajeros 
+del mes de julio. Si bien es cierto que, por ejemplo, el descenso de viajeros de septiembre o diciembre no los captura tan bien. Sin embargo, es importante 
+fijarse en un hecho curioso: los datos de test tienen tres meses con datos que sobresalen de los intervalos de confianza, lo cual puede significar que, aunque 
+el modelo se ajuste bien, se han producido unas variaciones atípicas en los números de viajeros en estos meses, que el modelo no sería capaz de detectar. 
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{imgs/predicciones_manual.png}
+            \caption{Predicciones del modelo manual}
+            \label{fig:prediccionesManual}
+        \end{minipage}
+        \hspace{0.005\textwidth} % Espacio entre las imágenes
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{imgs/predicciones_manual_conf.png}
+            \caption{Predicciones del modelo manual con intervalos de confianza}
+            \label{fig:prediccionesManualConf}
+        \end{minipage}
+    \end{figure}
+\end{center}
+
+Sin embargo, en resumen, podemos decir que el modelo es de una calidad bastante aceptable. Hemos representado, en la figura \ref{fig:predicciones_futuro} una 
+predicción a mayores, para los próximos 5 años (72 meses, ya que tenemos que contar los 12 meses del año 2024). Estas predicciones captan, además de la 
+estacionalidad de los datos, la tendencia al alza que vinimos comentando que se observaba desde la pandemia. Con estas predicciones será interesante analizar, 
+una vez que se tengan los datos de este periodo, compararlos, para ver si el modelo realizó unas predicciones adecuadas.
+\begin{center}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.85\textwidth]{imgs/predicciones_futuro.png}
+        \caption{Predicciones a futuro} \label{fig:predicciones_futuro}
+    \end{figure}
+\end{center}
+
+A modo de conclusión, tenemos un modelo \texttt{ARIMA$(0,1,1)(0,1,1)_{12}$} que hemos creado de forma manual, que hemos determinado que era el ganador, por ser 
+el que mejor parsimonia y ajuste tiene en cuanto a los datos. Tras realizar las predicciones, además, se observan unos resultados bastante bien ajustados. Los 
+residuos del modelo pueden considerarse ruido blanco, lo que indica también que el modelo ha capturado correcatmente las dependencias temporales. Además, son 
+estables, por lo que el modelo no estaría sesgado. Las métricas de AIC y BIC obtenidas apoyan esto, ya que sugieren que el modelo no está sobreajustado y que no 
+es excesivamente complejo. Las predicciones que realiza son adecuadas a corto plazo, pero una posible mejora para este ejercicio podría ser probar con otro tipo 
+de modelos, o incorporar algunas variables que se sepa que afectan especialmente al número de viajeros, para poder realizar mejores predicciones a largo plazo.
+
+\clearpage
 \newpage
 
 \appendix
