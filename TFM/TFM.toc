@@ -1,0 +1,4 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción y análisis inicial}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Introducción}{3}{subsection.1.1}%
+\contentsline {section}{\numberline {A}Anexo: Código de la práctica}{4}{appendix.Alph1}%
