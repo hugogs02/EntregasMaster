@@ -1,255 +1,226 @@
-# -------------------------------
-# Librerías
-# -------------------------------
-import pandas as pd
 import numpy as np
+import pandas as pd
+from sklearn.model_selection import TimeSeriesSplit, ParameterGrid
+from sklearn.preprocessing import StandardScaler
+from sklearn.multioutput import MultiOutputRegressor
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, explained_variance_score
+from sklearn.ensemble import StackingRegressor
+from sklearn.base import clone
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, SimpleRNN, Dense, Dropout, Conv1D, Flatten, GRU
+from tensorflow.keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.cluster import KMeans
-from scipy.stats import spearmanr
-import xgboost as xgb
-import lightgbm as lgb
-from tensorflow.keras import layers, models, callbacks, optimizers
+import warnings
+warnings.filterwarnings("ignore")
 
-# -------------------------------
-# Parámetros
-# -------------------------------
-DATA_PATH = 'stock_details_5_years.csv'
-W = 30
-H = 10
-LR = 1e-3
-EPOCHS = 20
-BATCH_SIZE = 512
-PATIENCE = 5
-FEATURES = ['r1','ma4','ma12','vol4','vol12','mom_12_1']
-
-# -------------------------------
-# Cargar y preprocesar
-# -------------------------------
-def load_and_standardize(path=DATA_PATH):
+# ---------------- LOAD & FILTER ----------------
+def load_and_filter(path, max_nan_ratio=0.4, sample_ratio=0.3):
     df = pd.read_csv(path)
-    # Convertimos a datetime y normalizamos la zona horaria a UTC
     df['Date'] = pd.to_datetime(df['Date'], utc=True)
     df = df.sort_values(['Company','Date']).reset_index(drop=True)
-    
-    # Agrupamos semanalmente por Company
-    df_weekly = []
-    for t, g in df.groupby('Company'):
-        g = g.set_index('Date').resample('W').last().reset_index()
-        df_weekly.append(g)
-    
-    df_final = pd.concat(df_weekly).reset_index(drop=True)
-    return df_final
+    df_pivot = df.pivot(index='Date', columns='Company', values='Close')
 
+    # Filtrar empresas con más del 40% de nulos
+    mask_keep = df_pivot.isna().mean() <= max_nan_ratio
+    df_pivot = df_pivot.loc[:, mask_keep]
 
-# -------------------------------
-# EDA
-# -------------------------------
-def eda_report(df):
-    print(df.head())
-    print(df.describe())
-    tickers = df['Company'].unique()[:5]
-    plt.figure(figsize=(12,5))
-    for t in tickers:
-        g = df[df['Company']==t]
-        plt.plot(g['Date'], g['Close'], label=t)
-    plt.title("Precios de cierre (muestra)")
-    plt.legend()
-    plt.show()
+    # Interpolación temporal
+    df_pivot = df_pivot.interpolate(method='time').fillna(0)
 
-# -------------------------------
-# Ingeniería de features
-# -------------------------------
-def feature_factory(df):
-    out = []
-    for t, g in df.groupby('Company'):
-        g = g.sort_values('Date').copy()
-        g['log_close'] = np.log(g['Close'])
-        g['r1'] = g['log_close'].diff()
-        g['ma4'] = g['Close'].rolling(4).mean()
-        g['ma12'] = g['Close'].rolling(12).mean()
-        g['vol4'] = g['r1'].rolling(4).std()
-        g['vol12'] = g['r1'].rolling(12).std()
-        g['mom_12_1'] = g['Close'].pct_change(12) - g['Close'].pct_change(4)
-        out.append(g)
-    df_feat = pd.concat(out).dropna().reset_index(drop=True)
-    return df_feat
+    # Submuestra aleatoria de empresas
+    sampled_cols = np.random.choice(df_pivot.columns, int(len(df_pivot.columns)*sample_ratio), replace=False)
+    df_sample = df_pivot[sampled_cols]
 
-# -------------------------------
-# Análisis de correlación de features
-# -------------------------------
-def feature_correlation(df_feat, features=FEATURES):
-    corr = df_feat[features].corr()
-    plt.figure(figsize=(8,6))
-    sns.heatmap(corr, annot=True, cmap='coolwarm')
-    plt.title("Correlación entre features")
-    plt.show()
-    return corr
+    # Resample semanal
+    df_weekly = df_sample.resample('W').last()
+    return df_weekly
 
-# -------------------------------
-# Crear ventanas para series temporales
-# -------------------------------
-def make_windows(df_feat, W=W, H=H, features=FEATURES):
-    tickers = df_feat['Company'].unique()
-    ticker2id = {t:i for i,t in enumerate(tickers)}
-    samples, ys, tids, dates = [],[],[],[]
-    for t in tickers:
-        g = df_feat[df_feat['Company']==t].sort_values('Date')
-        arr = g[features].values
-        logc = g['log_close'].values
-        n = len(g)
-        for i in range(W-1, n-H):
-            samples.append(arr[i-W+1:i+1])
-            ys.append(logc[i+H]-logc[i])
-            tids.append(ticker2id[t])
-            dates.append(g['Date'].iloc[i])
-    return np.stack(samples), np.array(ys), np.array(tids), np.array(dates), ticker2id
+# ---------------- CREATE SUPERVISED DATA ----------------
+def create_supervised(df, W=30, H=10):
+    X, y = [], []
+    for col in df.columns:
+        data = df[col].values
+        for i in range(len(data) - W - H + 1):
+            X.append(data[i:i+W])
+            y.append(data[i+W:i+W+H])
+    return np.array(X), np.array(y)
 
-# -------------------------------
-# Modelos
-# -------------------------------
-def build_lstm(input_shape):
-    model = models.Sequential([
-        layers.Input(shape=input_shape),
-        layers.LSTM(64),
-        layers.Dropout(0.2),
-        layers.Dense(32, activation='relu'),
-        layers.Dense(1)
-    ])
-    model.compile(optimizer=optimizers.Adam(LR), loss='mse', metrics=['mae'])
+# ---------------- METRICS ----------------
+def compute_metrics(y_true, y_pred):
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+    mape = np.mean(np.abs((y_true - y_pred) / (y_true + 1e-6))) * 100
+    da = np.mean((y_true > 0) == (y_pred > 0))
+    smape = 100 * np.mean(2 * np.abs(y_pred - y_true) / (np.abs(y_true) + np.abs(y_pred) + 1e-6))
+    evs = explained_variance_score(y_true, y_pred)
+    return {"MSE": mse, "RMSE": rmse, "MAE": mae, "R2": r2, "MAPE": mape, "DA": da, "SMAPE": smape, "EVS": evs}
+
+# ---------------- DEEP LEARNING BUILDERS ----------------
+def build_lstm(input_shape, units=50, dropout=0.3, H=10):
+    model = Sequential([LSTM(units, input_shape=input_shape),
+                        Dropout(dropout),
+                        Dense(H)])
+    model.compile(optimizer='adam', loss='mse')
     return model
 
-def build_rnn(input_shape):
-    model = models.Sequential([
-        layers.Input(shape=input_shape),
-        layers.SimpleRNN(64),
-        layers.Dropout(0.2),
-        layers.Dense(32, activation='relu'),
-        layers.Dense(1)
-    ])
-    model.compile(optimizer=optimizers.Adam(LR), loss='mse', metrics=['mae'])
+def build_rnn(input_shape, units=50, dropout=0.3, H=10):
+    model = Sequential([SimpleRNN(units, input_shape=input_shape),
+                        Dropout(dropout),
+                        Dense(H)])
+    model.compile(optimizer='adam', loss='mse')
     return model
 
-def train_rf(X_train, y_train):
-    ns, W_, nf = X_train.shape
-    Xflat = X_train.reshape(ns, W_*nf)
-    rf = RandomForestRegressor(n_estimators=200, n_jobs=-1, random_state=42)
-    rf.fit(Xflat, y_train)
-    return rf
+def build_conv1d(input_shape, filters=32, kernel_size=3, dropout=0.3, H=10, **kwargs):
+    model = Sequential([Conv1D(filters=filters, kernel_size=kernel_size, activation='relu', input_shape=input_shape),
+                        Flatten(),
+                        Dropout(dropout),
+                        Dense(H)])
+    model.compile(optimizer='adam', loss='mse')
+    return model
 
-def train_xgb(X_train, y_train):
-    ns, W_, nf = X_train.shape
-    Xflat = X_train.reshape(ns, W_*nf)
-    xgb_model = xgb.XGBRegressor(n_estimators=200, max_depth=6, learning_rate=0.1, random_state=42)
-    xgb_model.fit(Xflat, y_train)
-    return xgb_model
+def build_gru(input_shape, units=50, dropout=0.3, H=10, **kwargs):
+    model = Sequential([GRU(units, input_shape=input_shape),
+                        Dropout(dropout),
+                        Dense(H)])
+    model.compile(optimizer='adam', loss='mse')
+    return model
 
-def train_lgb(X_train, y_train):
-    ns, W_, nf = X_train.shape
-    Xflat = X_train.reshape(ns, W_*nf)
-    lgb_model = lgb.LGBMRegressor(n_estimators=200, learning_rate=0.1, random_state=42)
-    lgb_model.fit(Xflat, y_train)
-    return lgb_model
+# ---------------- EVALUATION ----------------
+def eval_ml_tscv(model, X, y, n_splits=5):
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    metrics_list = []
+    for train_idx, test_idx in tscv.split(X):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        model_fit = MultiOutputRegressor(model) if y.shape[1] > 1 else model
+        model_fit.fit(X_train, y_train)
+        y_pred = model_fit.predict(X_test)
+        metrics_list.append(compute_metrics(y_test, y_pred))
+    return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# -------------------------------
-# Métricas
-# -------------------------------
-def directional_accuracy(y_true, y_pred):
-    return np.mean((y_true>0)==(y_pred>0))
+def eval_dl_tscv_history(model_builder, X, y, units=50, dropout=0.3, epochs=20, batch_size=64, n_splits=3, **kwargs):
+    X_seq = X.reshape((X.shape[0], X.shape[1], 1))
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    metrics_list = []
+    histories = []
+    for train_idx, test_idx in tscv.split(X_seq):
+        X_train, X_test = X_seq[train_idx], X_seq[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        model = model_builder(input_shape=(X_train.shape[1],1), units=units, dropout=dropout, H=y_train.shape[1], **kwargs)
+        es = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+        history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
+                            validation_data=(X_test, y_test), verbose=0, callbacks=[es])
+        y_pred = model.predict(X_test, verbose=0)
+        metrics_list.append(compute_metrics(y_test, y_pred))
+        histories.append(history)
+    avg_metrics = {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
+    return avg_metrics, histories
 
-def evaluate_model(model, X_test, y_test, is_flat=False):
-    if is_flat:
-        ns, W_, nf = X_test.shape
-        Xflat = X_test.reshape(ns, W_*nf)
-        y_pred = model.predict(Xflat)
-    else:
-        y_pred = model.predict(X_test).flatten()
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-    da = directional_accuracy(y_test, y_pred)
-    return mse, r2, da
+# ---------------- MAIN ----------------
+df_weekly = load_and_filter('stock_details_5_years.csv', max_nan_ratio=0.4, sample_ratio=0.3)
+W, H = 25, 4
+X, y = create_supervised(df_weekly, W=W, H=H)
+X = np.nan_to_num(X)
+y = np.nan_to_num(y)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
 
-# -------------------------------
-# Main
-# -------------------------------
-df = load_and_standardize(DATA_PATH)
-eda_report(df)
-df_feat = feature_factory(df)
-feature_correlation(df_feat, FEATURES)
-
-X, y, tids, dates, ticker2id = make_windows(df_feat)
-
-# Escalado
-ns, W_, nf = X.shape
-scaler = StandardScaler().fit(X.reshape(-1, nf))
-Xs = scaler.transform(X.reshape(-1, nf)).reshape(X.shape)
-
-# División train/test
-split = int(len(Xs)*0.8)
-X_train, X_test = Xs[:split], Xs[split:]
-y_train, y_test = y[:split], y[split:]
-
+# ---- ML ----
+xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
+lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
 results = {}
+best_models = {}
 
-# LSTM
+# XGB
+best_score, best_model = -np.inf, None
+for params in ParameterGrid(xgb_params):
+    print(f"XGB with {params}")
+    model = XGBRegressor(random_state=42, verbosity=0, **params)
+    metrics = eval_ml_tscv(model, X_scaled, y)
+    if metrics["R2"] > best_score:
+        best_score = metrics["R2"]
+        best_model = model
+results["XGB"] = eval_ml_tscv(best_model, X_scaled, y)
+best_models["XGB"] = best_model
+
+# LGBM
+best_score, best_model = -np.inf, None
+for params in ParameterGrid(lgb_params):
+    print(f"LGBM with {params}")
+    model = LGBMRegressor(random_state=42, verbose=-1, **params)
+    metrics = eval_ml_tscv(model, X_scaled, y)
+    if metrics["R2"] > best_score:
+        best_score = metrics["R2"]
+        best_model = model
+results["LGBM"] = eval_ml_tscv(best_model, X_scaled, y)
+best_models["LGBM"] = best_model
+
+# ---- DL ----
+results_dl, histories = {}, {}
+
 print("LSTM")
-lstm = build_lstm((W_, nf))
-es = callbacks.EarlyStopping(monitor='val_loss', patience=PATIENCE, restore_best_weights=True)
-lstm.fit(X_train, y_train, validation_split=0.1, epochs=EPOCHS, batch_size=BATCH_SIZE, callbacks=[es], verbose=0)
-results['LSTM'] = evaluate_model(lstm, X_test, y_test)
-
-# RNN
+results_dl["LSTM"], histories["LSTM"] = eval_dl_tscv_history(build_lstm, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
 print("RNN")
-rnn = build_rnn((W_, nf))
-rnn.fit(X_train, y_train, validation_split=0.1, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=0)
-results['RNN'] = evaluate_model(rnn, X_test, y_test)
+results_dl["RNN"], histories["RNN"] = eval_dl_tscv_history(build_rnn, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
+print("Conv1D")
+results_dl["Conv1D"], histories["Conv1D"] = eval_dl_tscv_history(build_conv1d, X_scaled, y, filters=32, kernel_size=3, dropout=0.3, epochs=20, batch_size=64)
+print("GRU")
+results_dl["GRU"], histories["GRU"] = eval_dl_tscv_history(build_gru, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
 
-# XGBoost
-print("XGBoost")
-xgb_model = train_xgb(X_train, y_train)
-results['XGBoost'] = evaluate_model(xgb_model, X_test, y_test, is_flat=True)
+# ---------------- CONVERTIR A DATAFRAME ----------------
+df_results = pd.DataFrame([{"model": k, **v} for k,v in {**results, **results_dl}.items()])
 
-# LightGBM
-print("LightGBM")
-lgb_model = train_lgb(X_train, y_train)
-results['LightGBM'] = evaluate_model(lgb_model, X_test, y_test, is_flat=True)
+# ---------------- IMPRIMIR ----------------
+print(df_results.sort_values(by="R2", ascending=False).reset_index(drop=True))
 
-"""# Random Forest
-print("Random Forest")
-rf = train_rf(X_train, y_train)
-results['Random Forest'] = evaluate_model(rf, X_test, y_test, is_flat=True)"""
-
-# Comparación final
-df_results = pd.DataFrame(results, index=['MSE','R2','Directional Accuracy']).T
-print(df_results)
-df_results.plot(kind='bar', figsize=(12,6), subplots=True, layout=(1,3), legend=False)
-plt.suptitle("Comparación de modelos")
+# ---------------- GRAFICO METRICAS ----------------
+plt.figure(figsize=(12,6))
+metrics_to_plot = ["R2","RMSE","MAE","SMAPE","EVS"]
+df_plot = df_results.melt(id_vars=["model"], value_vars=metrics_to_plot, var_name="Metric", value_name="Value")
+sns.barplot(data=df_plot, x="model", y="Value", hue="Metric")
+plt.title("Comparación de modelos por métricas")
+plt.xticks(rotation=45)
+plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
 plt.tight_layout()
 plt.show()
 
-# -------------------------------
-# Importancia de features
-# -------------------------------
-def feature_importance_rf(model, features):
-    imp = pd.DataFrame({'Feature':features,'Importance':model.feature_importances_}).sort_values('Importance',ascending=False)
-    print("\nImportancia features RF:")
-    print(imp)
-    sns.barplot(x='Importance',y='Feature',data=imp)
-    plt.title("RF Feature Importance")
+# ---------------- GRAFICOS TRAIN VS VAL LOSS DL ----------------
+for model_name, history_list in histories.items():
+    plt.figure(figsize=(8,4))
+    for fold, history in enumerate(history_list):
+        plt.plot(history.history['loss'], label=f'Train fold {fold+1}')
+        plt.plot(history.history['val_loss'], label=f'Val fold {fold+1}', linestyle='--')
+    plt.title(f'Train vs Val Loss - {model_name}')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss (MSE)')
+    plt.legend()
     plt.show()
-    return imp
 
-def feature_importance_lgb(model, features):
-    imp = pd.DataFrame({'Feature':features,'Importance':model.feature_importances_}).sort_values('Importance',ascending=False)
-    print("\nImportancia features LGBM:")
-    print(imp)
-    sns.barplot(x='Importance',y='Feature',data=imp)
-    plt.title("LGBM Feature Importance")
-    plt.show()
-    return imp
+# ---------------- COMPARACION PREDICCIONES vs TEST (10 empresas) ----------------
+sample_companies = np.random.choice(df_weekly.columns, 10, replace=False)
+fig, axs = plt.subplots(5,2, figsize=(14,12))
+axs = axs.flatten()
 
-feature_importance_rf(xgb_model, FEATURES)
-feature_importance_lgb(lgb_model, FEATURES)
+for i, comp in enumerate(sample_companies):
+    # Crear datos supervisados para la empresa
+    data = df_weekly[comp].values
+    X_comp, y_comp = create_supervised(pd.DataFrame({comp:data}), W=W, H=H)
+    X_comp = np.nan_to_num(X_comp)
+    y_comp = np.nan_to_num(y_comp)
+    X_comp_scaled = scaler.transform(X_comp)
+
+    # Predecimos con el mejor ML (XGB como ejemplo)
+    y_pred = best_models["XGB"].fit(X_scaled, y).predict(X_comp_scaled)
+
+    axs[i].plot(range(len(y_comp[:,0])), y_comp[:,0], label="Test")
+    axs[i].plot(range(len(y_pred[:,0])), y_pred[:,0], label="Pred")
+    axs[i].set_title(comp)
+    axs[i].legend()
+
+plt.tight_layout()
+plt.show()

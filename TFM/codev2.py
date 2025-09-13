@@ -1,3 +1,4 @@
+####### WORKS GOOD, TRYING TO IMPROVE
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import TimeSeriesSplit, ParameterGrid
@@ -126,36 +127,55 @@ def eval_dl_tscv(model_builder, X, y, units=50, dropout=0.3, epochs=20, batch_si
         metrics_list.append(compute_metrics(y_test, y_pred))
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# ---------------- STACKING CON TIME SERIES SPLIT ----------------
-def eval_stacking_tscv(base_models, meta_model, X, y, n_splits=5):
+# --- SECCIÓN MODIFICADA PARA REDUCIR OVERFITTING ---
+
+def eval_dl_tscv(model_builder, X, y, units=32, dropout=0.4, epochs=50, batch_size=64, n_splits=3, **kwargs):
+    """
+    Cross-validation para modelos DL con EarlyStopping y validación interna.
+    """
+    X_seq = X.reshape((X.shape[0], X.shape[1], 1))
     tscv = TimeSeriesSplit(n_splits=n_splits)
-    S_train = np.zeros((X.shape[0], len(base_models)))
-    S_test_all = []
+    metrics_list = []
+    histories = []
+    preds_last_fold, y_test_last_fold = None, None
 
-    for fold, (train_idx, test_idx) in enumerate(tscv.split(X)):
-        X_train, X_test = X[train_idx], X[test_idx]
+    for fold, (train_idx, test_idx) in enumerate(tscv.split(X_seq)):
+        X_train, X_test = X_seq[train_idx], X_seq[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
-        for i, (name, model) in enumerate(base_models):
-            model_fold = clone(model)
-            if y.shape[1] > 1:
-                model_fold = MultiOutputRegressor(model_fold)
-            model_fold.fit(X_train, y_train)
-            S_train[test_idx, i] = model_fold.predict(X_test).mean(axis=1)
-        S_test_all.append(S_train[test_idx, :])
 
-    meta_model_fit = clone(meta_model)
-    if y.shape[1] > 1:
-        meta_model_fit = MultiOutputRegressor(meta_model_fit)
-    meta_model_fit.fit(S_train, y)
+        model = model_builder(
+            input_shape=(X_train.shape[1],1),
+            units=units,
+            dropout=dropout,
+            H=y_train.shape[1],
+            **kwargs
+        )
 
-    S_test_all = np.vstack(S_test_all)
-    y_pred = meta_model_fit.predict(S_train)
+        es = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True, verbose=0)
 
-    return compute_metrics(y, y_pred), meta_model_fit
+        history = model.fit(
+            X_train, y_train,
+            validation_split=0.2,
+            epochs=epochs,
+            batch_size=batch_size,
+            verbose=0,
+            callbacks=[es]
+        )
+        histories.append(history.history)
 
-# ---------------- MAIN ----------------
+        y_pred = model.predict(X_test, verbose=0)
+        metrics_list.append(compute_metrics(y_test, y_pred))
+
+        # Guardamos última predicción para graficar
+        preds_last_fold, y_test_last_fold = y_pred, y_test
+
+    avg_metrics = {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
+    return avg_metrics, histories, preds_last_fold, y_test_last_fold
+
+
+# --- MAIN (EJEMPLO DE USO) ---
 df_weekly = load_and_pivot('stock_details_5_years.csv')
-W, H = 25, 10
+W, H = 25, 4
 X, y = create_supervised(df_weekly, W=W, H=H)
 
 X = np.nan_to_num(X)
@@ -163,73 +183,65 @@ y = np.nan_to_num(y)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# ---- XGB & LGBM ----
-xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
-lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
 results = {}
+histories_dict = {}
+preds_dict = {}
+ytest_dict = {}
 
-best_score, best_model = -np.inf, None
-for params in ParameterGrid(xgb_params):
-    print(f"XGB with {params}")
-    model = XGBRegressor(random_state=42, verbosity=0, **params)
-    metrics = eval_ml_tscv(model, X_scaled, y)
-    if metrics["R2"] > best_score:
-        best_score = metrics["R2"]
-        best_model = model
-results["XGB"] = eval_ml_tscv(best_model, X_scaled, y)
-
-best_score, best_model = -np.inf, None
-for params in ParameterGrid(lgb_params):
-    print(f"LGBM with {params}")
-    model = LGBMRegressor(random_state=42, verbose=-1, **params)
-    metrics = eval_ml_tscv(model, X_scaled, y)
-    if metrics["R2"] > best_score:
-        best_score = metrics["R2"]
-        best_model = model
-results["LGBM"] = eval_ml_tscv(best_model, X_scaled, y)
-
-# ---- DEEP LEARNING ----
+# LSTM
 print("LSTM")
-results["LSTM"] = eval_dl_tscv(build_lstm, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
+metrics, histories, preds, ytest = eval_dl_tscv(build_lstm, X_scaled, y)
+results["LSTM"] = metrics
+histories_dict["LSTM"] = histories
+preds_dict["LSTM"] = preds
+ytest_dict["LSTM"] = ytest
 
-print("RNN")
-results["RNN"] = eval_dl_tscv(build_rnn, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
-
-print("Conv1D")
-results["Conv1D"] = eval_dl_tscv(build_conv1d, X_scaled, y, filters=32, kernel_size=3, dropout=0.3, epochs=20, batch_size=64)
-
+# GRU
 print("GRU")
-results["GRU"] = eval_dl_tscv(build_gru, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
+metrics, histories, preds, ytest = eval_dl_tscv(build_gru, X_scaled, y)
+results["GRU"] = metrics
+histories_dict["GRU"] = histories
+preds_dict["GRU"] = preds
+ytest_dict["GRU"] = ytest
 
-# ---------------- CONVERTIR A DATAFRAME ----------------
-df_results = pd.DataFrame([
-    {"model": k, **v} for k, v in results.items()
-])
-
-# ---------------- IDENTIFICAR LOS MEJORES ----------------
-best_models = {}
-for metric in ["R2", "RMSE", "MAE", "SMAPE", "EVS"]:
-    if metric in ["RMSE", "MAE", "SMAPE"]:
-        best_models[metric] = df_results.loc[df_results[metric].idxmin()]
-    else:
-        best_models[metric] = df_results.loc[df_results[metric].idxmax()]
-
-# ---------------- IMPRIMIR RESULTADOS ----------------
-print("\n--- RESULTADOS COMPLETOS ---")
-print(df_results.sort_values(by="R2", ascending=False).reset_index(drop=True))
-
-print("\n--- MEJORES MODELOS POR MÉTRICA ---")
-for metric, row in best_models.items():
-    print(f"{metric}: {row['model']} ({metric}={row[metric]:.3f})")
+# Conv1D
+print("Conv1D")
+metrics, histories, preds, ytest = eval_dl_tscv(build_conv1d, X_scaled, y)
+results["Conv1D"] = metrics
+histories_dict["Conv1D"] = histories
+preds_dict["Conv1D"] = preds
+ytest_dict["Conv1D"] = ytest
 
 # ---------------- VISUALIZACIÓN ----------------
-plt.figure(figsize=(12,6))
-metrics_to_plot = ["R2", "RMSE", "MAE", "SMAPE", "EVS"]
-df_plot = df_results.melt(id_vars=["model"], value_vars=metrics_to_plot, var_name="Metric", value_name="Value")
+df_results = pd.DataFrame([{"model": k, **v} for k, v in results.items()])
+print(df_results)
 
+# --- Gráfico de métricas ---
+plt.figure(figsize=(12,6))
+metrics_to_plot = ["R2","RMSE","MAE","SMAPE","EVS"]
+df_plot = df_results.melt(id_vars=["model"], value_vars=metrics_to_plot, var_name="Metric", value_name="Value")
 sns.barplot(data=df_plot, x="model", y="Value", hue="Metric")
-plt.title("Comparación de modelos por métricas")
+plt.title("Comparación de modelos DL con regularización")
 plt.xticks(rotation=45)
-plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
 plt.tight_layout()
 plt.show()
+
+# --- Gráfico train vs val loss de un modelo (ej: LSTM) ---
+plt.figure(figsize=(8,5))
+plt.plot(histories_dict["LSTM"][0]['loss'], label='Train loss')
+plt.plot(histories_dict["LSTM"][0]['val_loss'], label='Val loss')
+plt.title("Evolución del loss (LSTM, fold 1)")
+plt.legend()
+plt.show()
+
+# --- Comparar predicciones vs reales en 10 empresas (último fold) ---
+idx_sample = np.random.choice(range(ytest_dict["GRU"].shape[0]), size=10, replace=False)
+plt.figure(figsize=(12,6))
+for i, idx in enumerate(idx_sample):
+    plt.plot(ytest_dict["LSTM"][idx], label=f"Real {i}")
+    plt.plot(preds_dict["LSTM"][idx], '--', label=f"Pred {i}")
+    plt.title("Predicciones vs reales en submuestra de 10 empresas (LSTM)")
+    plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
+    plt.tight_layout()
+    plt.show()

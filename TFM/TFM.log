@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  10 SEP 2025 20:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  11 SEP 2025 18:43
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -539,15 +539,18 @@ LaTeX Info: Redefining \% on input line 1.
 
 
 [2]
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
 
+[3]
 
-[3{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
+[4]
 
-[4
+[5]
+
+[6]
+
+[7]
+
+[8
 
 ] (./TFM.aux
 LaTeX Info: Redefining \. on input line 12.
@@ -558,21 +561,21 @@ LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
 Package rerunfilecheck Info: File `TFM.out' has not changed.
-(rerunfilecheck)             Checksum: A132C175DED60F40AE0F6DCAE3295638;539.
+(rerunfilecheck)             Checksum: 1C977B7DFEEAE54AC3A9FF9571A8196A;1152.
  ) 
 Here is how much of TeX's memory you used:
- 17822 strings out of 473362
- 286185 string characters out of 5725050
- 730792 words of memory out of 5000000
- 40562 multiletter control sequences out of 15000+600000
- 602219 words of font info for 170 fonts, out of 8000000 for 9000
+ 17811 strings out of 473362
+ 286071 string characters out of 5725050
+ 730971 words of memory out of 5000000
+ 40565 multiletter control sequences out of 15000+600000
+ 600900 words of font info for 153 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1059b,559s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on TFM.pdf (4 pages, 86626 bytes).
+ 75i,11n,79p,1059b,573s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on TFM.pdf (8 pages, 61957 bytes).
 PDF statistics:
- 66 PDF objects out of 1000 (max. 8388607)
- 51 compressed objects within 1 object stream
- 8 named destinations out of 1000 (max. 500000)
- 67097 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 99 PDF objects out of 1000 (max. 8388607)
+ 82 compressed objects within 1 object stream
+ 16 named destinations out of 1000 (max. 500000)
+ 66617 words of extra memory for PDF output out of 74296 (max. 10000000)
 
