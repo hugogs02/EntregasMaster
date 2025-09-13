@@ -1,52 +1,46 @@
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import TimeSeriesSplit, ParameterGrid
 from sklearn.preprocessing import StandardScaler
-from sklearn.multioutput import MultiOutputRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, explained_variance_score
-from sklearn.ensemble import StackingRegressor
-from sklearn.base import clone
+from sklearn.multioutput import MultiOutputRegressor
+from sklearn.model_selection import ParameterGrid, TimeSeriesSplit
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, SimpleRNN, Dense, Dropout, Conv1D, Flatten, GRU
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import LSTM, GRU, Conv1D, Flatten, Dropout, Dense
+from sklearn.ensemble import BaggingRegressor, StackingRegressor
+from sklearn.linear_model import Ridge
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from itertools import product
+from sklearn.base import clone
 import matplotlib.pyplot as plt
-import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
-# ---------------- LOAD & FILTER ----------------
-def load_and_filter(path, max_nan_ratio=0.4, sample_ratio=0.3):
+SEED = 42
+
+# ---------------- LOAD & PIVOT ----------------
+def load_and_pivot(path, max_nan_ratio=0.4):
     df = pd.read_csv(path)
     df['Date'] = pd.to_datetime(df['Date'], utc=True)
     df = df.sort_values(['Company','Date']).reset_index(drop=True)
     df_pivot = df.pivot(index='Date', columns='Company', values='Close')
-
-    # Filtrar empresas con más del 40% de nulos
     mask_keep = df_pivot.isna().mean() <= max_nan_ratio
     df_pivot = df_pivot.loc[:, mask_keep]
+    df_pivot = df_pivot.interpolate(method='time').fillna(method='ffill').fillna(method='bfill')
+    return df_pivot.resample('W').last()
 
-    # Interpolación temporal
-    df_pivot = df_pivot.interpolate(method='time').fillna(0)
-
-    # Submuestra aleatoria de empresas
-    sampled_cols = np.random.choice(df_pivot.columns, int(len(df_pivot.columns)*sample_ratio), replace=False)
-    df_sample = df_pivot[sampled_cols]
-
-    # Resample semanal
-    df_weekly = df_sample.resample('W').last()
-    return df_weekly
-
-# ---------------- CREATE SUPERVISED DATA ----------------
-def create_supervised(df, W=30, H=10):
-    X, y = [], []
+# ---------------- CREATE SUPERVISED WITH DATES ----------------
+def create_supervised_with_dates(df, W=25, H=4):
+    X, y, dates = [], [], []
     for col in df.columns:
         data = df[col].values
-        for i in range(len(data) - W - H + 1):
+        idx = df.index
+        for i in range(len(data)-W-H+1):
             X.append(data[i:i+W])
             y.append(data[i+W:i+W+H])
-    return np.array(X), np.array(y)
+            dates.append(idx[i+W:i+W+H])
+    return np.array(X), np.array(y), np.array(dates)
 
 # ---------------- METRICS ----------------
 def compute_metrics(y_true, y_pred):
@@ -54,173 +48,291 @@ def compute_metrics(y_true, y_pred):
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
-    mape = np.mean(np.abs((y_true - y_pred) / (y_true + 1e-6))) * 100
-    da = np.mean((y_true > 0) == (y_pred > 0))
-    smape = 100 * np.mean(2 * np.abs(y_pred - y_true) / (np.abs(y_true) + np.abs(y_pred) + 1e-6))
+    mape = np.mean(np.abs((y_true - y_pred)/(y_true+1e-6))) * 100
+    da = np.mean((y_true>0) == (y_pred>0))
+    smape = 100*np.mean(2*np.abs(y_pred-y_true)/(np.abs(y_true)+np.abs(y_pred)+1e-6))
     evs = explained_variance_score(y_true, y_pred)
-    return {"MSE": mse, "RMSE": rmse, "MAE": mae, "R2": r2, "MAPE": mape, "DA": da, "SMAPE": smape, "EVS": evs}
+    return {"MSE":mse,"RMSE":rmse,"MAE":mae,"R2":r2,"MAPE":mape,"DA":da,"SMAPE":smape,"EVS":evs}
 
-# ---------------- DEEP LEARNING BUILDERS ----------------
-def build_lstm(input_shape, units=50, dropout=0.3, H=10):
+# ---------------- DL MODELS ----------------
+def build_lstm(input_shape, units=16, dropout=0.3, H=4, **kwargs):
     model = Sequential([LSTM(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
     model.compile(optimizer='adam', loss='mse')
     return model
 
-def build_rnn(input_shape, units=50, dropout=0.3, H=10):
-    model = Sequential([SimpleRNN(units, input_shape=input_shape),
-                        Dropout(dropout),
-                        Dense(H)])
-    model.compile(optimizer='adam', loss='mse')
-    return model
-
-def build_conv1d(input_shape, filters=32, kernel_size=3, dropout=0.3, H=10, **kwargs):
-    model = Sequential([Conv1D(filters=filters, kernel_size=kernel_size, activation='relu', input_shape=input_shape),
-                        Flatten(),
-                        Dropout(dropout),
-                        Dense(H)])
-    model.compile(optimizer='adam', loss='mse')
-    return model
-
-def build_gru(input_shape, units=50, dropout=0.3, H=10, **kwargs):
+def build_gru(input_shape, units=16, dropout=0.3, H=4, **kwargs):
     model = Sequential([GRU(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
     model.compile(optimizer='adam', loss='mse')
     return model
 
-# ---------------- EVALUATION ----------------
-def eval_ml_tscv(model, X, y, n_splits=5):
+def build_conv1d(input_shape, units=16, dropout=0.3, kernel_size=3, H=4, **kwargs):
+    model = Sequential([Conv1D(filters=units, kernel_size=kernel_size, activation='relu', input_shape=input_shape),
+                        Flatten(),
+                        Dropout(dropout),
+                        Dense(H)])
+    model.compile(optimizer='adam', loss='mse')
+    return model
+
+# ---------------- ML con TimeSeriesSplit ----------------
+def tscv_ml(model, X, y, n_splits=5):
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
-    for train_idx, test_idx in tscv.split(X):
-        X_train, X_test = X[train_idx], X[test_idx]
+    X_flat = X.reshape((X.shape[0], -1))
+    for train_idx, test_idx in tscv.split(X_flat):
+        X_train, X_test = X_flat[train_idx], X_flat[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
-        model_fit = MultiOutputRegressor(model) if y.shape[1] > 1 else model
-        model_fit.fit(X_train, y_train)
-        y_pred = model_fit.predict(X_test)
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+        model_fold = MultiOutputRegressor(clone(model)) if y.shape[1]>1 else clone(model)
+        model_fold.fit(X_train_scaled, y_train)
+        y_pred = model_fold.predict(X_test_scaled)
         metrics_list.append(compute_metrics(y_test, y_pred))
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-def eval_dl_tscv_history(model_builder, X, y, units=50, dropout=0.3, epochs=20, batch_size=64, n_splits=3, **kwargs):
-    X_seq = X.reshape((X.shape[0], X.shape[1], 1))
+# ---------------- DL con TimeSeriesSplit ----------------
+def tscv_dl(model_builder, X, y, n_splits=3, units=16, dropout=0.3, epochs=10, batch_size=32, kernel_size=3):
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
-    histories = []
+    X_seq = X.reshape((X.shape[0], X.shape[1],1))
+    
     for train_idx, test_idx in tscv.split(X_seq):
         X_train, X_test = X_seq[train_idx], X_seq[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
-        model = model_builder(input_shape=(X_train.shape[1],1), units=units, dropout=dropout, H=y_train.shape[1], **kwargs)
-        es = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-        history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
-                            validation_data=(X_test, y_test), verbose=0, callbacks=[es])
-        y_pred = model.predict(X_test, verbose=0)
+        scaler = StandardScaler()
+        X_train_2d = X_train.reshape((X_train.shape[0], -1))
+        X_test_2d = X_test.reshape((X_test.shape[0], -1))
+        X_train_scaled = scaler.fit_transform(X_train_2d).reshape(X_train.shape)
+        X_test_scaled = scaler.transform(X_test_2d).reshape(X_test.shape)
+        
+        model = model_builder(input_shape=(X_train.shape[1],1),
+                              units=units, dropout=dropout, H=y_train.shape[1], kernel_size=kernel_size)
+        es = EarlyStopping(monitor='val_loss', patience=2, restore_best_weights=True)
+        lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=1)
+        model.fit(X_train_scaled, y_train, validation_data=(X_test_scaled, y_test),
+                  epochs=epochs, batch_size=batch_size, verbose=0, callbacks=[es, lr])
+        y_pred = model.predict(X_test_scaled, verbose=0)
         metrics_list.append(compute_metrics(y_test, y_pred))
-        histories.append(history)
-    avg_metrics = {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
-    return avg_metrics, histories
+    
+    return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# ---------------- MAIN ----------------
-df_weekly = load_and_filter('stock_details_5_years.csv', max_nan_ratio=0.4, sample_ratio=0.3)
-W, H = 25, 4
-X, y = create_supervised(df_weekly, W=W, H=H)
-X = np.nan_to_num(X)
-y = np.nan_to_num(y)
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# ---------------- MAIN PIPELINE ----------------
+if __name__=="__main__":
+    path_csv = "stock_details_5_years.csv"
+    W,H = 25,4
+    sub_sample_ratio = 0.3
+    np.random.seed(SEED)
+    
+    df_weekly = load_and_pivot(path_csv)
+    sampled_cols = np.random.choice(df_weekly.columns, int(len(df_weekly.columns)*sub_sample_ratio), replace=False)
+    df_sub = df_weekly[sampled_cols]
+    
+    X_sub, y_sub, _ = create_supervised_with_dates(df_sub, W=W, H=H)
+    X_sub = np.nan_to_num(X_sub)
+    y_sub = np.nan_to_num(y_sub)
+    
+    # ---------------- HYPERPARAMETERS ----------------
+    xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
+    lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
+    dl_params = {'units':[16,32], 'dropout':[0.2,0.3]}
+    c1d_params = {'units':[16,32], 'dropout':[0.2,0.3], 'kernel_size':[3,5]}
+    
+    best_models = {}
+    tuning_results = {}
+    results_sub = {}
 
-# ---- ML ----
-xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
-lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
-results = {}
-best_models = {}
+    # ---------------- ML MODELS ----------------
+    ml_models = {"XGB": XGBRegressor, "LGBM": LGBMRegressor}
+    ml_param_grids = {"XGB": xgb_params, "LGBM": lgb_params}
+    
+    for name, ModelClass in ml_models.items():
+        best_score, best_model = -np.inf, None
+        for params in ParameterGrid(ml_param_grids[name]):
+            print(f"{name} con {params}")
+            if name=="XGB":
+                model = ModelClass(random_state=SEED, verbosity=0, **params)
+            else:
+                model = ModelClass(random_state=SEED, verbose=-1, **params)
+            metrics = tscv_ml(model, X_sub, y_sub, n_splits=5)
+            tuning_results.setdefault(name, []).append({'params': params, 'metrics': metrics})
+            if metrics['R2'] > best_score:
+                best_score = metrics['R2']
+                best_model = model
+        results_sub[name] = tscv_ml(best_model, X_sub, y_sub, n_splits=5)
+        best_models[name] = best_model
 
-# XGB
-best_score, best_model = -np.inf, None
-for params in ParameterGrid(xgb_params):
-    print(f"XGB with {params}")
-    model = XGBRegressor(random_state=42, verbosity=0, **params)
-    metrics = eval_ml_tscv(model, X_scaled, y)
-    if metrics["R2"] > best_score:
-        best_score = metrics["R2"]
-        best_model = model
-results["XGB"] = eval_ml_tscv(best_model, X_scaled, y)
-best_models["XGB"] = best_model
+    # ---------------- DL MODELS ----------------
+    dl_models = {"LSTM": build_lstm, "GRU": build_gru, "Conv1D": build_conv1d}
+    dl_param_grids = {"LSTM": dl_params, "GRU": dl_params, "Conv1D": c1d_params}
+    
+    for name, builder in dl_models.items():
+        best_score, best_config = -np.inf, None
+        param_grid = dl_param_grids[name]
+        combos = product(*(param_grid.values())) if name!="Conv1D" else product(param_grid['units'], param_grid['dropout'], param_grid['kernel_size'])
+        for combo in combos:
+            print(f"{name} con {combo}")
+            if name=="Conv1D":
+                units, dropout, kernel_size = combo
+                metrics = tscv_dl(builder, X_sub, y_sub, n_splits=3, units=units, dropout=dropout,
+                                  kernel_size=kernel_size, epochs=10, batch_size=32)
+                config = {'units': units, 'dropout': dropout, 'kernel_size': kernel_size}
+            else:
+                units, dropout = combo
+                metrics = tscv_dl(builder, X_sub, y_sub, n_splits=3, units=units, dropout=dropout,
+                                  epochs=10, batch_size=32)
+                config = {'units': units, 'dropout': dropout}
+            tuning_results.setdefault(name, []).append({'params': config, 'metrics': metrics})
+            if metrics['R2'] > best_score:
+                best_score = metrics['R2']
+                best_config = config
+        results_sub[name] = {'metrics': best_score, 'config': best_config}
+        best_models[name] = best_config
+    
+    print("=== Mejores modelos sobre submuestra ===")
+    for k,v in results_sub.items(): print(k,v)
+    
+    # ---------------- SELECT BEST MODEL ----------------
+    best_r2 = -np.inf
+    best_model_name = None
+    for name, m in best_models.items():
+        if name in ["XGB", "LGBM"]:
+            r2 = tscv_ml(m, X_sub, y_sub, n_splits=5)['R2']
+        else:
+            r2 = tscv_dl(dl_models[name], X_sub, y_sub, n_splits=3, **m, epochs=10, batch_size=32)['R2']
+        if r2 > best_r2:
+            best_r2 = r2
+            best_model_name = name
+    print(f"Mejor modelo: {best_model_name} con R2={best_r2:.4f}")
+    
+    # ---------------- PREDICCIONES Y GRAFICO ----------------
+    top_models = ["XGB", "LGBM", "Conv1D"]
+    X_full, y_full, dates_full = create_supervised_with_dates(df_sub, W=W, H=H)
+    X_full = np.nan_to_num(X_full)
+    y_full = np.nan_to_num(y_full)
+    scaler_full = StandardScaler()
+    X_full_scaled = scaler_full.fit_transform(X_full)
+    
+    tscv = TimeSeriesSplit(n_splits=5)
+    train_idx, test_idx = list(tscv.split(X_full_scaled))[-1]
+    X_train, X_test = X_full_scaled[train_idx], X_full_scaled[test_idx]
+    y_train, y_test = y_full[train_idx], y_full[test_idx]
+    dates_test = dates_full[test_idx]
 
-# LGBM
-best_score, best_model = -np.inf, None
-for params in ParameterGrid(lgb_params):
-    print(f"LGBM with {params}")
-    model = LGBMRegressor(random_state=42, verbose=-1, **params)
-    metrics = eval_ml_tscv(model, X_scaled, y)
-    if metrics["R2"] > best_score:
-        best_score = metrics["R2"]
-        best_model = model
-results["LGBM"] = eval_ml_tscv(best_model, X_scaled, y)
-best_models["LGBM"] = best_model
+    preds_plot = {name: np.zeros_like(y_test) for name in top_models}
+    
+    for name in top_models:
+        if name in ["XGB", "LGBM"]:
+            model = MultiOutputRegressor(clone(best_models[name])) if y_test.shape[1] > 1 else clone(best_models[name])
+            model.fit(X_train, y_train)
+            preds_plot[name] = model.predict(X_test)
+        else:
+            config = best_models[name]
+            X_train_seq = X_train.reshape((X_train.shape[0], W,1))
+            X_test_seq = X_test.reshape((X_test.shape[0], W,1))
+            model = dl_models[name](input_shape=(W,1), H=y_train.shape[1], **config)
+            es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+            lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
+            model.fit(X_train_seq, y_train, validation_data=(X_test_seq, y_test),
+                      epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
+            preds_plot[name] = model.predict(X_test_seq, verbose=0)
 
-# ---- DL ----
-results_dl, histories = {}, {}
+    # Graficamos 6-8 empresas aleatorias
+    n_plot = min(8, y_test.shape[1])
+    company_indices = np.random.choice(range(y_test.shape[1]), n_plot, replace=False)
 
-print("LSTM")
-results_dl["LSTM"], histories["LSTM"] = eval_dl_tscv_history(build_lstm, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
-print("RNN")
-results_dl["RNN"], histories["RNN"] = eval_dl_tscv_history(build_rnn, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
-print("Conv1D")
-results_dl["Conv1D"], histories["Conv1D"] = eval_dl_tscv_history(build_conv1d, X_scaled, y, filters=32, kernel_size=3, dropout=0.3, epochs=20, batch_size=64)
-print("GRU")
-results_dl["GRU"], histories["GRU"] = eval_dl_tscv_history(build_gru, X_scaled, y, units=32, dropout=0.3, epochs=20, batch_size=64)
+    fig, axes = plt.subplots(n_plot, 1, figsize=(12, 3*n_plot), sharex=True)
+    if n_plot == 1: axes = [axes]
 
-# ---------------- CONVERTIR A DATAFRAME ----------------
-df_results = pd.DataFrame([{"model": k, **v} for k,v in {**results, **results_dl}.items()])
+    for i, idx in enumerate(company_indices):
+        for h in range(y_test.shape[1]):  # multisalida
+            axes[i].plot(dates_test[:, h], y_test[:, h], color='black', linewidth=2, label='Real' if h==0 else "")
+            for name in top_models:
+                axes[i].plot(dates_test[:, h], preds_plot[name][:, h], label=name if h==0 else "")
+        axes[i].set_title(f"Empresa {df_sub.columns[idx]}")
+        axes[i].legend()
 
-# ---------------- IMPRIMIR ----------------
-print(df_results.sort_values(by="R2", ascending=False).reset_index(drop=True))
-
-# ---------------- GRAFICO METRICAS ----------------
-plt.figure(figsize=(12,6))
-metrics_to_plot = ["R2","RMSE","MAE","SMAPE","EVS"]
-df_plot = df_results.melt(id_vars=["model"], value_vars=metrics_to_plot, var_name="Metric", value_name="Value")
-sns.barplot(data=df_plot, x="model", y="Value", hue="Metric")
-plt.title("Comparación de modelos por métricas")
-plt.xticks(rotation=45)
-plt.legend(bbox_to_anchor=(1.05,1), loc='upper left')
-plt.tight_layout()
-plt.show()
-
-# ---------------- GRAFICOS TRAIN VS VAL LOSS DL ----------------
-for model_name, history_list in histories.items():
-    plt.figure(figsize=(8,4))
-    for fold, history in enumerate(history_list):
-        plt.plot(history.history['loss'], label=f'Train fold {fold+1}')
-        plt.plot(history.history['val_loss'], label=f'Val fold {fold+1}', linestyle='--')
-    plt.title(f'Train vs Val Loss - {model_name}')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss (MSE)')
-    plt.legend()
+    plt.xlabel("Fecha")
+    plt.tight_layout()
     plt.show()
 
-# ---------------- COMPARACION PREDICCIONES vs TEST (10 empresas) ----------------
-sample_companies = np.random.choice(df_weekly.columns, 10, replace=False)
-fig, axs = plt.subplots(5,2, figsize=(14,12))
-axs = axs.flatten()
+    # ---------------- BAGGING POR EMPRESA + GRAFICO ----------------
+    print("=== Bagging simple por empresa ===")
+    
+    n_bags = 5
+    top_n = min(6, y_test.shape[1])  # Top 6 empresas o menos si hay menos columnas
+    company_indices = np.random.choice(range(y_test.shape[1]), top_n, replace=False)
+    
+    # Diccionario para guardar predicciones promedio por modelo
+    preds_test = {name: [] for name in top_models}
+    
+    # Predicciones individuales por modelo
+    for name in top_models:
+        if name in ["XGB", "LGBM"]:
+            model = MultiOutputRegressor(clone(best_models[name])) if y_train.shape[1] > 1 else clone(best_models[name])
+            model.fit(X_train, y_train)
+            preds_test[name] = model.predict(X_test)
+        else:  # Conv1D
+            config = best_models[name]
+            X_train_seq = X_train.reshape((X_train.shape[0], W, 1))
+            X_test_seq = X_test.reshape((X_test.shape[0], W, 1))
+            model = dl_models[name](input_shape=(W, 1), H=y_train.shape[1], **config)
+            es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+            lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
+            model.fit(X_train_seq, y_train, validation_data=(X_test_seq, y_test),
+                      epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
+            preds_test[name] = model.predict(X_test_seq, verbose=0)
+    
+    # Bagging por empresa: promedio de n_bags instancias por modelo
+    bagging_preds = np.zeros_like(y_test, dtype=float)
+    for name in top_models:
+        preds_bag = np.zeros_like(y_test, dtype=float)
+        for _ in range(n_bags):
+            if name in ["XGB", "LGBM"]:
+                model = MultiOutputRegressor(clone(best_models[name])) if y_train.shape[1] > 1 else clone(best_models[name])
+                model.fit(X_train, y_train)
+                preds_bag += model.predict(X_test)
+            else:
+                config = best_models[name]
+                X_train_seq = X_train.reshape((X_train.shape[0], W, 1))
+                X_test_seq = X_test.reshape((X_test.shape[0], W, 1))
+                model = dl_models[name](input_shape=(W, 1), H=y_train.shape[1], **config)
+                es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+                lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
+                model.fit(X_train_seq, y_train, validation_data=(X_test_seq, y_test),
+                          epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
+                preds_bag += model.predict(X_test_seq, verbose=0)
+        preds_bag /= n_bags
+        bagging_preds += preds_bag
+    bagging_preds /= len(top_models)
+    
+    bagging_metrics = compute_metrics(y_test, bagging_preds)
+    print("Bagging R2:", bagging_metrics['R2'])
+    
+    # ---------------- GRAFICO PARA TOP 6 EMPRESAS ----------------
+    fig, axes = plt.subplots(top_n, 1, figsize=(12, 3*top_n), sharex=True)
+    if top_n == 1: axes = [axes]
+    
+    for i, idx in enumerate(company_indices):
+        real = y_test[:, idx]
+        pred = bagging_preds[:, idx]
+        dates = dates_test[:, 0]  # usamos la primera fecha de cada horizonte para simplificar
+        axes[i].plot(dates, real, color='black', linewidth=2, label='Real')
+        axes[i].plot(dates, pred, color='red', linestyle='--', label='Bagging')
+        axes[i].set_title(f"Empresa {df_sub.columns[idx]}")
+        axes[i].legend()
+    
+        # Añadir valores encima de cada punto
+        for x, y_r, y_p in zip(dates, real, pred):
+            axes[i].text(x, y_r, f"{y_r:.1f}", color='black', fontsize=8, rotation=45)
+            axes[i].text(x, y_p, f"{y_p:.1f}", color='red', fontsize=8, rotation=45)
+    
+    plt.xlabel("Fecha")
+    plt.tight_layout()
+    plt.show()
 
-for i, comp in enumerate(sample_companies):
-    # Crear datos supervisados para la empresa
-    data = df_weekly[comp].values
-    X_comp, y_comp = create_supervised(pd.DataFrame({comp:data}), W=W, H=H)
-    X_comp = np.nan_to_num(X_comp)
-    y_comp = np.nan_to_num(y_comp)
-    X_comp_scaled = scaler.transform(X_comp)
 
-    # Predecimos con el mejor ML (XGB como ejemplo)
-    y_pred = best_models["XGB"].fit(X_scaled, y).predict(X_comp_scaled)
 
-    axs[i].plot(range(len(y_comp[:,0])), y_comp[:,0], label="Test")
-    axs[i].plot(range(len(y_pred[:,0])), y_pred[:,0], label="Pred")
-    axs[i].set_title(comp)
-    axs[i].legend()
-
-plt.tight_layout()
-plt.show()
