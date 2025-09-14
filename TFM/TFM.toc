@@ -1,8 +1,0 @@
-\babel@toc {spanish}{}\relax 
-\contentsline {section}{\numberline {1}Introducción al problema}{3}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Introducción}{3}{subsection.1.1}%
-\contentsline {section}{\numberline {2}Análisis descriptivo y transformaciones}{4}{section.2}%
-\contentsline {section}{\numberline {3}Modelos: creación y aplicación}{5}{section.3}%
-\contentsline {section}{\numberline {4}Resultados}{6}{section.4}%
-\contentsline {section}{\numberline {5}Conclusiones}{7}{section.5}%
-\contentsline {section}{\numberline {A}Anexo: Código de la práctica}{8}{appendix.Alph1}%
