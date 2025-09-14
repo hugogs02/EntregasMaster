@@ -20,19 +20,6 @@ from itertools import product
 SEED = 42
 
 # =========================================================
-# LOAD & PIVOT
-# =========================================================
-def load_and_pivot(path, max_nan_ratio=0.4):
-    df = pd.read_csv(path)
-    df['Date'] = pd.to_datetime(df['Date'], utc=True)
-    df = df.sort_values(['Company','Date']).reset_index(drop=True)
-    df_pivot = df.pivot(index='Date', columns='Company', values='Close')
-    mask_keep = df_pivot.isna().mean() <= max_nan_ratio
-    df_pivot = df_pivot.loc[:, mask_keep]
-    df_pivot = df_pivot.interpolate(method='time').fillna(method='ffill').fillna(method='bfill')
-    return df_pivot.resample('W').last()
-
-# =========================================================
 # CREATE SUPERVISED
 # =========================================================
 def create_supervised_with_dates(df, W=25, H=1):
@@ -137,7 +124,8 @@ def tscv_dl(model_builder, X, y, n_splits=3, units=16, dropout=0.3, epochs=10, b
 # =========================================================
 def run_experiment(path_csv, W=25, H=1, sub_sample_ratio=0.3):
     np.random.seed(SEED)
-    df_weekly = load_and_pivot(path_csv)
+    df_weekly = pd.read_csv(path_csv, index_col=0, parse_dates=True)
+    df_weekly.index = pd.to_datetime(df_weekly.index, utc=True)
     sampled_cols = np.random.choice(df_weekly.columns, int(len(df_weekly.columns)*sub_sample_ratio), replace=False)
     df_sub = df_weekly[sampled_cols]
 
@@ -402,7 +390,7 @@ def compare_forecasts(df_sub, y_pred_last_H1, y_pred_last_H4, H1=1, H4=4):
 # MAIN
 # =========================================================
 if __name__=="__main__":
-    path_csv = "stock_details_5_years.csv"
+    path_csv = "stock_weekly_clean.csv"
 
     print("\n=== Experimento H=1 ===")
     res1, models1, df_sub1 = run_experiment(path_csv, H=1)
