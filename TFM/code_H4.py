@@ -138,8 +138,8 @@ if __name__=="__main__":
     # ---------------- HYPERPARAMETERS ----------------
     xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
     lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
-    dl_params = {'units':[16,32], 'dropout':[0.2,0.3]}
-    c1d_params = {'units':[16,32], 'dropout':[0.2,0.3], 'kernel_size':[3,5]}
+    dl_params = {'units':[16,32,64], 'dropout':[0.2,0.3]}
+    c1d_params = {'units':[16,32,64], 'dropout':[0.2,0.3], 'kernel_size':[3,5]}
     
     best_models = {}
     tuning_results = {}
@@ -207,87 +207,31 @@ if __name__=="__main__":
             best_r2 = r2
             best_model_name = name
     print(f"Mejor modelo: {best_model_name} con R2={best_r2:.4f}")
-    
-    # ---------------- PREDICCIONES Y GRAFICO ----------------
     top_models = ["XGB", "LGBM", "Conv1D"]
+    
+    # ---------------- BAGGING GLOBAL ----------------
+    print("=== Bagging simple por empresa ===")
+    
+    n_bags = 5
+    
+    # Preparamos datos completos supervisados
     X_full, y_full, dates_full = create_supervised_with_dates(df_sub, W=W, H=H)
     X_full = np.nan_to_num(X_full)
     y_full = np.nan_to_num(y_full)
+    
+    # Escalamos
     scaler_full = StandardScaler()
     X_full_scaled = scaler_full.fit_transform(X_full)
     
+    # Último fold train/test
     tscv = TimeSeriesSplit(n_splits=5)
     train_idx, test_idx = list(tscv.split(X_full_scaled))[-1]
     X_train, X_test = X_full_scaled[train_idx], X_full_scaled[test_idx]
     y_train, y_test = y_full[train_idx], y_full[test_idx]
-    dates_test = dates_full[test_idx]
-
-    preds_plot = {name: np.zeros_like(y_test) for name in top_models}
     
-    for name in top_models:
-        if name in ["XGB", "LGBM"]:
-            model = MultiOutputRegressor(clone(best_models[name])) if y_test.shape[1] > 1 else clone(best_models[name])
-            model.fit(X_train, y_train)
-            preds_plot[name] = model.predict(X_test)
-        else:
-            config = best_models[name]
-            X_train_seq = X_train.reshape((X_train.shape[0], W,1))
-            X_test_seq = X_test.reshape((X_test.shape[0], W,1))
-            model = dl_models[name](input_shape=(W,1), H=y_train.shape[1], **config)
-            es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
-            lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
-            model.fit(X_train_seq, y_train, validation_data=(X_test_seq, y_test),
-                      epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
-            preds_plot[name] = model.predict(X_test_seq, verbose=0)
-
-    # Graficamos 6-8 empresas aleatorias
-    n_plot = min(8, y_test.shape[1])
-    company_indices = np.random.choice(range(y_test.shape[1]), n_plot, replace=False)
-
-    fig, axes = plt.subplots(n_plot, 1, figsize=(12, 3*n_plot), sharex=True)
-    if n_plot == 1: axes = [axes]
-
-    for i, idx in enumerate(company_indices):
-        for h in range(y_test.shape[1]):  # multisalida
-            axes[i].plot(dates_test[:, h], y_test[:, h], color='black', linewidth=2, label='Real' if h==0 else "")
-            for name in top_models:
-                axes[i].plot(dates_test[:, h], preds_plot[name][:, h], label=name if h==0 else "")
-        axes[i].set_title(f"Empresa {df_sub.columns[idx]}")
-        axes[i].legend()
-
-    plt.xlabel("Fecha")
-    plt.tight_layout()
-    plt.show()
-
-    # ---------------- BAGGING POR EMPRESA + GRAFICO ----------------
-    print("=== Bagging simple por empresa ===")
-    
-    n_bags = 5
-    top_n = min(6, y_test.shape[1])  # Top 6 empresas o menos si hay menos columnas
-    company_indices = np.random.choice(range(y_test.shape[1]), top_n, replace=False)
-    
-    # Diccionario para guardar predicciones promedio por modelo
-    preds_test = {name: [] for name in top_models}
-    
-    # Predicciones individuales por modelo
-    for name in top_models:
-        if name in ["XGB", "LGBM"]:
-            model = MultiOutputRegressor(clone(best_models[name])) if y_train.shape[1] > 1 else clone(best_models[name])
-            model.fit(X_train, y_train)
-            preds_test[name] = model.predict(X_test)
-        else:  # Conv1D
-            config = best_models[name]
-            X_train_seq = X_train.reshape((X_train.shape[0], W, 1))
-            X_test_seq = X_test.reshape((X_test.shape[0], W, 1))
-            model = dl_models[name](input_shape=(W, 1), H=y_train.shape[1], **config)
-            es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
-            lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
-            model.fit(X_train_seq, y_train, validation_data=(X_test_seq, y_test),
-                      epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
-            preds_test[name] = model.predict(X_test_seq, verbose=0)
-    
-    # Bagging por empresa: promedio de n_bags instancias por modelo
+    # Bagging sobre todos los modelos
     bagging_preds = np.zeros_like(y_test, dtype=float)
+    
     for name in top_models:
         preds_bag = np.zeros_like(y_test, dtype=float)
         for _ in range(n_bags):
@@ -295,7 +239,7 @@ if __name__=="__main__":
                 model = MultiOutputRegressor(clone(best_models[name])) if y_train.shape[1] > 1 else clone(best_models[name])
                 model.fit(X_train, y_train)
                 preds_bag += model.predict(X_test)
-            else:
+            else:  # Conv1D
                 config = best_models[name]
                 X_train_seq = X_train.reshape((X_train.shape[0], W, 1))
                 X_test_seq = X_test.reshape((X_test.shape[0], W, 1))
@@ -307,32 +251,99 @@ if __name__=="__main__":
                 preds_bag += model.predict(X_test_seq, verbose=0)
         preds_bag /= n_bags
         bagging_preds += preds_bag
+    
     bagging_preds /= len(top_models)
     
+    # Métricas
     bagging_metrics = compute_metrics(y_test, bagging_preds)
     print("Bagging R2:", bagging_metrics['R2'])
+
+    # ---------------- PREDICCIÓN FUTURA FINAL ----------------
+    print("\n=== Predicción futura (última ventana de cada empresa) ===")
     
-    # ---------------- GRAFICO PARA TOP 6 EMPRESAS ----------------
-    fig, axes = plt.subplots(top_n, 1, figsize=(12, 3*top_n), sharex=True)
-    if top_n == 1: axes = [axes]
+    n_companies = df_sub.shape[1]
+    y_pred_last = np.zeros((n_companies, H))   # <-- Asegurar matriz 2D
     
-    for i, idx in enumerate(company_indices):
-        real = y_test[:, idx]
-        pred = bagging_preds[:, idx]
-        dates = dates_test[:, 0]  # usamos la primera fecha de cada horizonte para simplificar
-        axes[i].plot(dates, real, color='black', linewidth=2, label='Real')
-        axes[i].plot(dates, pred, color='red', linestyle='--', label='Bagging')
-        axes[i].set_title(f"Empresa {df_sub.columns[idx]}")
-        axes[i].legend()
+    # Entrenamos cada modelo una vez con todos los datos
+    trained_models = {}
+    for name in top_models:
+        if name in ["XGB", "LGBM"]:
+            model = MultiOutputRegressor(clone(best_models[name])) if H > 1 else clone(best_models[name])
+            model.fit(X_full_scaled, y_full)
+        else:
+            config = best_models[name]
+            X_full_seq = X_full_scaled.reshape((X_full_scaled.shape[0], W, 1))
+            model = dl_models[name](input_shape=(W,1), H=H, **config)
+            es = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+            lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2)
+            model.fit(X_full_seq, y_full, epochs=20, batch_size=32, verbose=0, callbacks=[es, lr])
+        trained_models[name] = model
     
-        # Añadir valores encima de cada punto
-        for x, y_r, y_p in zip(dates, real, pred):
-            axes[i].text(x, y_r, f"{y_r:.1f}", color='black', fontsize=8, rotation=45)
-            axes[i].text(x, y_p, f"{y_p:.1f}", color='red', fontsize=8, rotation=45)
+    # Predicción empresa por empresa
+    for i, company in enumerate(df_sub.columns):
+        series = df_sub[company].values
+        last_window = series[-W:].reshape(1, -1)
+        last_window_scaled = scaler_full.transform(last_window)
     
-    plt.xlabel("Fecha")
+        preds_models = []
+        for name, model in trained_models.items():
+            if name in ["XGB","LGBM"]:
+                pred = model.predict(last_window_scaled)
+            else:  # DL
+                last_seq = last_window_scaled.reshape((1,W,1))
+                pred = model.predict(last_seq, verbose=0)
+            preds_models.append(pred.reshape(-1))   # <-- Aseguramos (H,)
+        
+        # Bagging simple: promedio entre modelos
+        y_pred_last[i] = np.mean(preds_models, axis=0)
+    
+      
+    # ---------------- VISUALIZACIÓN PARA H=4 ----------------
+    print("\n=== Predicciones futuras (4 semanas) ===")
+    
+    # Seleccionamos las 6 empresas con mayor crecimiento previsto en el último paso (semana 4)
+    last_values = df_sub.iloc[-1].values
+    diff_abs = y_pred_last[:, -1] - last_values
+    diff_pct = (diff_abs / last_values) * 100
+    top6_idx = np.argsort(diff_pct)[-6:][::-1]
+    
+    # ---- TEXTO ----
+    for i in top6_idx:
+        company = df_sub.columns[i]
+        current = last_values[i]
+        preds = y_pred_last[i]
+        print(f"\nEmpresa: {company}")
+        print(f"  Último valor: {current:.2f}")
+        for h, pred in enumerate(preds, start=1):
+            abs_diff = pred - current
+            pct_diff = (abs_diff / current) * 100
+            print(f"   +{h} semana(s): Pred={pred:.2f} | Dif={abs_diff:.2f} | %+={pct_diff:.2f}%")
+    
+    # ---- GRAFICO HISTÓRICO + PREDICCIONES ----
+    fig, axes = plt.subplots(3, 2, figsize=(14, 12))
+    axes = axes.flatten()
+    
+    for j, idx in enumerate(top6_idx):
+        company = df_sub.columns[idx]
+        series = df_sub[company]
+    
+        # Histórico
+        axes[j].plot(series.index, series.values, label="Histórico", color="black")
+    
+        # Fechas futuras
+        future_dates = [series.index[-1] + pd.Timedelta(weeks=k) for k in range(1, H+1)]
+    
+        # Unimos último valor real + predicciones
+        full_dates = [series.index[-1]] + future_dates
+        full_preds = [series.values[-1]] + list(y_pred_last[idx])
+    
+        # Graficamos predicciones unidas
+        axes[j].plot(full_dates, full_preds, "ro-", label="Predicción (4 semanas)")
+    
+        axes[j].set_title(company)
+        axes[j].legend()
+        axes[j].grid(True)
+    
     plt.tight_layout()
     plt.show()
-
-
 
