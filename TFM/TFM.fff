@@ -1,0 +1,5 @@
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{imgs/EDA/eda_preliminar.png}
+    \caption{EDA preliminar} \label{fig:EDAPreliminar}
+\end{figure}

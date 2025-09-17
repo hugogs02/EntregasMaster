@@ -1,0 +1,15 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces EDA preliminar}}{6}{figure.caption.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Valores missing}}{6}{figure.caption.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Empresas con NaN $>= 40\%$}}{7}{figure.caption.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Análisis descriptivo de las 10 primeras empresas}}{8}{figure.caption.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Empresas según su fuerza estacional}}{8}{figure.caption.5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Descomposición estacional de PPL}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Descomposición estacional de SHEL}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Descomposición estacional de MCK}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Comparación de las series}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Descomposiciones estacionales}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Curvas train-val loss}}{20}{figure.caption.14}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Predicciones para horizonte H=1}}{21}{figure.caption.16}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Predicciones para horizonte H=4}}{23}{figure.caption.17}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Comparación de predicciones para horizontes H=1 y H=4}}{23}{figure.caption.18}%
