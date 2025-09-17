@@ -20,6 +20,7 @@
 \usepackage{wrapfig}
 \lstset{
     inputencoding=utf8,
+    extendedchars=true,
     frame=single,
     basicstyle=\fontsize{7}{10}\selectfont\ttfamily,
     basicstyle=\ttfamily\small,
@@ -38,17 +39,13 @@
     breakatwhitespace=false,
     tabsize=2,
     captionpos=b,
-    literate={á}{{\'a}}1
-        {ã}{{\~a}}1
-        {é}{{\'e}}1
-        {ó}{{\'o}}1
-        {í}{{\'i}}1
-        {ñ}{{\~n}}1
-        {¡}{{!`}}1
-        {¿}{{?`}}1
-        {ú}{{\'u}}1
-        {Í}{{\'I}}1
-        {Ó}{{\'O}}1
+    literate={á}{{\'a}}1 {Á}{{\'A}}1
+             {é}{{\'e}}1 {É}{{\'E}}1
+             {í}{{\'i}}1 {Í}{{\'I}}1
+             {ó}{{\'o}}1 {Ó}{{\'O}}1
+             {ú}{{\'u}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+             {ü}{{\"u}}1 {Ü}{{\"U}}1
 }
 \setlength{\parskip}{0.8em}
 \usepackage{natbib}
@@ -104,7 +101,7 @@
 \maketitle
 \setcounter{tocdepth}{4}
 \tableofcontents
-\listoffigures
+%\listoffigures
 %\listoftables
 \begin{sloppypar}
 
@@ -124,7 +121,7 @@ esperado. Por otra parte, invertir en una empresa que viene reduciendo su cotiza
 global, podría ser una buena inversión, ya que lo más probable es que vuelva a crecer y se gane dinero; pero si esto se produce en un contexto local, lo más probable 
 es que esa empresa no se recupere, o no lo haga tan rápidamente.
 
-Es por ello que, para poder realizar estas preidcciones, se propone este Trabajo de Final de Master, en el que se analizará un dataset disponible en Kaggle que contiene 
+Es por ello que, para poder realizar estas predicciones, se propone este Trabajo de Final de Master, en el que se analizará un dataset disponible en Kaggle que contiene 
 información financiera de las 500 empresas del índice bursátil SP\&500 de Estados Unidos. Por tanto, el objetivo de este trabajo será, empleando estos datos, crear y
 comparar distintos modelos y técnicas de Machine Learning, encontrando el mejor de ellos para predecir el rendimiento de las acciones y poder decidir en qué empresa
 se debería invertir para obtener un mayor rendimiento.
@@ -135,7 +132,9 @@ una submuestra de los datos, y se compararán las métricas de los mismos, para 
 objetivo de reducir la varianza de los modelos y obtener uno más robusto. Una vez obtenido el modelo final, se reentrenará con los datos de todas las empresas,
 para poder finalmente realizar las predicciones.
 
+\renewcommand\section{\newpage\stdsection}
 \section{Análisis descriptivo y transformaciones} \label{analisis_transformaciones}
+\renewcommand\section{\stdsection}
 El primer paso es, naturalmente, cargar los datos y realizar un análisis preliminar de los mismos. El código completo de este análisis se encuentra en el anexo 
 \ref{Anexo:EDA}. En este análisis preliminar, en la figura \ref{fig:EDAPreliminar} podemos ver que la serie contiene datos para un total de 491 empresas desde el 29 de noviembre de 2018 hasta el 29 de
 noviembre de 2023; es decir, un total de 5 años exactos. Si analizamos las empresas en función del número de datos que tienen vemos que en el top 10 de empresas con 
@@ -205,7 +204,7 @@ temporal de los datos, algo crucial. De esta forma, tras la aplicación de estas
 
 El siguiente paso es realizar un muy breve análisis descriptivo de los datos, en este caso para las 10 primeras empresas. Se puede observar una variabilidad en los precios, 
 con empresas como AAPL (Apple) con desviaciones estándar elevadas teniendo en cuenta las medias. En general, las medias y medianas (50\%) son cercanas, lo que indica que, 
-pese a las fluctuaciones, estas no son excesivamente elevadas. De todas formas, estos datos nos podrían indicar una ligera volatilidad, lo cual se debe tener en cuenta en los análisis futuros,
+pese a las fluctuaciones, estas no son excesivamente elevadas. De todas formas, estos datos nos podrían indicar una ligera volatilidad, lo cual se debe tener en cuenta en los análisis futuros.
 
 \begin{figure}
     \centering
@@ -252,7 +251,7 @@ figura respectiva). La descomposición temporal de las series nos da cuatro grá
     \item El \textbf{componente de tendencia}, que captura la dirección a largo plazo de la serie. En este caso, se ve una tendencia creciente en las tres empresas, pero con ligeras
     diferencias. Mientras que la primera empresa se ve una tendencia creciente, que se vio interrumpida por la pandemia, para luego sufrir de nuevo un crecimiento explosivo y un 
     estancamiento; en la segunda empresa se observa simplemente la caída debida a la pandemia y el posterior crecimiento, en una tendencia ascendiente que aún no se ha cortado; y en 
-    la última empresa, se ve un crecimiento constante, menor o menos abrupto los primeros años (coincidentes también con la pandemia)
+    la última empresa, se ve un crecimiento constante, menor o menos abrupto los primeros años (coincidentes también con la pandemia).
     \item El \textbf{componente estacional}, que captura los patrones o ciclos en los datos. Estos patrones pueden deberse a numerosas causas, como el clima, festividades, las estaciones, etc.
     Representa las fluctuaciones que ocurren, para el mismo período (en este caso, anual), en cada ciclo (por ejemplo, se observa que, por lo general, al inicio del año, los 
     precios sufren una bajada, precedida de una subida en los últimos meses del año). Es crucial para el análisis, ya que nos permite saber si podremos predecir estos patrones 
@@ -344,10 +343,8 @@ Los parámetros que se ajustarán para este modelo son:
 
 \paragraph{GRU} \label{GRU}\mbox{} \\
 Las GRU, o \texttt{Gated Recurrent Unit}, son una variante simplificada de las LSTM, que mantienen tanto la idea de la memoria como de las puertas, pero fusionando algunas de ellas, 
-con lo que logran reducir los parámetros y acelarar el entrenamiento. Cadaa unidad GRU tiene ahora un único estado oculto, controlado por dos puertas: la \textit{update gate}, que 
-decide cuánto se mantiene del estado anterior; y la \textit{reset gate}, que decide cuánto se olvida.
-
-En este caso, también se ajustarán los mismos parámetros que para las LSTM.
+con lo que logran reducir los parámetros y acelarar el entrenamiento. Cada unidad GRU tiene ahora un único estado oculto, controlado por dos puertas: la \textit{update gate}, que 
+decide cuánto se mantiene del estado anterior; y la \textit{reset gate}, que decide cuánto se olvida. En este caso, también se ajustarán los mismos parámetros que para las LSTM.
 
 \subsubsection{Modelos convolucionales}
 Estos modelos presentan una complejidad intermedia entre los modelos de árboles y los secuenciales. Su idea básica es aplicar filtros o kernels que van barriendo y analizando 
@@ -399,13 +396,13 @@ a la vez distintas métricas para el mismo modelo:
     Valores próximos a 1 indican que el modelo explica perfectamente los datos, mientras que próximos a 0 indican que el modelo no mejora respecto a predecir siempre la media. Es el
     criterio que usaremos como principal a la hora de determinar el mejor modelo.
     \item \textbf{MSE} (Mean Squared Error). Se calcula como la media de los cuadrados de las diferencias entre los valores reales y los predichos, y es útil ya que penaliza 
-    fuertemente los errores grandes (debido a la elevación al cuadrado), aunque no es interpretable en las mismas unidades que los datos originales
+    fuertemente los errores grandes (debido a la elevación al cuadrado), aunque no es interpretable en las mismas unidades que los datos originales.
     \item \textbf{MAE} (Mean Absolute Error). Similar al anterior, pero mide únicamente la media de las diferencias absolutas. Es más robusto frente a valores atípicos o excesivamente 
     altos, e indica, en promedio, cuánto se desvía la predicción de los valores reales, con la ventaja de hacerlo en las unidades de la variable.
     \item \textbf{RMSE} (Root Mean Squared Error). Es simplemente la raíz cuadrada del MSE, lo que lo hace más interpretable al devolver el error medio, ahora sí, en las mismas unidades 
     que los datos.
     \item \textbf{MAPE} (Mean Absolute Percent Error). Mide el error relativo en porcentaje. Tiene la ventaja de ser intuitivo (por ser un porcentaje), pero no funciona bien con
-    valores próximos a cero. En este caso, nos sirve para comparar empresas con diferentes escalas de precios
+    valores próximos a cero. En este caso, nos sirve para comparar empresas con diferentes escalas de precios.
     \item \textbf{EVS} (Explained Variance Score). Mide cuánta varianza de los datos es explicada por el modelo, de forma similar al $R^2$, pero más centrada en la dispersión de los 
     errores.
     \item \textbf{DA} (Directional Accuracy). Se emplea en algunos casos para evaluar si el modelo predice correctamente la dirección del cambio (es decir, si el modelo acierta cuando 
@@ -428,7 +425,7 @@ particiones. Cada partición se evalúa con las métricas comentadas en \ref{hip
 todos los \textit{folds}.
 
 \subsubsection{Entrenamiento de los modelos} \label{training}
-Este proceso es la parte central del trabajo, pues es donde se entrena a los algoritmos para que identifiquen los patrones y realicen las predicciones. Como se comentó en 
+Este proceso es la parte central del trabajo, pues es donde se entrenan los algoritmos para que identifiquen los patrones y realicen las predicciones. Como se comentó en 
 \ref{supervisados}, se emplearán estos datos transformados, tanto para los casos en el que se emplea el horizonte de 1 semana como para el de 4, ya que se ha diseñado una 
 función que crea los datos teniendo en cuenta ambos parámetros. Sin embargo, estos datos no son los que se empleen directamente para entrenar los modelos, sino que primero 
 deben escalarse, empleando un \texttt{StandardScaler}. Esto se hace para homogeneizar las escalas de los datos, y evitar que empresas con precios de las acciones muy elevados 
@@ -442,7 +439,7 @@ todos los datos consumiría muchos recursos, tanto a nivel computacional como te
 una muestra heterogénea (en vez de elegir, por ejemplo, el top de empresas con mayor cotización u otro criterio).
 
 Una vez ajustados todos los modelos sobre este subconjunto, podemos elegir los más prometedores en términos de sus hiperparámetros, para aplicarles el bagging y poder reentrenarlos 
-de nuevo, ahora sí, con todos los datos. Además, no corremos el riesgo de que se produza un sobreajuste en los datos en el modelo final, ya que esta fase inicial únicamente se usa para 
+de nuevo, ahora sí, con todos los datos. Además, no corremos el riesgo de que se produzca un sobreajuste en los datos en el modelo final, ya que esta fase inicial únicamente se usa para 
 elegir el modelo más prometedor, y luego reentrenamos el modelo, ya sí, teniendo en cuenta todos los datos.
 
 \subsection{Resultados preliminares de los modelos} \label{resultadosPreliminares}
@@ -502,8 +499,8 @@ temporales, lo que indica una estabilidad del rendimiento, que sería más difí
 son especialmente buenos para capturar patrones cortos, con tendencias locales y cambios abruptos, que precisamente son la naturaleza de las series financieras.
 
 En el otro extremo de rendimiento tenemos a los modelos secuenciales, tanto LSTM como GRU, que ofrecen un rendimiento abrumadoramente inferior en ambos escenarios, con un valor 
-del $R^2$ que apenas llega al 0.4. Las métricas de error confirman esto también, con un MAE en torno a 60 y un MAPE en torno al 20\%. Aunque estos modelos están pensados 
-para manejar dependencias a largo plazo, su mal desempeño podría ser previsible, ya que los patrones que encontramos en las series financieras suelen ser más a corto plazo, lo que 
+del $R^2$ que apenas llega al 0.4. Las métricas de error confirman esto también, con un MAE en torno a 60 y un MAPE en torno al 20\%. Estos modelos están pensados para manejar
+dependencias a largo plazo, por lo que su mal desempeño podría ser previsible, ya que los patrones que encontramos en las series financieras suelen ser más a corto plazo, lo que 
 no beneficia a estos modelos. Además, son muy sensibles al \textit{tuning} de los hiperparámetros, que debe ser muy fino, ya que si no disponen de una configuración óptima tenderán 
 o bien a sobreajustar o, como es este caso, a no converger adecuadamente. Es posible que, con una búsqueda más exhaustiva de hiperparámetros, analizando muchas más combinaciones, se 
 llegara a obtener modelos un poco mejores, pero esto no ha sido posible, en parte, debido a la falta de recursos computacionales.
@@ -514,7 +511,7 @@ unas métricas de error mucho más elevadas que el modelo convolucional (un RMSE
 o error porcentual es inferior, aproximadamente la mitad (para Conv1D teníamos un 10.36\% en H=1, mientras que el de XGBoost es de 5.74\%, y el de LightGBM es aún más pequeño, de 
 4.78\%). Esto nos indica que, aunque los errores son mayores en términos absolutos, en término relativo se equivoca menos. Teniendo en cuenta que los datos son el valor en dólares 
 de las cotizaciones de las empresas, quiere decir que se equivocan más en empresas con valores más altos, donde el impacto relativo es menor (es decir, no es lo mismo equivocarse 
-por 10 dólares en una acción que cotiza a 1000, que sería un 1\% de error; que hacerlo en 1 dólas en una acción que cotiza a 5, que sería un 20\%).
+por 10 dólares en una acción que cotiza a 1000, que sería un 1\% de error; que hacerlo en 1 dólar en una acción que cotiza a 5, que sería un 20\%).
 
 Este comportamiento también era esperable, ya que estos algoritmos captan muy bien relaciones no lineales entre los datos y patrones complejos, que son los que se producen en 
 este caso. Sin embargo, frente a horizontes más largos, pueden perder precisión, como se ha observado, ya que al no modelar de forma nativa la secuencia temporal hace que pierdan 
@@ -547,7 +544,7 @@ ya que por una parte capturamos relaciones no lineales de los datos y, por otra,
 \end{enumerate}
 
 Para validar los resultados del \textit{bagging}, además de emplear las mismas métricas que se emplearon en los casos anteriores, analizaremos también las curvas de pérdida 
-de entrenamiento y de validación, para Conv1D, ya que su ajuste progresivo de parámetros mediante retropropagación nos permite monitorizarlo. En este caso, tenemos la figura 
+de entrenamiento y de validación para Conv1D, ya que su ajuste progresivo de parámetros mediante retropropagación nos permite monitorizarlo. En este caso, tenemos la figura 
 \ref{fig:trainloss}, que muestra en \ref{fig:trainlossH1} las curvas para el horizonte de predicción semanal; y en \ref{fig:trainlossH4} las curvas para el horizonte de predicción 
 a cuatro semanas. La curva de entrenamiento representa el error del modelo al evaluarlo sobre los datos de train, y una disminución progresiva del mismo indica que el modelo aprende
 representaciones útiles de los datos. Por su parte, la curva de validación representa el error del modelo sobre datos no vistos (de test), y su evolución es crucial para analizar la 
@@ -556,7 +553,7 @@ bien. Si ambas permaneciesen altas, sin descender, tendríamos un caso de subaju
 sería una señal inmediata de sobreajuste. Además, también podemos medir el sobreajuste viendo la distancia entre ambas curvas, siendo una distancia pequeña señal de que el modelo es bueno; 
 mientras que una distancia grande indica \textit{overfitting} (y, si se combina con valores muy elevados, indicaría \textit{underfitting}).
 
-En nuestro caso, vemos que la curva de entrenamiento desciende abruptamente en las primeras épocas para luego estabilizarse (pasa de 37000 a aproximadamente 2000, y se mantiene); 
+En nuestro caso, vemos que la curva de entrenamiento desciende abruptamente en las primeras épocas para luego estabilizarse (pasa de 36000 a aproximadamente 2000, y se mantiene); 
 mientras que la curva de validación, aunque se reduce, se mantiene estable desde el principio en un rango que no supera 1000. Esto indica que el modelo ha aprendido patrones relevantes 
 de los datos (por la reducción significativa del \textit{train loss}), a la vez que presenta buena capacidad de generalización (por la estabilidad en el \textit{validation loss}) y los 
 valores bajos que presenta. Aun así, podrían aplicarse técnicas adicionales para reducir aún más el \textit{train loss} y su brecha respecto al \textit{validation loss}.
@@ -577,7 +574,7 @@ valores bajos que presenta. Aun así, podrían aplicarse técnicas adicionales p
     \caption{Curvas train-val loss} \label{fig:trainloss}
 \end{figure}
 
-Por último, analizaremos las métricas del modelo final de bagging (cuadro \ref{cuadro:bagging}) y las compararemos con las que obtuvimos con los modelos base, tanto en la tabla \ref{cuadro:H1} como 
+Por último, analizaremos las métricas del modelo final de bagging (tabla \ref{cuadro:bagging}) y las compararemos con las que obtuvimos con los modelos base, tanto en la tabla \ref{cuadro:H1} como 
 en la tabla \ref{cuadro:H4}. En general, vemos que para el horizonte de predicción a corto plazo mejora los modelos, mientras que en horizontes más largos tiene un rendimiento más estable.
 En H=1, el $R^2$ aumentó ligeramente, desde el 0.9817 del Conv1D al 0.9882, pero con una destacable disminución de los errores, que se reducen a la mitad, pasando el RMSE de 30.50 a 16.26 
 y el MAE de 11.60 a 5.57. Para H=4, el $R^2$ se mantiene prácticamente estable, ya que únicamente baja de 0.9760 a 0.9757, y los errores apenas varían, pasando el RMSE de 35.32 a 34.87 y el 
@@ -596,7 +593,9 @@ MAE de 13.31 a 13.16. De esta forma, vemos que el bagging, en general, ofrece ma
 \caption{Resultados del modelo con bagging} \label{cuadro:bagging}
 \end{table}
 
+\renewcommand\section{\newpage\stdsection}
 \section{Resultados} \label{resultados}
+\renewcommand\section{\stdsection}
 Una vez aplicadas las distintas técnicas para obtener los mejores modelos, ya tenemos decidido aquel que usaremos para realizar las predicciones. Pero, si recordamos, como explicamos 
 en \ref{training}, habíamos entrenado los modelos inicialmente sobre un subconjunto de los datos, con el objetivo de agilizar las pruebas, y poder entrenar únicamente el modelo final 
 con todos los datos de todas las empresas. Una vez realizadas las predicciones, se obtienen los siguientes resultados.
@@ -678,8 +677,8 @@ de error conforme avanza el horizonte; mientras que las predicciones directas (e
 el modelo recursivo genera muy bien movimientos a corto plazo, mientras que el directo capta mejor las tendencias generales.
 
 \section{Conclusiones} \label{conclusiones}
-En este trabajo se ha desarrollado un algoritmo de Machine Learning para predecir series temporales financieras, aplicando diferentes modelos de aprendizaje automático y profundo: 
-XGBoost, LightGBM, LSTM, GRU y Conv1D, con horizontes de predicción de una semana (H=1) y un mes (H=4). El objetivo del mismo era determinar en qué empresa sería más rentable invertir.
+En este trabajo se ha desarrollado un algoritmo de Machine Learning para predecir series temporales financieras, aplicando diferentes modelos de aprendizaje automático: 
+XGBoost, LightGBM, LSTM, GRU y Conv1D; con horizontes de predicción de una semana (H=1) y un mes (H=4). El objetivo del mismo era determinar en qué empresa sería más rentable invertir.
 
 Se realizó un análisis inicial de los datos y un proceso de limpieza de los mismos, garantizando series consistentes, sin valores faltantes, y construyendo datasets supervisados con 
 ventanas deslizantes. Posteriormente, se crearon y entrenaron los modelos, aplicando validación cruzada temporal para evaluar el rendimiento de los modelos evitando fugas de información.
@@ -690,8 +689,7 @@ La incorporación de la técnica de \textit{bagging} permitió incrementar, aún
 
 Como ampliaciones o mejoras futuras de este trabajo, además de la puesta en producción del modelo en casos reales, el seguir ampliando los datos de entrenamiento semanalmente, conforme se vayan produciendo,
 así como ampliar los datos históricos previos. También se podrían añadir a los modelos variables exógenas, como indicadores macroeconómicos o noticias financieras, para enriquecer el contexto del modelo.
-También resultaría interesante poder explorar opciones más avanzadas, como transformers o redes convolucionales temporales (TCN), o probar con modelos hibridos, que combinen las fortalezas 
-de las RNN y las CNN.
+También resultaría interesante poder explorar opciones más avanzadas, como transformers, o probar con modelos hibridos, que combinen las fortalezas de las RNN y las CNN.
 
 \renewcommand\section{\stdsection}
 \section{Bibliografía} \label{bibliografia}

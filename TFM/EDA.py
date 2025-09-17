@@ -16,7 +16,7 @@ if __name__ == "__main__":
     df = pd.read_csv(path_csv)
     df['Date'] = pd.to_datetime(df['Date'], utc=True)
     
-    # ======== EDA preliminar antes del pivotado ========
+    # EDA preliminar antes del pivotado
     print("\n=== EDA RAW (datos crudos) ===")
     print(f"Empresas totales: {df['Company'].nunique()}")
     print(f"Rango de fechas: {df['Date'].min().date()} a {df['Date'].max().date()}")
@@ -28,7 +28,6 @@ if __name__ == "__main__":
     print("\nBottom 10 empresas con menos registros:")
     print(counts.tail(10))
     
-    # ======== EDA sobre la matriz pivotada + limpieza + exportación ========
     # Resample semanal
     df_pivot = df.pivot(index='Date', columns='Company', values='Close').resample('W').last()
 
@@ -42,7 +41,7 @@ if __name__ == "__main__":
     print("\n--- Porcentaje de missing por empresa (Top 10) ---")
     print(na_ratio.head(10))
 
-    # Missing por fecha (tras eliminar empresas malas)
+    # Missing por fecha
     missing_by_date = df_pivot.isna().sum(axis=1)
     plt.figure(figsize=(12, 4))
     missing_by_date.plot()

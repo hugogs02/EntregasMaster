@@ -18,8 +18,29 @@ warnings.filterwarnings("ignore")
 
 SEED = 42
 
-# ---------------- CREATE SUPERVISED WITH DATES ----------------
 def create_supervised_with_dates(df, W=25, H=4):
+    """
+    Genera un conjunto de datos supervisado a partir de una serie temporal,
+    utilizando ventanas deslizantes y manteniendo las fechas correspondientes.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame con índices de fechas y columnas de series temporales.
+    W : int, optional (default=25)
+        Longitud de la ventana de entrada (número de observaciones pasadas).
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos a predecir).
+    
+    Returns
+    -------
+    X : numpy.ndarray
+        Matriz de entradas con las ventanas de tamaño W.
+    y : numpy.ndarray
+        Matriz de salidas con los valores futuros a predecir.
+    dates : numpy.ndarray
+        Fechas correspondientes a cada salida en y.
+        """
     X, y, dates = [], [], []
     for col in df.columns:
         data = df[col].values
@@ -30,8 +51,29 @@ def create_supervised_with_dates(df, W=25, H=4):
             dates.append(idx[i+W:i+W+H])
     return np.array(X), np.array(y), np.array(dates)
 
-# ---------------- METRICS ----------------
+# METRICS
 def compute_metrics(y_true, y_pred):
+    """
+    Calcula varias métricas de evaluación para modelos de predicción.
+    
+    Parameters
+    ----------
+    y_true : array-like
+        Valores reales de la serie.
+    y_pred : array-like
+        Valores predichos por el modelo.
+    
+    Returns
+    -------
+    dict
+        Diccionario con las métricas calculadas:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "EVS"   : Varianza explicada.
+    """
     mse = mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_true, y_pred)
@@ -42,8 +84,29 @@ def compute_metrics(y_true, y_pred):
     evs = explained_variance_score(y_true, y_pred)
     return {"MSE":mse,"RMSE":rmse,"MAE":mae,"R2":r2,"MAPE":mape,"EVS":evs}
 
-# ---------------- DL MODELS ----------------
+# DL MODELS
 def build_lstm(input_shape, units=16, dropout=0.3, H=4, **kwargs):
+    """
+    Construye un modelo LSTM para predicción de series temporales.
+
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de unidades en la capa LSTM.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    H : int, optional (default=4)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+
+    Returns
+    -------
+    keras.Sequential
+        Modelo LSTM compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([LSTM(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
@@ -51,6 +114,27 @@ def build_lstm(input_shape, units=16, dropout=0.3, H=4, **kwargs):
     return model
 
 def build_gru(input_shape, units=16, dropout=0.3, H=4, **kwargs):
+    """
+    Construye un modelo GRU para predicción de series temporales.
+
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de unidades en la capa GRU.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    H : int, optional (default=4)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+
+    Returns
+    -------
+    keras.Sequential
+        Modelo GRU compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([GRU(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
@@ -58,6 +142,29 @@ def build_gru(input_shape, units=16, dropout=0.3, H=4, **kwargs):
     return model
 
 def build_conv1d(input_shape, units=16, dropout=0.3, kernel_size=3, H=4, **kwargs):
+    """
+    Construye un modelo Conv1D para predicción de series temporales.
+
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de filtros en la capa Conv1D.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    kernel_size : int, optional (default=3)
+        Tamaño de la ventana de convolución.
+    H : int, optional (default=4)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+
+    Returns
+    -------
+    keras.Sequential
+        Modelo Conv1D compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([Conv1D(filters=units, kernel_size=kernel_size, activation='relu', input_shape=input_shape),
                         Flatten(),
                         Dropout(dropout),
@@ -65,8 +172,33 @@ def build_conv1d(input_shape, units=16, dropout=0.3, kernel_size=3, H=4, **kwarg
     model.compile(optimizer='adam', loss='mse')
     return model
 
-# ---------------- ML con TimeSeriesSplit ----------------
+# ML con TimeSeriesSplit
 def tscv_ml(model, X, y, n_splits):
+    """
+    Realiza validación cruzada para modelos de machine learning en series temporales.
+
+    Parameters
+    ----------
+    model : estimator
+        Modelo base compatible con scikit-learn.
+    X : numpy.ndarray
+        Conjunto de entradas, de forma (n_muestras, ventana, features).
+    y : numpy.ndarray
+        Conjunto de salidas, de forma (n_muestras, horizonte).
+    n_splits : int
+        Número de divisiones para TimeSeriesSplit.
+
+    Returns
+    -------
+    dict
+        Diccionario con el promedio de métricas en todos los splits:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "EVS"   : Varianza explicada.
+    """
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
     X_flat = X.reshape((X.shape[0], -1))
@@ -82,8 +214,43 @@ def tscv_ml(model, X, y, n_splits):
         metrics_list.append(compute_metrics(y_test, y_pred))
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# ---------------- DL con TimeSeriesSplit ----------------
+# DL con TimeSeriesSplit
 def tscv_dl(model_builder, X, y, n_splits, units, dropout, epochs, batch_size, kernel_size=3):
+    """
+    Realiza validación cruzada para modelos de deep learning en series temporales.
+    
+    Parameters
+    ----------
+    model_builder : callable
+        Función constructora del modelo (ej. build_lstm, build_gru, build_conv1d).
+    X : numpy.ndarray
+        Conjunto de entradas, de forma (n_muestras, ventana, features).
+    y : numpy.ndarray
+        Conjunto de salidas, de forma (n_muestras, horizonte).
+    n_splits : int
+        Número de divisiones para TimeSeriesSplit.
+    units : int
+        Número de unidades/filtros en la capa principal.
+    dropout : float
+        Tasa de dropout para regularización.
+    epochs : int
+        Número de épocas de entrenamiento.
+    batch_size : int
+        Tamaño del lote en el entrenamiento.
+    kernel_size : int, optional (default=3)
+        Tamaño de kernel en la capa Conv1D (si aplica).
+    
+    Returns
+    -------
+    dict
+        Diccionario con el promedio de métricas en todos los splits:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "EVS"   : Varianza explicada.
+    """
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
     X_seq = X.reshape((X.shape[0], X.shape[1],1))
@@ -108,12 +275,25 @@ def tscv_dl(model_builder, X, y, n_splits, units, dropout, epochs, batch_size, k
     
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# --------------- Funciones gráficas -------------------
+# GRAFICOS
 def plot_learning_curves(histories, title="Curvas de entrenamiento/validación"):
     """
-    histories: puede ser
-        - un único objeto History de Keras
-        - un diccionario {nombre: history} para graficar varios modelos juntos
+    Grafica las curvas de pérdida (loss) en entrenamiento y validación
+    a partir de objetos History de Keras.
+
+    Parameters
+    ----------
+    histories : keras.callbacks.History or dict
+        Puede ser:
+        - Un único objeto History (para un solo modelo).
+        - Un diccionario {nombre: history} para graficar varios modelos juntos.
+    title : str, optional
+        Título del gráfico.
+
+    Returns
+    -------
+    None
+        Muestra el gráfico en pantalla.
     """
     plt.figure(figsize=(8,6))
 
@@ -137,7 +317,7 @@ def plot_learning_curves(histories, title="Curvas de entrenamiento/validación")
     plt.grid(True)
     plt.show()
 
-# ---------------- MAIN PIPELINE ----------------
+
 if __name__=="__main__":
     path_csv = "stock_weekly_clean.csv"
     W,H = 25,4
@@ -153,7 +333,7 @@ if __name__=="__main__":
     X_sub = np.nan_to_num(X_sub)
     y_sub = np.nan_to_num(y_sub)
     
-    # ---------------- HYPERPARAMETERS ----------------
+    # HYPERPARAMETERS
     xgb_params = {"n_estimators":[100,200], "max_depth":[3,5], "learning_rate":[0.01,0.05]}
     lgb_params = {"n_estimators":[100,200], "max_depth":[5,10], "learning_rate":[0.01,0.05]}
     dl_params = {'units':[16,32,64], 'dropout':[0.2,0.3]}
@@ -163,7 +343,7 @@ if __name__=="__main__":
     tuning_results = {}
     results_sub = {}
 
-    # ---------------- ML MODELS ----------------
+    # ML MODELS
     ml_models = {"XGB": XGBRegressor, "LGBM": LGBMRegressor}
     ml_param_grids = {"XGB": xgb_params, "LGBM": lgb_params}
     
@@ -183,7 +363,7 @@ if __name__=="__main__":
         results_sub[name] = tscv_ml(best_model, X_sub, y_sub, n_splits=5)
         best_models[name] = best_model
 
-    # ---------------- DL MODELS ----------------
+    # DL MODELS
     dl_models = {"LSTM": build_lstm, "GRU": build_gru, "Conv1D": build_conv1d}
     dl_param_grids = {"LSTM": dl_params, "GRU": dl_params, "Conv1D": c1d_params}
     
@@ -215,7 +395,7 @@ if __name__=="__main__":
         results_sub[name] = {**best_metrics, 'config': best_config}
         best_models[name] = best_config
     
-    # ---------------- SELECT BEST MODEL ----------------
+    # SELECT BEST MODEL
     best_r2 = -np.inf
     best_model_name = None
     for name, m in best_models.items():
@@ -236,7 +416,7 @@ if __name__=="__main__":
     
     top_models = ["LGBM", "Conv1D"]
     
-    # ---------------- BAGGING GLOBAL ----------------
+    # BAGGING GLOBAL
     print("=== Bagging simple por empresa ===")
     
     n_bags = 5
@@ -286,7 +466,7 @@ if __name__=="__main__":
     bagging_metrics = compute_metrics(y_test, bagging_preds)
     print("Métricas Bagging (H=4):", {k: round(v,4) for k,v in metrics.items()})
 
-    # ---------------- PREDICCIÓN FUTURA FINAL ----------------
+    # PREDICCIÓN FUTURA FINAL
     print("\n=== Predicción futura (última ventana de cada empresa) ===")
     
     n_companies = df_sub.shape[1]
@@ -326,7 +506,7 @@ if __name__=="__main__":
         y_pred_last[i] = np.mean(preds_models, axis=0)
     
       
-    # ---------------- VISUALIZACIÓN PARA H=4 ----------------
+    # VISUALIZACIÓN PARA H=4
     print("\n=== Predicciones futuras (4 semanas) ===")
     
     # Seleccionamos las 6 empresas con mayor crecimiento previsto en el último paso (semana 4)
@@ -335,7 +515,6 @@ if __name__=="__main__":
     diff_pct = (diff_abs / last_values) * 100
     top6_idx = np.argsort(diff_pct)[-6:][::-1]
     
-    # ---- TEXTO ----
     for i in top6_idx:
         company = df_sub.columns[i]
         current = last_values[i]
@@ -347,7 +526,7 @@ if __name__=="__main__":
             pct_diff = (abs_diff / current) * 100
             print(f"   +{h} semana(s): Pred={pred:.2f} | Dif={abs_diff:.2f} | Dif%={pct_diff:.2f}%")
     
-    # ---- GRAFICO HISTÓRICO + PREDICCIONES ----
+    # GRAFICO HISTÓRICO + PREDICCIONES
     fig, axes = plt.subplots(3, 2, figsize=(14, 12))
     axes = axes.flatten()
     

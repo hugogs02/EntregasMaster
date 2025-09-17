@@ -21,10 +21,29 @@ warnings.filterwarnings("ignore")
 SEED = 42
 np.random.seed(SEED)
 
-# =========================================================
-# CREATE SUPERVISED
-# =========================================================
 def create_supervised_with_dates(df, W=25, H=1):
+    """
+    Genera un conjunto de datos supervisado a partir de una serie temporal,
+    utilizando ventanas deslizantes y manteniendo las fechas correspondientes.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame con índices de fechas y columnas de series temporales.
+    W : int, optional (default=25)
+        Longitud de la ventana de entrada (número de observaciones pasadas).
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos a predecir).
+    
+    Returns
+    -------
+    X : numpy.ndarray
+        Matriz de entradas con las ventanas de tamaño W.
+    y : numpy.ndarray
+        Matriz de salidas con los valores futuros a predecir.
+    dates : numpy.ndarray
+        Fechas correspondientes a cada salida en y.
+        """
     X, y, dates = [], [], []
     for col in df.columns:
         data = df[col].values
@@ -35,10 +54,30 @@ def create_supervised_with_dates(df, W=25, H=1):
             dates.append(idx[i+W:i+W+H])
     return np.array(X), np.array(y), np.array(dates)
 
-# =========================================================
-# METRICS
-# =========================================================
+
 def compute_metrics(y_true, y_pred):
+    """
+    Calcula varias métricas de evaluación para modelos de predicción.
+    
+    Parameters
+    ----------
+    y_true : array-like
+        Valores reales de la serie.
+    y_pred : array-like
+        Valores predichos por el modelo.
+    
+    Returns
+    -------
+    dict
+        Diccionario con las métricas calculadas:
+        - "MSE" : Error cuadrático medio.
+        - "RMSE": Raíz del error cuadrático medio.
+        - "MAE" : Error absoluto medio.
+        - "R2"  : Coeficiente de determinación.
+        - "MAPE": Error porcentual absoluto medio.
+        - "SMAPE": Error porcentual absoluto medio simétrico.
+        - "EVS" : Varianza explicada.
+    """
     y_true = np.ravel(y_true)
     y_pred = np.ravel(y_pred)
     mse = mean_squared_error(y_true, y_pred)
@@ -50,10 +89,29 @@ def compute_metrics(y_true, y_pred):
     evs = explained_variance_score(y_true, y_pred)
     return {"MSE":mse,"RMSE":rmse,"MAE":mae,"R2":r2,"MAPE":mape,"SMAPE":smape,"EVS":evs}
 
-# =========================================================
-# DL BUILDERS
-# =========================================================
+# MODEL BUILDERS
 def build_lstm(input_shape, units=16, dropout=0.3, H=1, **kwargs):
+    """
+    Construye un modelo LSTM para predicción de series temporales.
+    
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de unidades en la capa LSTM.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+    
+    Returns
+    -------
+    keras.Sequential
+        Modelo LSTM compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([LSTM(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
@@ -61,6 +119,27 @@ def build_lstm(input_shape, units=16, dropout=0.3, H=1, **kwargs):
     return model
 
 def build_gru(input_shape, units=16, dropout=0.3, H=1, **kwargs):
+    """
+    Construye un modelo GRU para predicción de series temporales.
+    
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de unidades en la capa GRU.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+    
+    Returns
+    -------
+    keras.Sequential
+        Modelo GRU compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([GRU(units, input_shape=input_shape),
                         Dropout(dropout),
                         Dense(H)])
@@ -68,6 +147,29 @@ def build_gru(input_shape, units=16, dropout=0.3, H=1, **kwargs):
     return model
 
 def build_conv1d(input_shape, units=16, dropout=0.3, kernel_size=3, H=1, **kwargs):
+    """
+    Construye un modelo Conv1D para predicción de series temporales.
+    
+    Parameters
+    ----------
+    input_shape : tuple
+        Forma de la entrada (timesteps, features).
+    units : int, optional (default=16)
+        Número de filtros en la capa Conv1D.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    kernel_size : int, optional (default=3)
+        Tamaño de la ventana de convolución.
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos a predecir).
+    **kwargs : dict
+        Argumentos adicionales para compatibilidad.
+    
+    Returns
+    -------
+    keras.Sequential
+        Modelo Conv1D compilado con optimizador Adam y pérdida MSE.
+    """
     model = Sequential([Conv1D(filters=units, kernel_size=kernel_size, activation='relu', input_shape=input_shape),
                         Flatten(),
                         Dropout(dropout),
@@ -77,10 +179,34 @@ def build_conv1d(input_shape, units=16, dropout=0.3, kernel_size=3, H=1, **kwarg
 
 dl_models = {"LSTM": build_lstm, "GRU": build_gru, "Conv1D": build_conv1d}
 
-# =========================================================
-# TSCV: ML
-# =========================================================
+# CROSS VALIDATION
 def tscv_ml(model, X, y, n_splits=5):
+    """
+    Realiza validación cruzada en series temporales para modelos de machine learning.
+    
+    Parameters
+    ----------
+    model : estimator
+        Modelo base a entrenar (compatible con scikit-learn).
+    X : numpy.ndarray
+        Conjunto de entradas, de forma (n_muestras, ventana, features).
+    y : numpy.ndarray
+        Conjunto de salidas, de forma (n_muestras, horizonte).
+    n_splits : int, optional (default=5)
+        Número de divisiones para TimeSeriesSplit.
+    
+    Returns
+    -------
+    dict
+        Diccionario con el promedio de métricas calculadas en cada split:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "SMAPE" : Error porcentual absoluto medio simétrico.
+        - "EVS"   : Varianza explicada.
+    """
     X_flat = X.reshape((X.shape[0], -1))
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
@@ -96,10 +222,44 @@ def tscv_ml(model, X, y, n_splits=5):
         metrics_list.append(compute_metrics(y_test, y_pred))
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# =========================================================
-# TSCV: DL
-# =========================================================
+
 def tscv_dl(model_builder, X, y, n_splits=3, units=16, dropout=0.3, epochs=10, batch_size=32, kernel_size=3):
+    """
+    Realiza validación cruzada en series temporales para modelos de deep learning.
+
+    Parameters
+    ----------
+    model_builder : callable
+        Función constructora del modelo (ej. build_lstm, build_gru, build_conv1d).
+    X : numpy.ndarray
+        Conjunto de entradas de forma (n_muestras, ventana).
+    y : numpy.ndarray
+        Conjunto de salidas de forma (n_muestras, horizonte).
+    n_splits : int, optional (default=3)
+        Número de divisiones para TimeSeriesSplit.
+    units : int, optional (default=16)
+        Número de unidades/neurona en la capa principal del modelo.
+    dropout : float, optional (default=0.3)
+        Tasa de dropout para regularización.
+    epochs : int, optional (default=10)
+        Número máximo de épocas de entrenamiento.
+    batch_size : int, optional (default=32)
+        Tamaño del lote para el entrenamiento.
+    kernel_size : int, optional (default=3)
+        Tamaño de kernel (solo usado en modelos Conv1D).
+
+    Returns
+    -------
+    dict
+        Diccionario con el promedio de métricas calculadas en cada split:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "SMAPE" : Error porcentual absoluto medio simétrico.
+        - "EVS"   : Varianza explicada.
+    """
     X_seq = X.reshape((X.shape[0], X.shape[1], 1))
     tscv = TimeSeriesSplit(n_splits=n_splits)
     metrics_list = []
@@ -121,10 +281,32 @@ def tscv_dl(model_builder, X, y, n_splits=3, units=16, dropout=0.3, epochs=10, b
         metrics_list.append(compute_metrics(y_test, y_pred))
     return {k: np.mean([m[k] for m in metrics_list]) for k in metrics_list[0]}
 
-# =========================================================
 # RUN EXPERIMENT
-# =========================================================
 def run_experiment(path_csv, W=25, H=1, sub_sample_ratio=0.4):
+    """
+    Ejecuta un experimento de predicción con múltiples modelos (ML y DL),
+    evaluando su rendimiento mediante validación cruzada en series temporales.
+
+    Parameters
+    ----------
+    path_csv : str
+        Ruta al archivo CSV con precios históricos (índice temporal y columnas por empresa).
+    W : int, optional (default=25)
+        Tamaño de la ventana temporal utilizada como entrada.
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos futuros a estimar).
+    sub_sample_ratio : float, optional (default=0.4)
+        Proporción de columnas/empresas seleccionadas aleatoriamente para el experimento.
+
+    Returns
+    -------
+    results : dict
+        Métricas de rendimiento (R2) obtenidas para cada modelo.
+    best_models : dict
+        Mejor configuración encontrada para cada modelo (hiperparámetros o arquitectura).
+    df_sub : pandas.DataFrame
+        Subconjunto de datos utilizado en el experimento.
+    """
     np.random.seed(SEED)
     df_weekly = pd.read_csv(path_csv, index_col=0, parse_dates=True)
     df_weekly.index = pd.to_datetime(df_weekly.index, utc=True)
@@ -173,10 +355,42 @@ def run_experiment(path_csv, W=25, H=1, sub_sample_ratio=0.4):
 
     return results, best_models, df_sub
 
-# =========================================================
-# BAGGING + FORECAST
-# =========================================================
+# BAGGING AND PREDICTIONS
 def run_bagging_and_forecast(df_sub, W=25, H=1, best_models=None, top_models=None, n_bags=5):
+    """
+    Ejecuta un esquema de Bagging con los mejores modelos y genera predicciones futuras.
+
+    Parameters
+    ----------
+    df_sub : pandas.DataFrame
+        Subconjunto de datos con series temporales (una columna por empresa).
+    W : int, optional (default=25)
+        Tamaño de la ventana temporal utilizada como entrada.
+    H : int, optional (default=1)
+        Horizonte de predicción (número de pasos futuros a estimar).
+    best_models : dict, optional
+        Modelos o configuraciones óptimas obtenidas en la fase de búsqueda de hiperparámetros.
+    top_models : list of str, optional
+        Lista de modelos a incluir en el ensamble. Por defecto ["XGB", "Conv1D"].
+    n_bags : int, optional (default=5)
+        Número de repeticiones en el ensamble Bagging por cada modelo.
+
+    Returns
+    -------
+    y_pred_last : numpy.ndarray
+        Predicciones futuras para cada empresa en df_sub.
+        - Forma (n_empresas, H) si H > 1.
+        - Forma (n_empresas,) si H = 1.
+    metrics : dict
+        Métricas de evaluación promedio en el conjunto de test:
+        - "MSE"   : Error cuadrático medio.
+        - "RMSE"  : Raíz del error cuadrático medio.
+        - "MAE"   : Error absoluto medio.
+        - "R2"    : Coeficiente de determinación.
+        - "MAPE"  : Error porcentual absoluto medio.
+        - "SMAPE" : Error porcentual absoluto medio simétrico.
+        - "EVS"   : Varianza explicada.
+    """
     if top_models is None:
         top_models = ["XGB", "Conv1D"]
 
@@ -272,10 +486,29 @@ def run_bagging_and_forecast(df_sub, W=25, H=1, best_models=None, top_models=Non
 
     return y_pred_last, metrics
 
-# =========================================================
-# RECURSIVE FORECAST (H=1 -> varios pasos)
-# =========================================================
+# RECURSIVE FORECASTING
 def recursive_forecast_H1(df_sub, trained_model_H1, scaler, W=25, steps=4):
+    """
+    Genera predicciones recursivas a partir de un modelo entrenado para H=1.
+
+    Parameters
+    ----------
+    df_sub : pandas.DataFrame
+        Subconjunto de datos con series temporales (una columna por empresa).
+    trained_model_H1 : object
+        Modelo entrenado para horizonte H=1 (puede ser de ML o DL).
+    scaler : sklearn.preprocessing.StandardScaler
+        Objeto de escalado utilizado en el entrenamiento.
+    W : int, optional (default=25)
+        Tamaño de la ventana temporal utilizada como entrada.
+    steps : int, optional (default=4)
+        Número de pasos futuros a predecir de forma recursiva.
+
+    Returns
+    -------
+    y_pred_recursive : numpy.ndarray
+        Predicciones recursivas para cada empresa, de forma (n_empresas, steps).
+    """
     n_companies = df_sub.shape[1]
     y_pred_recursive = np.zeros((n_companies, steps))
 
@@ -294,10 +527,33 @@ def recursive_forecast_H1(df_sub, trained_model_H1, scaler, W=25, steps=4):
             window[0, -1] = pred
     return y_pred_recursive
 
-# =========================================================
+
 # PLOT FORECASTS
-# =========================================================
 def plot_forecasts_full(df_sub, y_pred_last_H1, y_pred_last_H4, H1=1, H4=4, title="Predicciones (Full)"):
+    """
+    Genera gráficos de predicciones históricas y futuras (H=1 y H=4)
+    para las 6 empresas con mayor crecimiento absoluto previsto.
+
+    Parameters
+    ----------
+    df_sub : pandas.DataFrame
+        Subconjunto de datos con series históricas (una columna por empresa).
+    y_pred_last_H1 : numpy.ndarray
+        Predicciones de horizonte H=1 (un paso adelante).
+    y_pred_last_H4 : numpy.ndarray
+        Predicciones de horizonte H=4 (múltiples pasos).
+    H1 : int, optional (default=1)
+        Horizonte usado en las predicciones H=1.
+    H4 : int, optional (default=4)
+        Horizonte usado en las predicciones H=4.
+    title : str, optional
+        Título de la figura.
+
+    Returns
+    -------
+    None
+        Muestra los gráficos en pantalla.
+    """
     last_values = df_sub.iloc[-1].values
     diff_abs = y_pred_last_H4[:,-1] - last_values
     top6_idx = np.argsort(diff_abs)[-6:][::-1]
@@ -326,6 +582,30 @@ def plot_forecasts_full(df_sub, y_pred_last_H1, y_pred_last_H4, H1=1, H4=4, titl
     plt.show()
 
 def plot_forecasts_zoom(df_sub, y_pred_last_H1, y_pred_last_H4, H1=1, H4=4, title="Predicciones (Zoom)"):
+    """
+    Genera gráficos comparativos entre predicciones recursivas H=1 y directas H=4
+    para las 6 empresas con mayor crecimiento absoluto previsto.
+
+    Parameters
+    ----------
+    df_sub : pandas.DataFrame
+        Subconjunto de datos con series históricas (una columna por empresa).
+    y_pred_last_H1 : numpy.ndarray
+        Predicciones recursivas basadas en horizonte H=1.
+    y_pred_last_H4 : numpy.ndarray
+        Predicciones directas basadas en horizonte H=4.
+    H1 : int, optional (default=1)
+        Horizonte usado en las predicciones H=1 recursivas.
+    H4 : int, optional (default=4)
+        Horizonte usado en las predicciones H=4 directas.
+    title : str, optional
+        Título de la figura.
+
+    Returns
+    -------
+    None
+        Muestra los gráficos en pantalla.
+    """
     last_values = df_sub.iloc[-1].values
     diff_abs = y_pred_last_H4[:,-1] - last_values
     top6_idx = np.argsort(diff_abs)[-6:][::-1]
@@ -356,9 +636,7 @@ def plot_forecasts_zoom(df_sub, y_pred_last_H1, y_pred_last_H4, H1=1, H4=4, titl
     plt.tight_layout()
     plt.show()
 
-# =========================================================
 # MAIN
-# =========================================================
 if __name__=="__main__":
     path_csv = "stock_weekly_clean.csv"
 
