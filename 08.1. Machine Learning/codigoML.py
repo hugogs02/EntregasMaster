@@ -95,37 +95,61 @@ print("Nulos tras imputación (deberían ser 0):\n", df[nums + cats + [target]].
 
 # EDA BIDIMENSIONAL vs TARGET
 # 1) Numéricas vs target (boxplots)
-for col in nums:
-    plt.figure(figsize=(6,3))
-    sns.boxplot(x=df[target], y=df[col])
-    plt.title(f"{col} vs {target}")
-    plt.xlabel(target); plt.ylabel(col)
-    plt.tight_layout(); plt.show()
+fig, axes = plt.subplots(3, 4, figsize=(18, 12))
+axes = axes.flatten()
+
+for i, col in enumerate(nums):
+    sns.boxplot(x=df[target], y=df[col], ax=axes[i])
+    axes[i].set_title(f"{col} vs {target}")
+    axes[i].set_xlabel(target)
+    axes[i].set_ylabel(col)
+    
+# Si sobran ejes, los apagamos
+for j in range(len(nums), len(axes)):
+    fig.delaxes(axes[j])
+    
+plt.tight_layout()
+plt.show()
 
 # 2) Numéricas vs target (densidades) – opcional
-for col in nums:
-    plt.figure(figsize=(6,3))
-    sns.kdeplot(data=df, x=col, hue=target, common_norm=False)
-    plt.title(f"Densidades de {col} por clase de {target}")
-    plt.tight_layout(); plt.show()
+fig, axes = plt.subplots(3, 4, figsize=(18, 12))
+axes = axes.flatten()
+
+for i, col in enumerate(nums):
+    sns.kdeplot(data=df, x=col, hue=target, common_norm=False, ax=axes[i])
+    axes[i].set_title(f"Densidad de {col} por {target}")
+    axes[i].set_xlabel(col)
+    axes[i].set_ylabel("Densidad")
+
+for j in range(len(nums), len(axes)):
+    fig.delaxes(axes[j])
+
+plt.tight_layout()
+plt.show()
 
 # 3) Categóricas vs target: tasa (barra) + soporte (línea)
-def rate_plot(_df, col):
-    tmp = (_df.groupby(col)[target]
+fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(10, 12))
+
+for i, col in enumerate(cats):
+    tmp = (df.groupby(col)[target]
            .agg(rate="mean", n="size")
            .sort_values("n", ascending=False).reset_index())
-    fig, ax1 = plt.subplots(figsize=(8,3))
-    sns.barplot(data=tmp, x=col, y="rate", ax=ax1)
-    ax1.set_ylabel(f"Tasa {target}=1"); ax1.set_xlabel(col)
+    
+    ax1 = axes[i]
+    sns.barplot(data=tmp, x=col, y="rate", ax=ax1, color="skyblue")
+    ax1.set_ylabel(f"Tasa {target}=1")
+    ax1.set_xlabel(col)
     ax1.tick_params(axis="x", rotation=45)
+    
+    # eje secundario
     ax2 = ax1.twinx()
-    ax2.plot(ax1.get_xticks(), tmp["n"], marker="o")
+    ax2.plot(ax1.get_xticks(), tmp["n"], marker="o", color="red")
     ax2.set_ylabel("n (soporte)")
-    plt.title(f"Tasa de {target} por {col} (con soporte)")
-    plt.tight_layout(); plt.show()
+    
+    ax1.set_title(f"Tasa de {target} por {col} (con soporte)")
 
-for col in cats:
-    rate_plot(df, col)
+plt.tight_layout()
+plt.show()
 
 # Dummies, correlación y split
 df_dummies = pd.get_dummies(df, columns=cats, drop_first=True)
@@ -178,7 +202,7 @@ def run_gridsearch(name, estimator, param_grid, n_folds):
         param_grid=param_grid,
         scoring={'acc':'accuracy','auc':'roc_auc'},
         refit='auc',
-        cv=cv, n_jobs=-1, verbose=2
+        cv=cv, n_jobs=-1, verbose=0
     )
     grid.fit(X_train_scaled, y_train)
     print(f"\n{name} – mejor combinación:", grid.best_params_)
@@ -305,7 +329,7 @@ grid_bagging = GridSearchCV(
     refit='auc',
     cv=5,
     n_jobs=-1,
-    verbose=2
+    verbose=0
 )
 
 grid_bagging.fit(X_train_scaled, y_train)
@@ -455,14 +479,14 @@ def add_extra_metrics(df, Xte, yte):
             model = best_bagging
         elif model_name == "Stacking (LR meta)":
             model = stacking_model
-        """elif "Base–RF" in model_name:
-            model = base_models[0][1]
-        elif "Base–LR" in model_name:
-            model = base_models[1][1]
-        elif "Base–KNN" in model_name:
-            model = base_models[2][1]
-        elif "Base–SVM" in model_name:
-            model = base_models[3][1]"""
+        #elif "Base–RF" in model_name:
+        #    model = base_models[0][1]
+        #elif "Base–LR" in model_name:
+        #    model = base_models[1][1]
+        #elif "Base–KNN" in model_name:
+        #    model = base_models[2][1]
+        #elif "Base–SVM" in model_name:
+        #    model = base_models[3][1]
         else:
             continue
         y_pred = model.predict(Xte)
