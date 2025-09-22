@@ -43,7 +43,7 @@ df['Engine volume'] = df['Engine volume'].str.extract(r'(\d+(?:\.\d+)?)')[0].ast
 df['Levy'] = df['Levy'].apply(lambda x: 0 if x == '-' else x).astype(int)
 df['Mileage'] = df['Mileage'].str.replace(' km', '', regex=False).str.replace(',', '').astype(int)
 
-# Definir listas de variables (como en tu código)
+# Definir listas de variables
 nums = ['Price', 'Prod. year', 'Leather interior', 'Engine volume', 'Mileage',
         'Airbags', 'Cylinders', 'Right wheel', 'Automatic', 'Turbo', 'Levy']
 cats = ['Manufacturer', 'Category', 'Fuel type', 'Drive wheels']
