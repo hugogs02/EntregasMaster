@@ -103,7 +103,7 @@
 % Print the title
 \maketitle
 %\newpage
-\tableofcontents
+%\tableofcontents
 %\newpage
 \begin{sloppypar}
 
@@ -173,6 +173,12 @@ a entera. Respecto a la variable \textit{Levy}, se ha visto que tiene el valor `
 En este caso, se ha decidido imputar este valor como un 0, manteniendo el valor original que hubiera en el resto de los casos. Esto nos permitirá tratar también 
 esta variable como numérica, que es efectivamente el tipo de datos que debería tener. 
 
+Más allá de este caso particular, se analizó todo el dataset en búsqueda de valores faltantes. Aunque el análisis inicial no mostraba nulos explícitos, tras las 
+transformaciones era necesario asegurar que no quedaban valores vacíos en ninguna variable. Aunque se comprobó que esto no era así, se ha decidido incluir igualmente 
+el fragmento de código por si se diera el caso de que se añadieran más datos que si que hicieran necesaria la imputación. Para las variables categóricas, se imputa 
+una categoría adicional ''Missing'', lo que preserva la existencia de los registros sin introducir sesgo por asignar una categoría arbitraria. Para las variables numéricas,
+se opta por imputar con la mediana, una medida robusta frente a valores extremos que evita que los outliers distorsionen la distribución.
+
 Con todo esto, podemos definir nuestras variables numéricas y categóricas, que quedan de la siguiente forma:
 \begin{lstlisting}[language=Python,numbers=none]
 nums = ['Price', 'Prod. year', 'Leather interior', 'Engine volume', 'Mileage', 'Airbags', 'Cylinders', 'Right wheel', 'Automatic', 'Turbo', 'Levy']
@@ -233,15 +239,34 @@ def detect_outliers(df, column):
 Esto nos da un total de 92 outliers en la primera variable y un total de 81 en la segunda variable. Estos datos, un total de 173 valores atípicos (que podrían 
 ser incluso menos, ya que puede que haya una fila que sea atípica en ambas variables) representa apenas un 4\% de los datos, por lo que, en lugar de perder 
 tiempo en la imputación de los valores atípicos, se ha decidido optar por eliminarlos directamente. Con esto, ya tenemos todas las variables limpias, así que 
-podemos pasar a convertir las variables categóricas a dummies, que es uno de los requisitos que hay para poder aplicar los modelos.
+podemos pasar a realizar el análisis bidimensional frente a la variable target.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/bidimensional_boxplot.png}
+    \caption{Boxplots - Bidimensional vs. target} \label{fig:BoxplotsBiTarget}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/bidimensional_densidad.png}
+    \caption{Curvas de densidad - Bidimensional vs. target} \label{fig:densidadBiTarget}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/bidimensional_cats.png}
+    \caption{Color por variables categóricas + soporte} \label{fig:colorCats}
+\end{figure}
+
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{imgs/correlacion.png}
     \caption{Matriz de correlación de las variables} \label{fig:correlacion}
 \end{figure}
-Una vez creadas las variables dummies, analizamos la correlación que hay entre las variables, para ver si es necesario eliminar alguna de ellas. En la imagen 
-\ref{fig:correlacion} tenemos dicha matriz de correlación, en la cual vemos dos cosas que destacan. Por una parte, \textit{Front drive} tiene una correlación 
+Una vez realizado el análisis, se crean las variables dummies, y analizamos la correlación que hay entre las variables, para ver si es necesario eliminar alguna de ellas.
+En la imagen \ref{fig:correlacion} tenemos dicha matriz de correlación, en la cual vemos dos cosas que destacan. Por una parte, \textit{Front drive} tiene una correlación 
 de -0,64 (es decir, negativa) tanto con \textit{Engine volume} como con \textit{Cylinders}, lo cual es esperable ya que suelen ser motores más compactos; por 
 otra parte, una elevada correlación positiva entre los cilindros y el \textit{Engine volume}, de 0,79, lo cual tiene sentido ya que un motor con más cilindros
 tiende a tener más \textit{Engine volume}. En este caso, ya que se dice que es adecuado eliminar las variables con una correlación superior a 0,8 (tanto negativa

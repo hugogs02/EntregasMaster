@@ -1,10 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1746741489.86845 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1746741491.96388 0
-  "HugoGomezSabucedo.aux" 1746741491 5159 8ce087b03eb24e7781075377d81b1ac6 "pdflatex"
-  "HugoGomezSabucedo.out" 1746741491 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
-  "HugoGomezSabucedo.tex" 1746741486 32469 3f0c33ebcc9e5e4f238832649bcff952 ""
-  "HugoGomezSabucedo.toc" 1746741491 642 d131ea08bf6e40df7e23206419bf0aea "pdflatex"
-  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1746741486 32469 3f0c33ebcc9e5e4f238832649bcff952 ""
+["pdflatex"] 1758571660.79166 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1758571664.4856 0
+  "HugoGomezSabucedo.aux" 1758571664 5951 e71755fbbb5414956721dad124918dd9 "pdflatex"
+  "HugoGomezSabucedo.out" 1758571664 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
+  "HugoGomezSabucedo.tex" 1758571609 33902 7de26101f7698087d8fc6b795d8305c6 ""
+  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1758571609 33902 7de26101f7698087d8fc6b795d8305c6 ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1738263611 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1738263212 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1738263945 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -122,7 +121,10 @@
   "c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1738275239 5512124 2cf941ede77dae451992032562f7b65f ""
   "c:/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1731693695 3342992 9a071087c9abf1a6d3e91ad8f99ef579 ""
   "c:/texlive/2024/texmf.cnf" 1738275183 713 e69b156964470283e0530f5060668171 ""
-  "imgs/boxplot.png" 1746733059 21008 ee82f6ed2de19bee8b5d8535cfd1be28 ""
+  "imgs/bidimensional_boxplot.png" 1758571195 187527 5e3ecf70ad8e4fa541dc46219860f678 ""
+  "imgs/bidimensional_cats.png" 1758571209 174589 51aa71bdd321644ee0bbcf63a95b0f04 ""
+  "imgs/bidimensional_densidad.png" 1758571203 435254 f8d415978c977cf8bf5855272185edda ""
+  "imgs/boxplot.png" 1758570880 19730 9b1ee25b9de5c3985cace4b54d12d4b0 ""
   "imgs/confBagging.png" 1746737851 28656 4157ec56e9f3a0038fc59453d194508f ""
   "imgs/confGaus.png" 1746736861 29533 18265f9fb9ff77c757fb085ed61dbb01 ""
   "imgs/confLin.png" 1746736851 29341 d59818e788f4f4cf111ad3354427ee86 ""
@@ -142,5 +144,4 @@
   "HugoGomezSabucedo.log"
   "HugoGomezSabucedo.out"
   "HugoGomezSabucedo.pdf"
-  "HugoGomezSabucedo.toc"
   (rewritten before read)

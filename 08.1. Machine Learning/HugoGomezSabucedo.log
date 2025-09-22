@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  8 MAY 2025 23:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  22 SEP 2025 22:07
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -495,23 +495,23 @@ Package hyperref Info: Link coloring OFF on input line 102.
 \@outlinefile=\write3
 \openout3 = `HugoGomezSabucedo.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 106.
+LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 108.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 106.
+LaTeX Font Info:    Trying to load font information for OML+zplm on input line 108.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 106.
+LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 108.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 106.
+LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 108.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 106.
+LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 108.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
@@ -529,22 +529,13 @@ Package microtype Info: Character `029' is missing
 
 [1
 
-{c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc}] (./HugoGomezSabucedo.toc
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
-)
-\tf@toc=\write4
-\openout4 = `HugoGomezSabucedo.toc'.
-
-
-
-[2]
-<imgs/dtypes.png, id=52, 219.06844pt x 260.47313pt>
+{c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc}]
+<imgs/dtypes.png, id=41, 219.06844pt x 260.47313pt>
 File: imgs/dtypes.png Graphic file (type png)
 <use imgs/dtypes.png>
 Package pdftex.def Info: imgs/dtypes.png  used on input line 138.
 (pdftex.def)             Requested size: 104.56342pt x 124.32616pt.
-<imgs/describe inicial.png, id=54, 496.85625pt x 162.6075pt>
+<imgs/describe inicial.png, id=43, 496.85625pt x 162.6075pt>
 File: imgs/describe inicial.png Graphic file (type png)
 <use imgs/describe inicial.png>
 Package pdftex.def Info: imgs/describe inicial.png  used on input line 146.
@@ -555,8 +546,8 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[3 <./imgs/dtypes.png>]
-<imgs/nunique.png, id=62, 210.03468pt x 286.82156pt>
+[2 <./imgs/dtypes.png>]
+<imgs/nunique.png, id=51, 210.03468pt x 286.82156pt>
 File: imgs/nunique.png Graphic file (type png)
 <use imgs/nunique.png>
 Package pdftex.def Info: imgs/nunique.png  used on input line 156.
@@ -570,113 +561,127 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-(c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
+
+
+[3{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc} <./imgs/describe inicial.png> <./imgs/nunique.png>] (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
-
-[4{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc} <./imgs/describe inicial.png> <./imgs/nunique.png>]
-<imgs/descriptivos.png, id=72, 655.69969pt x 520.94624pt>
+<imgs/descriptivos.png, id=61, 655.69969pt x 520.94624pt>
 File: imgs/descriptivos.png Graphic file (type png)
 <use imgs/descriptivos.png>
-Package pdftex.def Info: imgs/descriptivos.png  used on input line 201.
+Package pdftex.def Info: imgs/descriptivos.png  used on input line 207.
 (pdftex.def)             Requested size: 209.12683pt x 166.14977pt.
-<imgs/boxplot.png, id=75, 470.75874pt x 338.26375pt>
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<imgs/boxplot.png, id=64, 470.75874pt x 338.26375pt>
 File: imgs/boxplot.png Graphic file (type png)
 <use imgs/boxplot.png>
-Package pdftex.def Info: imgs/boxplot.png  used on input line 213.
+Package pdftex.def Info: imgs/boxplot.png  used on input line 219.
 (pdftex.def)             Requested size: 209.12683pt x 150.26624pt.
 
 
-[5 <./imgs/descriptivos.png>]
+[4]
+
+[5 <./imgs/descriptivos.png> <./imgs/boxplot.png>]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 224.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 230.
+<imgs/bidimensional_boxplot.png, id=82, 1293.33188pt x 859.71187pt>
+File: imgs/bidimensional_boxplot.png Graphic file (type png)
+<use imgs/bidimensional_boxplot.png>
+Package pdftex.def Info: imgs/bidimensional_boxplot.png  used on input line 246.
+(pdftex.def)             Requested size: 250.95476pt x 166.81013pt.
+<imgs/bidimensional_densidad.png, id=83, 1300.86pt x 849.1725pt>
+File: imgs/bidimensional_densidad.png Graphic file (type png)
+<use imgs/bidimensional_densidad.png>
+Package pdftex.def Info: imgs/bidimensional_densidad.png  used on input line 252.
+(pdftex.def)             Requested size: 250.95476pt x 163.81929pt.
+<imgs/bidimensional_cats.png, id=84, 715.17188pt x 859.71187pt>
+File: imgs/bidimensional_cats.png Graphic file (type png)
+<use imgs/bidimensional_cats.png>
+Package pdftex.def Info: imgs/bidimensional_cats.png  used on input line 257.
+(pdftex.def)             Requested size: 250.95476pt x 301.67763pt.
 
 
-[6 <./imgs/boxplot.png>]
-<imgs/correlacion.png, id=101, 724.7075pt x 560.59438pt>
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<imgs/correlacion.png, id=85, 724.7075pt x 560.59438pt>
 File: imgs/correlacion.png Graphic file (type png)
 <use imgs/correlacion.png>
-Package pdftex.def Info: imgs/correlacion.png  used on input line 240.
+Package pdftex.def Info: imgs/correlacion.png  used on input line 265.
 (pdftex.def)             Requested size: 250.95476pt x 194.1238pt.
 
+LaTeX Warning: `h' float specifier changed to `ht'.
 
-[7 <./imgs/correlacion.png>]
-<imgs/reportKernels.png, id=111, 431.36156pt x 529.22719pt>
+
+
+[6 <./imgs/bidimensional_boxplot.png> <./imgs/bidimensional_densidad.png>]
+
+[7 <./imgs/bidimensional_cats.png>]
+
+[8 <./imgs/correlacion.png>]
+<imgs/reportKernels.png, id=121, 431.36156pt x 529.22719pt>
 File: imgs/reportKernels.png Graphic file (type png)
 <use imgs/reportKernels.png>
-Package pdftex.def Info: imgs/reportKernels.png  used on input line 288.
+Package pdftex.def Info: imgs/reportKernels.png  used on input line 313.
 (pdftex.def)             Requested size: 209.12683pt x 256.5699pt.
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Package caption Warning: \label without proper reference on input line 319.
+Package caption Warning: \label without proper reference on input line 344.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `fig:confusiones' on page 8 undefined on input line 292.
+LaTeX Warning: Reference `fig:confusiones' on page 9 undefined on input line 317.
 
-<imgs/confLin.png, id=113, 492.33937pt x 393.97188pt>
+<imgs/confLin.png, id=123, 492.33937pt x 393.97188pt>
 File: imgs/confLin.png Graphic file (type png)
 <use imgs/confLin.png>
-Package pdftex.def Info: imgs/confLin.png  used on input line 304.
+Package pdftex.def Info: imgs/confLin.png  used on input line 329.
 (pdftex.def)             Requested size: 125.47737pt x 100.40437pt.
-<imgs/confPol.png, id=114, 492.33937pt x 394.47375pt>
+<imgs/confPol.png, id=124, 492.33937pt x 394.47375pt>
 File: imgs/confPol.png Graphic file (type png)
 <use imgs/confPol.png>
-Package pdftex.def Info: imgs/confPol.png  used on input line 310.
+Package pdftex.def Info: imgs/confPol.png  used on input line 335.
 (pdftex.def)             Requested size: 125.47737pt x 100.53229pt.
-<imgs/confGaus.png, id=115, 492.33937pt x 393.97188pt>
+<imgs/confGaus.png, id=125, 492.33937pt x 393.97188pt>
 File: imgs/confGaus.png Graphic file (type png)
 <use imgs/confGaus.png>
-Package pdftex.def Info: imgs/confGaus.png  used on input line 316.
+Package pdftex.def Info: imgs/confGaus.png  used on input line 341.
 (pdftex.def)             Requested size: 125.47737pt x 100.40437pt.
-
-
-[8]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<imgs/curvaROC.png, id=126, 618.81187pt x 393.97188pt>
-File: imgs/curvaROC.png Graphic file (type png)
-<use imgs/curvaROC.png>
-Package pdftex.def Info: imgs/curvaROC.png  used on input line 328.
-(pdftex.def)             Requested size: 250.95476pt x 159.77414pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
 
 
 [9 <./imgs/reportKernels.png>]
-<imgs/reportBagging.png, id=134, 451.6875pt x 191.21437pt>
-File: imgs/reportBagging.png Graphic file (type png)
-<use imgs/reportBagging.png>
-Package pdftex.def Info: imgs/reportBagging.png  used on input line 349.
-(pdftex.def)             Requested size: 188.21288pt x 79.67926pt.
-<imgs/confBagging.png, id=135, 492.33937pt x 394.47375pt>
-File: imgs/confBagging.png Graphic file (type png)
-<use imgs/confBagging.png>
-Package pdftex.def Info: imgs/confBagging.png  used on input line 356.
-(pdftex.def)             Requested size: 188.21288pt x 150.79843pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
+<imgs/curvaROC.png, id=134, 618.81187pt x 393.97188pt>
+File: imgs/curvaROC.png Graphic file (type png)
+<use imgs/curvaROC.png>
+Package pdftex.def Info: imgs/curvaROC.png  used on input line 353.
+(pdftex.def)             Requested size: 250.95476pt x 159.77414pt.
 
 
 [10 <./imgs/confLin.png> <./imgs/confPol.png> <./imgs/confGaus.png> <./imgs/curvaROC.png>]
+<imgs/reportBagging.png, id=144, 451.6875pt x 191.21437pt>
+File: imgs/reportBagging.png Graphic file (type png)
+<use imgs/reportBagging.png>
+Package pdftex.def Info: imgs/reportBagging.png  used on input line 374.
+(pdftex.def)             Requested size: 188.21288pt x 79.67926pt.
+<imgs/confBagging.png, id=145, 492.33937pt x 394.47375pt>
+File: imgs/confBagging.png Graphic file (type png)
+<use imgs/confBagging.png>
+Package pdftex.def Info: imgs/confBagging.png  used on input line 381.
+(pdftex.def)             Requested size: 188.21288pt x 150.79843pt.
+
 
 [11 <./imgs/reportBagging.png> <./imgs/confBagging.png>]
-<imgs/reportStacking.png, id=156, 493.845pt x 165.61874pt>
+<imgs/reportStacking.png, id=158, 493.845pt x 165.61874pt>
 File: imgs/reportStacking.png Graphic file (type png)
 <use imgs/reportStacking.png>
-Package pdftex.def Info: imgs/reportStacking.png  used on input line 394.
+Package pdftex.def Info: imgs/reportStacking.png  used on input line 419.
 (pdftex.def)             Requested size: 188.21288pt x 63.11772pt.
-<imgs/reportStackingModelos.png, id=157, 428.35031pt x 526.21594pt>
+<imgs/reportStackingModelos.png, id=159, 428.35031pt x 526.21594pt>
 File: imgs/reportStackingModelos.png Graphic file (type png)
 <use imgs/reportStackingModelos.png>
-Package pdftex.def Info: imgs/reportStackingModelos.png  used on input line 401.
+Package pdftex.def Info: imgs/reportStackingModelos.png  used on input line 426.
 (pdftex.def)             Requested size: 188.21288pt x 231.21455pt.
 
 
@@ -704,18 +709,18 @@ Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: 88DCA16A1B1BF98C46F7D1D491A7BECF;1330.
  ) 
 Here is how much of TeX's memory you used:
- 18647 strings out of 473362
- 296482 string characters out of 5725050
- 984390 words of memory out of 5000000
- 41154 multiletter control sequences out of 15000+600000
- 617915 words of font info for 310 fonts, out of 8000000 for 9000
+ 18675 strings out of 473362
+ 297280 string characters out of 5725050
+ 978169 words of memory out of 5000000
+ 41174 multiletter control sequences out of 15000+600000
+ 618348 words of font info for 316 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1094b,1427s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,12n,79p,1094b,2168s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (14 pages, 618972 bytes).
+Output written on HugoGomezSabucedo.pdf (14 pages, 1274478 bytes).
 PDF statistics:
- 218 PDF objects out of 1000 (max. 8388607)
- 158 compressed objects within 2 object streams
- 49 named destinations out of 1000 (max. 500000)
- 80004 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 220 PDF objects out of 1000 (max. 8388607)
+ 154 compressed objects within 2 object streams
+ 52 named destinations out of 1000 (max. 500000)
+ 80019 words of extra memory for PDF output out of 89155 (max. 10000000)
 

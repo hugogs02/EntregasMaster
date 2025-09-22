@@ -53,7 +53,7 @@ for col in cats:
     print(f"\nDistribución {col} (%):")
     print((df[col].value_counts(normalize=True).round(3) * 100).head(20))
 
-# Reclasificamos tracción a binaria (como tenías)
+# Reclasificamos tracción a binaria
 df['Front_drive'] = (df['Drive wheels'] == 'Front').astype(int)
 df.drop('Drive wheels', axis=1, inplace=True)
 cats.remove('Drive wheels')
