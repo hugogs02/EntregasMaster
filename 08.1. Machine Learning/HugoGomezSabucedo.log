@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  22 SEP 2025 22:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  23 SEP 2025 22:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -606,82 +606,93 @@ Package pdftex.def Info: imgs/bidimensional_cats.png  used on input line 257.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<imgs/correlacion.png, id=85, 724.7075pt x 560.59438pt>
-File: imgs/correlacion.png Graphic file (type png)
-<use imgs/correlacion.png>
-Package pdftex.def Info: imgs/correlacion.png  used on input line 265.
-(pdftex.def)             Requested size: 250.95476pt x 194.1238pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
 
 
 [6 <./imgs/bidimensional_boxplot.png> <./imgs/bidimensional_densidad.png>]
 
 [7 <./imgs/bidimensional_cats.png>]
+<imgs/correlacion.png, id=111, 724.7075pt x 560.59438pt>
+File: imgs/correlacion.png Graphic file (type png)
+<use imgs/correlacion.png>
+Package pdftex.def Info: imgs/correlacion.png  used on input line 289.
+(pdftex.def)             Requested size: 250.95476pt x 194.1238pt.
+
 
 [8 <./imgs/correlacion.png>]
-<imgs/reportKernels.png, id=121, 431.36156pt x 529.22719pt>
+
+[9]
+<imgs/reportKernels.png, id=124, 431.36156pt x 529.22719pt>
 File: imgs/reportKernels.png Graphic file (type png)
 <use imgs/reportKernels.png>
-Package pdftex.def Info: imgs/reportKernels.png  used on input line 313.
+Package pdftex.def Info: imgs/reportKernels.png  used on input line 340.
 (pdftex.def)             Requested size: 209.12683pt x 256.5699pt.
 
 
-Package caption Warning: \label without proper reference on input line 344.
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Package caption Warning: \label without proper reference on input line 371.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `fig:confusiones' on page 9 undefined on input line 317.
+LaTeX Warning: Reference `fig:confusiones' on page 10 undefined on input line 344.
 
-<imgs/confLin.png, id=123, 492.33937pt x 393.97188pt>
+<imgs/confLin.png, id=126, 492.33937pt x 393.97188pt>
 File: imgs/confLin.png Graphic file (type png)
 <use imgs/confLin.png>
-Package pdftex.def Info: imgs/confLin.png  used on input line 329.
+Package pdftex.def Info: imgs/confLin.png  used on input line 356.
 (pdftex.def)             Requested size: 125.47737pt x 100.40437pt.
-<imgs/confPol.png, id=124, 492.33937pt x 394.47375pt>
+<imgs/confPol.png, id=127, 492.33937pt x 394.47375pt>
 File: imgs/confPol.png Graphic file (type png)
 <use imgs/confPol.png>
-Package pdftex.def Info: imgs/confPol.png  used on input line 335.
+Package pdftex.def Info: imgs/confPol.png  used on input line 362.
 (pdftex.def)             Requested size: 125.47737pt x 100.53229pt.
-<imgs/confGaus.png, id=125, 492.33937pt x 393.97188pt>
+<imgs/confGaus.png, id=128, 492.33937pt x 393.97188pt>
 File: imgs/confGaus.png Graphic file (type png)
 <use imgs/confGaus.png>
-Package pdftex.def Info: imgs/confGaus.png  used on input line 341.
+Package pdftex.def Info: imgs/confGaus.png  used on input line 368.
 (pdftex.def)             Requested size: 125.47737pt x 100.40437pt.
 
 
-[9 <./imgs/reportKernels.png>]
-<imgs/curvaROC.png, id=134, 618.81187pt x 393.97188pt>
+[10]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<imgs/curvaROC.png, id=139, 618.81187pt x 393.97188pt>
 File: imgs/curvaROC.png Graphic file (type png)
 <use imgs/curvaROC.png>
-Package pdftex.def Info: imgs/curvaROC.png  used on input line 353.
+Package pdftex.def Info: imgs/curvaROC.png  used on input line 380.
 (pdftex.def)             Requested size: 250.95476pt x 159.77414pt.
 
+LaTeX Warning: `h' float specifier changed to `ht'.
 
-[10 <./imgs/confLin.png> <./imgs/confPol.png> <./imgs/confGaus.png> <./imgs/curvaROC.png>]
-<imgs/reportBagging.png, id=144, 451.6875pt x 191.21437pt>
+
+
+[11 <./imgs/reportKernels.png>]
+<imgs/reportBagging.png, id=147, 451.6875pt x 191.21437pt>
 File: imgs/reportBagging.png Graphic file (type png)
 <use imgs/reportBagging.png>
-Package pdftex.def Info: imgs/reportBagging.png  used on input line 374.
+Package pdftex.def Info: imgs/reportBagging.png  used on input line 401.
 (pdftex.def)             Requested size: 188.21288pt x 79.67926pt.
-<imgs/confBagging.png, id=145, 492.33937pt x 394.47375pt>
+<imgs/confBagging.png, id=148, 492.33937pt x 394.47375pt>
 File: imgs/confBagging.png Graphic file (type png)
 <use imgs/confBagging.png>
-Package pdftex.def Info: imgs/confBagging.png  used on input line 381.
+Package pdftex.def Info: imgs/confBagging.png  used on input line 408.
 (pdftex.def)             Requested size: 188.21288pt x 150.79843pt.
 
 
-[11 <./imgs/reportBagging.png> <./imgs/confBagging.png>]
-<imgs/reportStacking.png, id=158, 493.845pt x 165.61874pt>
+[12 <./imgs/confLin.png> <./imgs/confPol.png> <./imgs/confGaus.png> <./imgs/curvaROC.png>]
+
+[13 <./imgs/reportBagging.png> <./imgs/confBagging.png>]
+<imgs/reportStacking.png, id=171, 493.845pt x 165.61874pt>
 File: imgs/reportStacking.png Graphic file (type png)
 <use imgs/reportStacking.png>
-Package pdftex.def Info: imgs/reportStacking.png  used on input line 419.
+Package pdftex.def Info: imgs/reportStacking.png  used on input line 446.
 (pdftex.def)             Requested size: 188.21288pt x 63.11772pt.
-<imgs/reportStackingModelos.png, id=159, 428.35031pt x 526.21594pt>
+<imgs/reportStackingModelos.png, id=172, 428.35031pt x 526.21594pt>
 File: imgs/reportStackingModelos.png Graphic file (type png)
 <use imgs/reportStackingModelos.png>
-Package pdftex.def Info: imgs/reportStackingModelos.png  used on input line 426.
+Package pdftex.def Info: imgs/reportStackingModelos.png  used on input line 453.
 (pdftex.def)             Requested size: 188.21288pt x 231.21455pt.
 
 
@@ -689,11 +700,11 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 
-[12]
+[14]
 
-[13 <./imgs/reportStacking.png> <./imgs/reportStackingModelos.png>]
+[15 <./imgs/reportStacking.png> <./imgs/reportStackingModelos.png>]
 
-[14] (./HugoGomezSabucedo.aux
+[16] (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -709,18 +720,18 @@ Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: 88DCA16A1B1BF98C46F7D1D491A7BECF;1330.
  ) 
 Here is how much of TeX's memory you used:
- 18675 strings out of 473362
- 297280 string characters out of 5725050
- 978169 words of memory out of 5000000
+ 18689 strings out of 473362
+ 297411 string characters out of 5725050
+ 982172 words of memory out of 5000000
  41174 multiletter control sequences out of 15000+600000
- 618348 words of font info for 316 fonts, out of 8000000 for 9000
+ 618991 words of font info for 325 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,1094b,2168s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (14 pages, 1274478 bytes).
+Output written on HugoGomezSabucedo.pdf (16 pages, 1278611 bytes).
 PDF statistics:
- 220 PDF objects out of 1000 (max. 8388607)
- 154 compressed objects within 2 object streams
- 52 named destinations out of 1000 (max. 500000)
+ 231 PDF objects out of 1000 (max. 8388607)
+ 163 compressed objects within 2 object streams
+ 54 named destinations out of 1000 (max. 500000)
  80019 words of extra memory for PDF output out of 89155 (max. 10000000)
 

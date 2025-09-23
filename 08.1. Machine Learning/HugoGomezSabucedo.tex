@@ -258,20 +258,47 @@ podemos pasar a realizar el análisis bidimensional frente a la variable target.
     \caption{Color por variables categóricas + soporte} \label{fig:colorCats}
 \end{figure}
 
+El análisis bidimensional frente a la target se ha realizado tanto en base a los boxplots (figura \ref{fig:BoxplotsBiTarget}) y las densidades (figura \ref{fig:densidadBiTarget})
+para las variables numéricas y las gráficas de tasa con soporte para las categóricas (figura \ref{fig:colorCats}). En primer lugar, si analizamos el precio, se observan 
+colas largas hacia la derecha en ambas clases así como la presencia de valores extremos, aunque la mediana de los coches blancos es ligeramente superior a la de los negros. 
+Esto indica que, por lo general, los coches blancos tienden a ser más caros, aunque la diferencia no es muy elevada. Respeto al año de producción, la diferencia es más clara, y es 
+que los coches blancos son más recientes que los negros. El boxplot sitúa a la mediana de los blancos por encima, y la densidad muestra mayor concentración en los años recientes.
+Por el contrario, variables como el interior de cuero, el cambio, la posición del volante o la presencia de turbo presentan distribuciones casi idénticas por el color, lo cual 
+apunta a que no tienen un poder discriminatorio muy elevado.
 
+En el caso del \textit{engine volume} o los cilindros, los coches negros tienden a tener motores más grandes, lo cual podría ser explicable debido a que son colores que se 
+asocian a los vehículos de alta gama, aunque la diferencia tampoco es excesivamente elevada. Otras variables como el kilometraje y el número de airbags también presentan una 
+distribución bastante similar, con una ligera mayor diferencia en el rango medio. Algo parecido ocurre con \textit{levy}, cuyos valores se solapan bastante entre clases, lo que 
+podría limitar su capacidad predictiva. Por último, la tracción delantera o \textit{front drive} aparece distribuida casi uniformemente entre ambos colores, si bien es cierto
+que se observa una mayoría de vehículos con tracción delantera.
+
+Respeto a las variables categóricas, aquí tenemos información más relevante. En el caso del fabricante, vemos que la tasa de blancos es de casi la mitad en vehículos de marcas 
+más ''baratas'', mientras que en marcas más ''premium'' (como Mercedes) es más reducida. Además, el soporte es amplio, con más de 1000 valores en Hyunday y Toyota, si bien es cierto 
+que la marca Lexus sólo presenta 200 valores. Esto sugiere que el fabricante es claramente una variable informativa. En cuanto a la categoría del vehículo, se aprecia una 
+mayor proporción de blancos en los \textit{hatchback}, de alrededor del 63\%, mientras que la de los sedanes es aproximadamente del 43\%. Aunque el soporte de los \textit{hatchback}
+es bastante menor al resto, la diferencia en las tasas es relevante y sugiere que la tipología del coche sí tiene relación con el color. Por último, el tipo de combustible, 
+presenta una gran diferencia entre los vehículos a gasolina y los diésel e híbridos, si bien es cierto que en estos dos últimos tenemos muchos menos datos.
+
+En definitiva, los gráficos muestran que las variables categóricas son las que más discriminan en relación con el color del vehículo, mientras que en las numéricas hay más diferencia. 
+El año de producción y el precio son las que más discriminan en este caso, mientras que la mayoría de variables de tipo binario apenas generan diferencias. Sin embargo, antes
+de decidir si se eliminan estas variables, es preciso realizar un análisis de correlación de variables, y ahí decidir con cuáles nos quedamos y cuáles descartamos, aunque 
+no sin antes crear las variables dummies para las variables categóricas.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{imgs/correlacion.png}
     \caption{Matriz de correlación de las variables} \label{fig:correlacion}
 \end{figure}
-Una vez realizado el análisis, se crean las variables dummies, y analizamos la correlación que hay entre las variables, para ver si es necesario eliminar alguna de ellas.
-En la imagen \ref{fig:correlacion} tenemos dicha matriz de correlación, en la cual vemos dos cosas que destacan. Por una parte, \textit{Front drive} tiene una correlación 
-de -0,64 (es decir, negativa) tanto con \textit{Engine volume} como con \textit{Cylinders}, lo cual es esperable ya que suelen ser motores más compactos; por 
-otra parte, una elevada correlación positiva entre los cilindros y el \textit{Engine volume}, de 0,79, lo cual tiene sentido ya que un motor con más cilindros
-tiende a tener más \textit{Engine volume}. En este caso, ya que se dice que es adecuado eliminar las variables con una correlación superior a 0,8 (tanto negativa
-como positiva), eliminaremos la variable de \textit{Cylinders}. Dejaremos las otras dos, ya que un 0,64 de correlación no se acerca al umbral indicado como 
-para eliminarlas.
+En la imagen \ref{fig:correlacion} tenemos dicha matriz de correlación, en la cual vemos dos cosas que destacan. 
+
+En primer lugar, la fuerte correlación positiva entre el númeor de cilindros y el volumen del motor, con un valor de 0,79. Esto es coherente, ya que a mayor número de cilindros,
+más potente suele ser el motor. En este caso, ya que se dice que es adecuado eliminar las variables con una correlación superior a 0,8 (tanto negativa como positiva), eliminaremos
+la variable de \textit{Cylinders}. Por otra parte, tenemos una correlación negativa, aunque más moderada que la anterior, de -0,64, entre el \textit{Front drive} y tanto el
+volumen del motor como el número de cilindros. Esto también es esperable, ya que los vehículos con tracción delantera suelen tener motores menos potentes. Sin embargo, 
+dado que el valor no supera el umbral definido anteriormente, no se procederá a eliminar ninguna de estas variables.
+
+Más allá de estas relaciones, que son las destacables, se observan correlaciones de menor magnitud entre variables como el precio y el turbo, o entre el año de producción 
+y el \textit{levy}, lo que sugiere que podría haber ciertos patrones.
 
 Por último, separamos el dataframe en las variables predictoras o independientes y la variable que queremos predecir, y dividimos los datos en entrenamiento y 
 prueba, con un tamaño de prueba del 30\%. A continuación, realizamos una estandarización de los datos. Esto se hace ya que los algoritmos que emplearemos, como 

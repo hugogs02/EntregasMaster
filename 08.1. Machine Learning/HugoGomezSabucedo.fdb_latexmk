@@ -1,9 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1758571660.79166 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1758571664.4856 0
-  "HugoGomezSabucedo.aux" 1758571664 5951 e71755fbbb5414956721dad124918dd9 "pdflatex"
-  "HugoGomezSabucedo.out" 1758571664 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
-  "HugoGomezSabucedo.tex" 1758571609 33902 7de26101f7698087d8fc6b795d8305c6 ""
-  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1758571609 33902 7de26101f7698087d8fc6b795d8305c6 ""
+["pdflatex"] 1758660158.85919 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1758660162.16054 0
+  "HugoGomezSabucedo.aux" 1758660161 5957 cbfbbd11c5168a7fc4eb14bd80a8ebd7 "pdflatex"
+  "HugoGomezSabucedo.out" 1758660161 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
+  "HugoGomezSabucedo.tex" 1758660133 37717 4f8d03647a197f3a63c621568e11f144 ""
+  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1758660133 37717 4f8d03647a197f3a63c621568e11f144 ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1738263611 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1738263212 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1738263945 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -129,7 +129,7 @@
   "imgs/confGaus.png" 1746736861 29533 18265f9fb9ff77c757fb085ed61dbb01 ""
   "imgs/confLin.png" 1746736851 29341 d59818e788f4f4cf111ad3354427ee86 ""
   "imgs/confPol.png" 1746736857 30010 3682ccce61b9ba74cd43dd584e7119bb ""
-  "imgs/correlacion.png" 1746733753 198110 39555286b5eb9f5a5e36e2146c17b9c4 ""
+  "imgs/correlacion.png" 1758659585 198110 39555286b5eb9f5a5e36e2146c17b9c4 ""
   "imgs/curvaROC.png" 1746736894 87941 27250189923171b2b3eaebab8e698fa4 ""
   "imgs/describe inicial.png" 1746730653 20019 b0dd77fa6791e7ad9094782d5c8dcbe1 ""
   "imgs/descriptivos.png" 1746732612 61287 b61575900701df4a626afc750d532177 ""
