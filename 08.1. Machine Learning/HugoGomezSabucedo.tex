@@ -3,7 +3,7 @@
 \usepackage[page,toc,titletoc,title]{appendix}
 \usepackage{url}
 \usepackage{caption}
-\usepackage{subfigure}
+%\usepackage{subfigure}
 \usepackage{subcaption}
 \usepackage[sc]{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
@@ -307,48 +307,68 @@ los datos listos con los que aplicar el modelo.
 
 \section{Modelo de SVM}\label{SVM}
 \subsection{Ajuste del modelo}\label{ajuste}
-Para crear y ajustar los modelos, aplicaremos un grid search para probar diferentes parámetros con los tres kernels que se han elegido, que en este caso son el 
-linear, el polinómico y el gaussiano o rbf. El grid search tiene varias ventajas, pero la principal es que nos evita tener que probar uno a uno todos los 
-posibles valores de los parámetros para encontrar el óptimo. Él los probará todos, y nos devolverá la combinación que nos devuelva el mejor resultado. De esta 
-forma, nosotros sólo tendremos que elegir con qué kernel nos quedamos. Además, el propio \texttt{GridSearchCV} usa validación cruzada, lo cual evita también 
-un sobreajuste del modelo a una partición concreta de los datos. Por lo tanto, esta es la mejor opción para poder explorar distintos parámetros, y ver con cuál
-obtenemos el mejor de los resultados. En este caso, para cada uno de los kernels, se definen los siguientes parámetros:
+Para crear y ajustar los modelos, se ha optado por probar con los tres tipos de kernels: lineal, polinómico y rbf. El kernel lineal depende únicamente del parámetro de 
+regularización C, que controla el equilibrio entre el margen y los errores de clasificación: valores pequeños de C permiten un margen más amplio a costa de aceptar
+más errores, mientras que valores grandes penalizan fuertemente los errores, ajustando el modelo más a los datos pero con mayor riesgo de sobreajuste. Este parámetro es
+común a los tres kernels. En el polinómico, además, se ajustan el grado del polinomio y un término adicional, \texttt{coef0}, que regula la importancia que tienen los 
+términos de mayor orden con respecto a los de menor orden. Es un kernel útil para relaciones no lineales más complejas, pero conforme aumenta el grado, aumenta el riesgo 
+de sobreajuste. Por último, el rbf o \textit{radial basis function}, incorpora a \texttt{C} el parámetro \texttt{gamma}, que regula la influencia de los puntos de entrenamiento: 
+a menor gamma, las fronteras de decisión serán más suaves; mientras que en uno más elevado serán más ajustadas a los datos, lo cual también produce riesgo de sobreajuste.
+En este caso, para cada uno de los kernels, se definen los siguientes parámetros:
 \begin{lstlisting}[language=Python,]
-    param_grid_linear = {'C': [0.1, 0.5, 1, 2, 5, 10, 100]}
-    param_grid_poly = {'C': [0.1, 0.5, 1, 2, 5, 10, 100], 'degree': [2, 3, 4], 'coef0': [0, 1, 2]}
-    param_grid_rbf = {'C': [0.1, 0.5, 1, 2, 5, 10, 100], 'gamma': [0.1, 0.5, 1, 2, 5]}
+    param_grid_linear = {'C': [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 200, 500, 1000]}
+    param_grid_poly = {'C': [0.01, 0.1, 0.5, 1, 2, 5, 10], 'degree': [2, 3, 4, 5], 'coef0': [0, 1, 2, 3]}
+    param_grid_rbf = {'C': [0.01, 0.1, 1, 10, 100], 'gamma': [0.001, 0.01, 0.1, 1]}
 \end{lstlisting}
 
-En este caso, el parámetro C es común a todos los kernels, y es el parámetro de penalización, que controla el equilibro entre tener un margen amplio y clasificar 
-bien los datos. Un C pequeño da más margen, pero con más errores; un C alto penalizará más los errores, pero podría llevar también a overfitting. Este es el 
-único parámetro que se usa en el kernel linear. En el polinómico se añaden dos más: por una parte, degree, que indica el grado del polinomio que se usa para 
-crear la función de decisión, que será más compleja cuanto mayor sea el valor. En este caso, se usarán términos cuadráticos, cúbicos y a la cuarta potencia; y 
-por otra parte, coef0, que es el término independiente que se sumará al polinómico, que ayuda a ajustar la flexibilidad del modelo. Para el kernel gaussiano, 
-tenemos un único parámetro adicional que es gamma, y que controla la influencia de cada ejemplo: un gamma bajo significa que los puntos lejanos también influyen, 
-lo que nos da un modelo más suave; mientras que un gamma alto hace que sólo influyan los puntos más cercanos, dando un modelo más complejo pero con riesgo de que 
-se produzca overfitting. 
+Para ajustar los hiperparámetros, se ha realizado una estrategia en dos etapas: por una parte, se ejecutó una búsqueda gruesa mediante la rejilla de parámetros definida 
+anteriormente, lo cual permite identificar las regiones del espacio de parámetros con mejor rendimiento y acotar los valores. Esto se realizó posteriormente en una búsqueda 
+fina o \textit{fine tuning}. Además, ambas búsquedas se han hecho empleando \texttt{GridSearchCV}, que no sólo evalúa todas las combinaciones posibles de hiperparámetros en 
+la rejilla que se haya definido, sino que lo hace aplicando también validación cruzada. En este caso, es una validación cruzada estratificada, de forma que en cada partición
+se preserva la proporción original de clases, lo que asegura que el modelo no esté sesgado por una partición en concreto que podría tener mayor concentración de una clase.
 
-Una vez hecho el grid search, obtenemos el mejor parámetro para cada uno de los kernel. En el caso del linear, el mejor parámetro es un C=0,1. Para el kernel 
-polinómico, el mejor parámetro es un C=0,1, un degree=2 y un coef0=2. Para el kernel gaussiano, los mejores parámetros son C=2 y un gamma=0,5. Como podemos ver,
-los mejores modelos son modelos sencillos, con un parámetro C que penaliza poco los errores (por lo que no estamos arriesgando en overfitting), y polinomios 
-sencillos. Hacemos las predicciones con cada uno de los mejores modelos para cada uno de los kernel, y mostramos el reporte de clasificación de los resultados 
-que nos da la función \texttt{classification\_report}, como se ve en la imagen \ref{fig:reportKernels}. Aquí vemos que los tres modelos tienen accuracy muy
-similar, y que aunque el resultado está redondeado a dos decimales, en realidad es prácticamente la misma: 0,627 para el linear, claramente la ''menor'' de todas;
-0,641 para el polinómico y 0,645 para el gaussiano.
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imgs/result_lineal.png}
+        \caption{Lineal} \label{fig:result_lineal}
+    \end{minipage}%
+    \hspace{1em}  % Espacio entre las imágenes
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imgs/result_poly.png}
+        \caption{Polinómico} \label{fig:result_poly}
+    \end{minipage}%
+    \hspace{1em}  % Espacio entre las imágenes
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imgs/result_rbf.png}
+        \caption{RBF} \label{fig:result_rbf}
+    \end{minipage}
+    \label{fig:resultados_kernels}
+\end{figure}
+
+Tras el ajuste con grid search, se obtuvieron los mejores parámetros para cada kernel. En la primera iteración de la búsqueda, se vio que, para el kernel lineal, el mejor 
+modelo e da con un $C=0.01$, con un AUC promedio de 0.6850. Para el kernel polinómico, el mejor C es también 0.01, con un polinomio de grado 2 y un coef0 de 3, que da un 
+AUC de 0.6833. Por último, el kernel RBF tiene el mejor ajuste con $C=10$ y un $\gamma=.001$ . Tras refinar esots valores, el kernel lineal mantuvo su mejor resultado en 
+$C=0.01$, con un AUC similar, de 0.6856; el jernel polinómico ajustó ligeramente el C a 0.015, obteniendo un AUC de 0.6849; mientras que el RBF ajustó ambos parámetros, 
+teniendo ahora un $C=5$ y un $\gamma=.0015$ para un AUC de 0.6861 . Como se puede ver, las diferencias entre los kernels son mínimas, con AUC muy próximos.
+
+En la figura \ref{fig:reportKernels} se ve el \texttt{classification\_report}, que confirma también esta tendencia, con los tres modelos obteniendo métricas prácticamente
+idénticas: una precisión de 0.65 para la clase 0 y de 0.60 para la clase 1, junto con un \textit{recall} de 0.57 para la clase 0 y 0.69 para la clase 1. El f1-score también 
+se mantiene similar en todos los modelos, con 0.60 para la clase 0 y 0.64 para la clase 1. Además, como se ve en las matrices de confusión (figura \ref{fig:confusiones}),
+los tres modelos muestran resultados similares. En el caso del lineal, presenta un número mayor de falsos positivos (180), aunque consigue un buen número de verdaderos
+positivos (265) y negativos (227). El modelo polinómico reduce levemente los falsos positivos (176) pero a costa de un ligero aumento en los falsos negativos (122).
+El RBF presenta prácticamente los mismos resultados que el polinómico, con 176 falsos positivos y 123 falsos negativos, evidenciando un rendimiento muy equilibrado en
+términos de clasificación.
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{imgs/reportKernels.png}
+    \includegraphics[width=\textwidth]{imgs/reportKernels.png}
     \caption{\textit{Classification report} para SVM} \label{fig:reportKernels}
 \end{figure}
 
-Mostramos también cada una de las tres matrices de confusión, que se ven en \ref{fig:confusiones}. La matriz de confusión representa [[TP, FP], [FN, TN]]. TP son 
-los verdaderos positivos, los datos que se clasificaron correctamente como positivos; FP los falsos positivos, los que se clasificaron como positivos (en este caso,
-white), pero eran negativos (eran black); FN los falsos negativos, los que se clasificaron como negativos pero eran positivos; y TN los verdaderos negativos, los 
-que se clasificaron correctamente como negativos. El modelo lineal tiene un numero elevado de falsos positivos, pero tambien una gran proporción de verdaderos 
-positivos y negativos. Podría mejorar en la clasificación de la clase black, pero es bastante efectivo. El polinómico mejora los falsos positivos, aunque a costa 
-de empeorar ligeramente los falsos negativos, pero sigue teniendo un buen rendimiento. El gaussiano, por último, es el que menos falsos positivos tiene, pero 
-mejora a costa de empeorar los falsos negativos, como en el caso anterior, y es también el que más falsos negativos tiene. Aún así, en general, el polinómico 
-parece ser el que está más equilibrado.
 \begin{figure}[h!]
     \centering
     \begin{minipage}[b]{0.3\textwidth}
@@ -373,19 +393,20 @@ parece ser el que está más equilibrado.
 
 Además, mostramos también el área bajo la curva ROC, que en este caso se ha decidido hacer de forma conjunta para los tres modelos, como se ve en la imagen 
 \ref{fig:AUC}. Esto nos sirve para evaluar también el rendimiento del modelo, ya que muestra la relación entre FP y TP. Un valor próximo a 1 indica un rendimiento 
-perfecto, mientras que menor que 0,5 indica que es peor que el azar, que clasifica al revés y mal. En este caso, el mejor valor del AUC se da en el polinómico, 
-con un AUC de 0,7038, mientras que el más bajo es el 0,6708 del gaussiano, estando el lineal con 0,6971 entre medias.
+perfecto, mientras que menor que 0,5 indica que es peor que el azar, que clasifica al revés y mal. En este caso, el mejor valor del AUC es el del RBF, con 0.656, mientras 
+que el peor es el del lineal, con 0.652, y el polinómico se sitúa en medio, con 0.654, aunque la diferencia entre todos ellos es muy pequeña, de apenas 0.004, lo cual 
+no es relevante.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{imgs/curvaROC.png}
     \caption{Área bajo la curva ROC} \label{fig:AUC}
 \end{figure}
 
-Para elegir el mejor modelo empleamos estos tres indicadores: las matrices de confusión, la \textit{accuracy} y el área bajo la curva ROC. Aunque el kernel
-gaussiano es el que tiene mejor precisión, como comentamos, todos los valores son prácticamente iguales, por lo que debemos fijarnos en los demás indicadores. 
-El polinómico tiene un AUC bastante más alto que el gaussiano, un 3\% más, con sólo un 0,4\% de diferencia en la precisión. Además, el AUC es una métrica que, 
-en este caso, tratándose de un problema de clasificación, es más fiable o útil, ya que considera cómo de bien clasifica el modelo, y tiene en cuenta tanto la 
-tasa de verdaderos positivos como la d efalsos positivos. Por lo tanto, se elige el polinómico como el mejor modelo, al que se le aplicará el bagging.
+Para elegir el mejor modelo empleamos estos tres indicadores: las matrices de confusión, la \textit{accuracy} y el área bajo la curva ROC. Como se ha visto, los tres 
+modelos presentan un rendimiento equivalente y, de hecho, el incremento de rendimiento del RBF respecto al lineal es marginal, mientras que el coste computacional y la 
+complejidad del modelo es muy superior. Por ello, aunque al realizar una selección automática mediante GridSearchCV nos diga que el mejor modelo es el RBF, es necesario 
+aplicar el principio de parsimonia, considerando las pequeñas diferencias en el \textit{accuracy} es tan pequeña que se puede justificar la elección del modelo lineal 
+como el mejor: ofrece un rendimiento idéntico y con un modelo mucho más sencillo, más fácil de interpretar y más rápido de entrenar.
 
 \subsection{Aplicación de bagging}\label{bagging}
 El bagging, o bootstrap aggregating, es una técnica de ensamblaje de modelos que se suele usar para mejorar la estabilidad y precisión de modelos de aprendizaje

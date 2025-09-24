@@ -1,8 +1,0 @@
-\babel@toc {spanish}{}\relax 
-\contentsline {section}{\numberline {1}Introducción y análisis inicial}{3}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Análisis de los datos. Feature engineering}{3}{subsection.1.1}%
-\contentsline {section}{\numberline {2}Modelo de SVM}{9}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Ajuste del modelo}{9}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Aplicación de bagging}{12}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Modelo de stacking en profundidad}{13}{section.3}%
-\contentsline {section}{\numberline {4}Comparativa y conclusiones}{15}{section.4}%

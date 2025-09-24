@@ -186,7 +186,7 @@ X_test_scaled[nums] = scaler.transform(X_test[nums])
 # Grids de búsqueda "gruesa"
 param_grid_linear = {'C': [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 200, 500, 1000]}
 param_grid_poly = {
-    'C': [0.01, 1, 10], #[0.01, 0.1, 1, 10, 100]
+    'C': [0.01, 0.1, 0.5, 1, 2, 5, 10],
     'degree': [2, 3, 4, 5],
     'coef0': [0, 1, 2, 3]
 }
@@ -288,10 +288,46 @@ results_dict = {
         "acc": grid_rbf.cv_results_['mean_test_acc'][grid_rbf.best_index_]
     }
 }
+
 print("\nResumen comparativo (validación cruzada):")
 print(pd.DataFrame(results_dict).T)
 
-# Selección final del mejor modelo
+
+base_models_dict = {
+    "Lineal": grid_linear.best_estimator_,
+    "Polinomial": grid_poly.best_estimator_,
+    "RBF": grid_rbf.best_estimator_
+}
+
+results_base = []
+for name, model in base_models_dict.items():
+    ytr_pred = model.predict(X_train_scaled)
+    yte_pred = model.predict(X_test_scaled)
+    ytr_prob = model.predict_proba(X_train_scaled)[:,1]
+    yte_prob = model.predict_proba(X_test_scaled)[:,1]
+    
+    acc_tr = accuracy_score(y_train, ytr_pred)
+    acc_te = accuracy_score(y_test, yte_pred)
+    auc_tr = roc_auc_score(y_train, ytr_prob)
+    auc_te = roc_auc_score(y_test, yte_prob)
+    
+    results_base.append({
+        "Modelo": name,
+        "Acc Train": acc_tr,
+        "Acc Test": acc_te,
+        "AUC Train": auc_tr,
+        "AUC Test": auc_te
+    })
+    
+    print(f"\nMatriz de confusión – {name} (TEST):")
+    print(confusion_matrix(y_test, yte_pred))
+
+df_results_base = pd.DataFrame(results_base)
+print("\nResultados en TRAIN/TEST para kernels base:")
+print(df_results_base)
+
+
+# Selección final del mejor modelo (por AUC en CV)
 best_svm_model = max([grid_linear, grid_poly, grid_rbf], key=lambda g: g.best_score_).best_estimator_
 print("\nMejor modelo final elegido por AUC en CV:", best_svm_model)
 
