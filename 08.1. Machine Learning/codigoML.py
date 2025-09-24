@@ -609,14 +609,14 @@ def add_extra_metrics(df, Xte, yte):
             model = best_bagging
         elif model_name == "STACKING (LR meta)":
             model = stacking_model
-        #elif "Base–RF" in model_name:
-        #    model = base_models[0][1]
-        #elif "Base–LR" in model_name:
-        #    model = base_models[1][1]
-        #elif "Base–KNN" in model_name:
-        #    model = base_models[2][1]
-        #elif "Base–SVM" in model_name:
-        #    model = base_models[3][1]
+        elif "Base–RF" in model_name:
+            model = base_models[0][1]
+        elif "Base–LR" in model_name:
+            model = base_models[1][1]
+        elif "Base–KNN" in model_name:
+            model = base_models[2][1]
+        elif "Base–SVM" in model_name:
+            model = base_models[3][1]
         else:
             continue
         y_pred = model.predict(Xte)
@@ -636,10 +636,31 @@ comparativa_final = comparativa_final.merge(extra_metrics, on="Modelo", how="lef
 print("\n=== Comparativa FINAL con métricas adicionales ===")
 print(comparativa_final.to_string(index=False))
 
-# >>> 3) Gráfico comparativo de F1 en Test 
-plt.figure(figsize=(10,6))
-sns.barplot(data=comparativa_final, x="Modelo", y="F1", palette="coolwarm")
-plt.title("Comparación de F1-score en Test")
+comparativa_plot = comparativa_final[["Modelo", "Acc Test", "AUC Test", "F1_y"]].copy()
+comparativa_plot = comparativa_plot.rename(columns={
+    "Acc Test": "Accuracy",
+    "AUC Test": "AUC",
+    "F1_y": "F1-score"
+})
+
+# Pasamos a formato "largo" para graficar fácilmente
+comparativa_plot_long = comparativa_plot.melt(
+    id_vars="Modelo", 
+    value_vars=["Accuracy", "AUC", "F1-score"], 
+    var_name="Métrica", 
+    value_name="Valor"
+)
+
+plt.figure(figsize=(12,6))
+sns.barplot(
+    data=comparativa_plot_long,
+    x="Modelo", y="Valor", hue="Métrica",
+    palette="Set2"
+)
+
+plt.title("Comparación de Accuracy, AUC y F1-score en Test")
 plt.xticks(rotation=45, ha="right")
+plt.ylim(0.55, 0.75)  # escala ajustada para ver diferencias mejor
+plt.legend(title="Métrica")
 plt.tight_layout()
 plt.show()
