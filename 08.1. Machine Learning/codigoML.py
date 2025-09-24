@@ -7,7 +7,7 @@ import warnings
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, cross_val_predict
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, auc, roc_auc_score
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, auc, roc_auc_score, f1_score, precision_score, recall_score
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, StackingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -181,7 +181,7 @@ X_test_scaled[nums] = scaler.transform(X_test[nums])
 
 
 ###############################################################################
-# PUNTO 2: Ajuste de SVM con búsqueda paramétrica y comparación de kernels
+# Ajuste de SVM con búsqueda paramétrica y comparación de kernels
 ###############################################################################
 # Grids de búsqueda "gruesa"
 param_grid_linear = {'C': [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10, 50, 100, 200, 500, 1000]}
@@ -292,7 +292,6 @@ results_dict = {
 print("\nResumen comparativo (validación cruzada):")
 print(pd.DataFrame(results_dict).T)
 
-
 base_models_dict = {
     "Lineal": grid_linear.best_estimator_,
     "Polinomial": grid_poly.best_estimator_,
@@ -319,20 +318,61 @@ for name, model in base_models_dict.items():
         "AUC Test": auc_te
     })
     
-    print(f"\nMatriz de confusión – {name} (TEST):")
-    print(confusion_matrix(y_test, yte_pred))
+    cm = confusion_matrix(y_test, yte_pred)
+    plt.figure(figsize=(5,4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=['Black','White'], 
+                yticklabels=['Black','White'])
+    plt.title(f"Matriz de confusión - {name}")
+    plt.ylabel("Clase real")
+    plt.xlabel("Clase predicha")
+    plt.show()
+    
+print("Classification report LINEAL")
+print(classification_report(y_test, grid_linear.best_estimator_.predict(X_test_scaled)))
+
+print("\nClassification report POLINOMIAL")
+print(classification_report(y_test, grid_poly.best_estimator_.predict(X_test_scaled)))
+
+print("\nClassification report RBF")
+print(classification_report(y_test, grid_rbf.best_estimator_.predict(X_test_scaled)))
 
 df_results_base = pd.DataFrame(results_base)
 print("\nResultados en TRAIN/TEST para kernels base:")
 print(df_results_base)
 
+# Plot ROC de los tres kernels en TEST
+plt.figure(figsize=(8,6))
+
+# LINEAL
+fpr_lin, tpr_lin, _ = roc_curve(y_test, grid_linear.best_estimator_.predict_proba(X_test_scaled)[:,1])
+auc_lin = roc_auc_score(y_test, grid_linear.best_estimator_.predict_proba(X_test_scaled)[:,1])
+plt.plot(fpr_lin, tpr_lin, label=f"Lineal (AUC={auc_lin:.3f})")
+
+# POLINOMIAL
+fpr_poly, tpr_poly, _ = roc_curve(y_test, grid_poly.best_estimator_.predict_proba(X_test_scaled)[:,1])
+auc_poly = roc_auc_score(y_test, grid_poly.best_estimator_.predict_proba(X_test_scaled)[:,1])
+plt.plot(fpr_poly, tpr_poly, label=f"Polinomial (AUC={auc_poly:.3f})")
+
+# RBF
+fpr_rbf, tpr_rbf, _ = roc_curve(y_test, grid_rbf.best_estimator_.predict_proba(X_test_scaled)[:,1])
+auc_rbf = roc_auc_score(y_test, grid_rbf.best_estimator_.predict_proba(X_test_scaled)[:,1])
+plt.plot(fpr_rbf, tpr_rbf, label=f"RBF (AUC={auc_rbf:.3f})")
+
+# Plot formatting
+plt.plot([0,1], [0,1], 'k--', label="Azar")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Curvas ROC en Test – Comparación de kernels")
+plt.legend()
+plt.show()
 
 # Selección final del mejor modelo (por AUC en CV)
-best_svm_model = max([grid_linear, grid_poly, grid_rbf], key=lambda g: g.best_score_).best_estimator_
+best_svm_model = grid_linear.best_estimator_
 print("\nMejor modelo final elegido por AUC en CV:", best_svm_model)
 
 ###############################################################################
-# PUNTO 3: Evaluación baseline y Bagging
+# Evaluación baseline y Bagging
 # --- Baseline (SVM seleccionado) ---
 y_pred_train_svm = best_svm_model.predict(X_train_scaled)
 y_pred_test_svm = best_svm_model.predict(X_test_scaled)
@@ -348,15 +388,14 @@ print("Test AUC:", roc_auc_score(y_test, y_prob_test_svm))
 
 # --- Bagging con tuning ---
 param_grid_bagging = {
-    "n_estimators": [10, 30, 50, 100],
+    "n_estimators": [10, 30, 50, 100, 150],
     "max_samples": [0.5, 0.7, 1.0],
     "max_features": [0.5, 0.7, 1.0],
     "bootstrap": [True],
     "bootstrap_features": [False]
 }
 
-bagging = BaggingClassifier(estimator=best_svm_model,
-                            random_state=SEMILLA, n_jobs=-1)
+bagging = BaggingClassifier(estimator=best_svm_model, random_state=SEMILLA, n_jobs=-1)
 
 grid_bagging = GridSearchCV(
     bagging,
@@ -402,6 +441,9 @@ cm_bag = confusion_matrix(y_test, best_bagging.predict(X_test_scaled))
 print("\nMatriz de confusion bagging")
 print(cm_bag)
 
+print("\nClassification report – Bagging")
+print(classification_report(y_test, best_bagging.predict(X_test_scaled)))
+
 fig, axes = plt.subplots(1,2, figsize=(12,5))
 sns.heatmap(cm_svm, annot=True, fmt='d', cmap='Blues',
             xticklabels=['Black','White'], yticklabels=['Black','White'], ax=axes[0])
@@ -414,7 +456,7 @@ axes[1].set_title("Confusión – Bagging SVM")
 plt.tight_layout(); plt.show()
 
 ###############################################################################
-# PUNTO 4: Stacking en profundidad (base learners diversos + meta-learner)
+# Stacking en profundidad (base learners diversos + meta-learner)
 ###############################################################################
 # Definimos modelos base
 base_models = [
@@ -424,7 +466,7 @@ base_models = [
     ('svm', best_svm_model)  # incluimos el mejor SVM como uno más
 ]
 
-# Meta-modelo (lineal para evitar sobreajuste del RF)
+# Meta-modelo (Logistic Regression por parsimonia y para evitar sobreajuste del RF)
 stacking_model = StackingClassifier(
     estimators=base_models,
     final_estimator=LogisticRegression(random_state=SEMILLA, max_iter=1000),
@@ -446,6 +488,8 @@ print("Train Accuracy:", accuracy_score(y_train, y_pred_train_stack))
 print("Test Accuracy:", accuracy_score(y_test, y_pred_test_stack))
 print("Train AUC:", roc_auc_score(y_train, y_prob_train_stack))
 print("Test AUC:", roc_auc_score(y_test, y_prob_test_stack))
+print("\nClassification report – STACKING (TEST):")
+print(classification_report(y_test, y_pred_test_stack))
 
 # ========================
 # Evaluación individual de bases
@@ -455,15 +499,24 @@ for name, model in base_models:
     model.fit(X_train_scaled, y_train)
     y_pred_test = model.predict(X_test_scaled)
     y_prob_test = model.predict_proba(X_test_scaled)[:,1] if hasattr(model, "predict_proba") else model.decision_function(X_test_scaled)
+    
+    # Métricas principales
     results_stack.append({
         "Modelo": f"Base–{name.upper()}",
         "Acc Train": accuracy_score(y_train, model.predict(X_train_scaled)),
         "Acc Test": accuracy_score(y_test, y_pred_test),
         "AUC Train": roc_auc_score(y_train, model.predict_proba(X_train_scaled)[:,1]) if hasattr(model, "predict_proba") else None,
-        "AUC Test": roc_auc_score(y_test, y_prob_test)
+        "AUC Test": roc_auc_score(y_test, y_prob_test),
+        "F1": f1_score(y_test, y_pred_test),
+        "Precision": precision_score(y_test, y_pred_test),
+        "Recall": recall_score(y_test, y_pred_test)
     })
+    
+    # Reporte y matriz de confusión
     print(f"\nMatriz de confusión – {name.upper()} (TEST):")
     print(confusion_matrix(y_test, y_pred_test))
+    print(f"Classification report – {name.upper()} (TEST):")
+    print(classification_report(y_test, y_pred_test))
 
 # ========================
 # Resultados del stacking
@@ -473,14 +526,64 @@ results_stack.append({
     "Acc Train": accuracy_score(y_train, y_pred_train_stack),
     "Acc Test": accuracy_score(y_test, y_pred_test_stack),
     "AUC Train": roc_auc_score(y_train, y_prob_train_stack),
-    "AUC Test": roc_auc_score(y_test, y_prob_test_stack)
+    "AUC Test": roc_auc_score(y_test, y_prob_test_stack),
+    "F1": f1_score(y_test, y_pred_test_stack),
+    "Precision": precision_score(y_test, y_pred_test_stack),
+    "Recall": recall_score(y_test, y_pred_test_stack)
 })
+
 print("\nMatriz de confusión – STACKING (TEST):")
 print(confusion_matrix(y_test, y_pred_test_stack))
+print("Classification report – STACKING (TEST):")
+print(classification_report(y_test, y_pred_test_stack))
 
 df_results_stack = pd.DataFrame(results_stack)
 print("\n=== Resultados comparativos (Stacking y bases) ===")
 print(df_results_stack)
+
+# ========================
+# Correlación entre predicciones de modelos base
+# ========================
+preds_stack = pd.DataFrame({
+    name: model.fit(X_train_scaled, y_train).predict(X_test_scaled)
+    for name, model in base_models
+})
+print("\n=== Correlación entre predicciones de clasificadores base (TEST) ===")
+print(preds_stack.corr())
+
+# ========================
+# Matrices de confusión – Modelos base y Stacking
+# ========================
+cm_rf   = confusion_matrix(y_test, base_models[0][1].predict(X_test_scaled))
+cm_lr   = confusion_matrix(y_test, base_models[1][1].predict(X_test_scaled))
+cm_knn  = confusion_matrix(y_test, base_models[2][1].predict(X_test_scaled))
+cm_stack= confusion_matrix(y_test, stacking_model.predict(X_test_scaled))
+
+fig, axes = plt.subplots(2, 2, figsize=(15,10))
+
+# RF
+sns.heatmap(cm_rf, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Black','White'], yticklabels=['Black','White'], ax=axes[0,0])
+axes[0,0].set_title("Confusión – Random Forest")
+
+# LR
+sns.heatmap(cm_lr, annot=True, fmt='d', cmap='Greens',
+            xticklabels=['Black','White'], yticklabels=['Black','White'], ax=axes[0,1])
+axes[0,1].set_title("Confusión – Logistic Regression")
+
+# KNN
+sns.heatmap(cm_knn, annot=True, fmt='d', cmap='Oranges',
+            xticklabels=['Black','White'], yticklabels=['Black','White'], ax=axes[1,0])
+axes[1,0].set_title("Confusión – KNN")
+
+# STACKING
+sns.heatmap(cm_stack, annot=True, fmt='d', cmap='Reds',
+            xticklabels=['Black','White'], yticklabels=['Black','White'], ax=axes[1,1])
+axes[1,1].set_title("Confusión – Stacking")
+
+plt.suptitle("Matrices de confusión – Modelos base y Stacking", fontsize=16)
+plt.tight_layout()
+plt.show()
 
 # ========================
 # Comparativa global con SVM, Bagging y Stacking
@@ -503,8 +606,6 @@ print("\n=== Correlación entre predicciones de clasificadores base (TEST) ===")
 print(preds_stack.corr())
 
 # >>> 3) Añadir Precision, Recall y F1
-from sklearn.metrics import precision_score, recall_score, f1_score
-
 def add_extra_metrics(df, Xte, yte):
     metrics = []
     for i, row in df.iterrows():
@@ -542,7 +643,7 @@ print(comparativa_final.to_string(index=False))
 
 # >>> 4) Gráfico comparativo de F1 en Test
 plt.figure(figsize=(8,6))
-sns.barplot(data=comparativa_final, x="Modelo", y="F1", palette="coolwarm")
+sns.barplot(data=comparativa_final, x="Modelo", y="F1_y", palette="coolwarm")
 plt.title("Comparación de F1-score en Test")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()

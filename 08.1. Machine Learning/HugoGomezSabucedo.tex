@@ -409,12 +409,30 @@ aplicar el principio de parsimonia, considerando las pequeñas diferencias en el
 como el mejor: ofrece un rendimiento idéntico y con un modelo mucho más sencillo, más fácil de interpretar y más rápido de entrenar.
 
 \subsection{Aplicación de bagging}\label{bagging}
-El bagging, o bootstrap aggregating, es una técnica de ensamblaje de modelos que se suele usar para mejorar la estabilidad y precisión de modelos de aprendizaje
-automático, especialmente en casos como el nuestro de clasificación, buscando reducir la varianza mediante la agregación de varios modelos. Además, permite mejorar
-la generalización y evitar el overfitting, al usar las predicciones de varios modelos. Se suele aplicar para mejorar la predicción del modelo, reducir en la 
-medida de lo posible el overfitting y acelerar el proceso de entrenamiento. En nuestro caso, empleamos el \texttt{BaggingClassifier} con el modelo que elegimos 
-como mejor, con 50 estimadores como modelos base para entrenarlo, empleando un 70\% de los datos originales para el entrenamiento y seleccionando el 100\% de 
-las características.
+El bagging, o bootstrap aggregating, es una técnica de ensamblaje de modelos diseñada para reducir la varianza y mejorar la estabilidad de los algoritmos de aprendizaje 
+automático. Se basa en entrenar múltiples modelos base sobre subconjuntos generados por remuestreo, o \textit{bootstrap}, de los datos originales y, posteriormente, 
+combinar sus predicciones mediante votación, en este caso, ya que se trata de un problema de clasificación. Esto permite suavizar las fluctuaciones propias de cada uno de 
+los modelos individuales, así como mejorar la capacidad de generalización y, en casos, acelerar el entrenamiento, ya que se divide la carga entre varios estimadores.
+
+En este caso se aplica un \texttt{BaggingClassifier} con el modelo lineal como modelo base. Para ajustarlo, se ha realizado también una búsqueda en una rejilla de hiperparámetros,
+explorando distintas combinaciones del número de estimadores, la fracción de muestras utilizada en cada remuestreo y la proporción de características usadas. El mejor conjunto 
+de parámetros resultó ser \texttt{n\_estimators=100}, \texttt{max\_samples=1.0}, \texttt{max\_features=0.7}, alcanzando un AUC promedio de 0.6867, ligeramente superior al 
+del modelo base.
+\begin{lstlisting}[language=Python,]
+    "n_estimators": [10, 30, 50, 100, 150]
+    "max_samples": [0.5, 0.7, 1.0]
+    "max_features": [0.5, 0.7, 1.0]
+    "bootstrap": [True]
+    "bootstrap_features": [False]
+\end{lstlisting}
+
+Al evaluar sobre test, el modelo de bagging obtiene una \textit{accuracy} del 61,7\% y un AUC de 0.654, frente al frente al 62,1\%  y 0.652 del modelo base. Esto indica que 
+la mejora es marginal: el AUC se incrementa levemente, y la exactitud disminuye unas décimas. La matriz de confusión (figura \ref{fig:baggingConf}) refleja este comportamiento:
+el bagging incrementa los verdaderos negativos de los 227 del base a 250, pero a costa de aumentar los falsos negativos, que pasan de 120 a 146. El reporte de clasificación 
+(figura \ref{fig:baggingACC}) confirma esto: la clase 0 alcanza una precisión de 0.63 y recall de 0.61, mientras que la clase 1 obtiene 0.60 y 0.62 respectivamente. En ambos 
+casos, el f1-score es similar, de 0.61 y 0.62. En conclusión, la aplicación del bagging no supone una mejora sustancial del rendimeinto global y, dado el coste adicional de
+entrenar 100 clasificadores, no parece que compense la complejidad añadida.
+
 \begin{figure}[h!]
     \centering
     \begin{minipage}[b]{0.45\textwidth}
@@ -432,16 +450,11 @@ las características.
     \end{minipage}
 \end{figure}
 
-Los resultados obtenidos para la matriz de confusión, precisión, AUC y el reporte de clasificación se ven en las figuras \ref{fig:baggingACC} y 
-\ref{fig:baggingConf}, pero los comentaremos en la sección \ref{comparativa} para comparar entre el modelo sin y conn bagging, y los modelos obtenidos del 
-stacking, que se trata en la siguiente sección.
-
 \section{Modelo de stacking en profundidad}\label{stacking}
-El stacking, es una técnica de ensamblaje que se basa en la combinación de distintos modelos, denominados modelos base, para crear un modelo final que sea más 
-robusto y preciso, al realizar una combinación de los mismos. Para ello, se entrena una serie de modelos base sobre el mismo conjunto de datos, y luego se 
-usa un metaclasificador que combine las predicciones de dichos modelos, con el objetivo de aprovechar las distintas virtudes de cada uno de los modelos.
-
-En nuestro caso, hemos elegido tres modelos base: Random Forest, Logistic Regression y K-Neighbors.
+El stacking es una técnica de ensamblaje que combina distintos modelos, llamados modelos base, con un metaclasificador, para crear un modelo final que mejore el rendimiento, 
+aprovechando las virtudes de cada modelo. La idea es que, si los modelos base cometen errores distintos, el metaclasificador aprenda a corregirlos y produzca un modelo más 
+robusto. En nuestro caso, hemos elegido cuatro modelos base: Random Forest, Logistic Regression y K-Neighbors, así como el ejor SVM. Como metaclasificador, se ha usado 
+una Regresión Logística, para evitar un sobreajuste excesivo y mantener la interpretabilidad.
 \begin{itemize}
     \item \textbf{Random Forest} se basa en árboles de decisión, entrenando cada árbol con una muestra aleatoria de los datos. En cada nodo, el árbol seleccionará
     la mejor característica para dividir los datos, empleando un criterio concreto, y combina la predicción individual de cada uno de los árboles. Su principal 
@@ -456,36 +469,33 @@ En nuestro caso, hemos elegido tres modelos base: Random Forest, Logistic Regres
     de ellos. Su principal ventaja es la facilidad que tiene para entenderlo, que no es paramétrico y que es ideal para captar patrones locales
 \end{itemize}
 
-Como metaclasificador, se ha elegido un RandomForestClassifier, que en general tiende a mejorar el rendimiento global, a la vez que resiste el overfitting (gracias 
-a promediar varias predicciones), y es fácilmente integrable en el stacking. Los modelos se entrenan individualmente, y posteriormente se combinan con el metaclasificador,
-empleando para ello la función \texttt{StackingClassifier}. Además, se aplica validación cruzada de 5 pliegues. En la figura \ref{fig:stackingGeneral} vemos los
-resultados globales del stacking, y en la \ref{fig:stackingDetalle}, los resultados para cada uno de los modelos.
+Un aspecto clave para la efectividad del stacking es usar clasificadores base divrersos. La tabla de correlación de predicciones (figura \ref{fig:corrBase}) muestra que,
+en general, las correlaciones están en valores moderados, en torno al 0.5-0.6, lo que implica que los modelos aportan cierta diversidad. Sí que se observa una correlación
+bastante elevada entre LR y el modelo base, del 0.826, lo que indica que tienen a producir predicciones muy similares y podría reducir la ganancia al combinarlos en un stacking.
 \begin{figure}[h!]
     \centering
     \begin{minipage}[c]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imgs/reportStacking.png}
-        \caption{Resultados generales de stacking}
-        \label{fig:stackingGeneral}
+        \includegraphics[width=\textwidth]{imgs/correlacionStacking.png}
+        \caption{Correlación de los modelos base}
+        \label{fig:corrBase}
     \end{minipage}%
     \hspace{1em}  % Espacio entre las imágenes
     \begin{minipage}[c]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imgs/reportStackingModelos.png}
-        \caption{Resultados de stacking modelo a modelo}
-        \label{fig:stackingDetalle}
+        \includegraphics[width=\textwidth]{imgs/confStacking.png}
+        \caption{Matrices de confusión para stacking}
+        \label{fig:confStacking}
     \end{minipage}
 \end{figure}
 
-RandomForest obtuvo una precisión del 64, con un buen equilibrio entre precisión y recall. El LogisticRegression tiene una precisión similar, pero con un mejor 
-equilibrio entre clases, con puntuación de 0,63 para la clase 0 y 0,64 para la 1. El KNeighbors es el que menor precisión tiene, con un 61\%, y por ende 
-también una menor puntuación de f1. Al combinar los modelos con el metaclasificador, obtenemos una precisión del 58\%, con una puntuación de f1 para la clase 
-0 de 0,60 y de 0,55 para la 1.
-
-Es decir, el stacking no mejora los resultados. Esto puede deberse a que los modelos base ya obtenían resultados similares entre sí,
-y no aportaban la diversidad suficiente como para que el metaclasificador los combine eficazmente. Además, puede que se haya cometido redundancia al usar como 
-metaclasificador uno de los modelos base. Quizás probando con un metaclasificador más sencillo, como una regresión logística, empleando otro modelo base en su 
-lugar, podríamos haber obtenido mejores resultados.
+Los resultados de los modelos base y del stacking se evaluaron, de igual forma queen los casos anteriores, mediante accuracy, AUC y matrices de confusión. El Random Forest 
+obtiene el mejor equilibrio entre precisión y recall, con un accuracy en test del 0.65 y un AUC de 0.69, mostrando un buen balance entre verdaderos positivos y negativos 
+(figura \ref{confStacking}, superior izquierda). La Logistic Regression y el KNN obtuvieron resultados algo más bajos, con un accuracy cerca del 0.63 y un AUC ligeramente inferior. 
+El SVM, por su parte, logró un rendimiento bastante similar. Al combinar los modelos en stacking, se observa un incremento en el AUC test al 0.709 y, además, en la matriz 
+de confusión (figura \ref{confStacking}, inferior derecha) se aprecia una reducción de los falsos negativos y una clasificación más equilibrada entre ambas clases. En general,
+el stacking mejora el AUC, pero no tanto el accuracy. Esto es algo general en stacking: el AUC suele ser la métrica más beneficiada, mientras que las ganancias en accuracy suelen 
+ser más modestas.
 
 \section{Comparativa y conclusiones}\label{comparativa}
 Una vez tenemos todos los modelos, los compararemos en base a, principalmente, la accuracy. En estos términos, el mejor modelo es el que escogimos como mejor 

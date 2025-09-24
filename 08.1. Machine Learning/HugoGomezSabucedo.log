@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  24 SEP 2025 20:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  24 SEP 2025 23:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -653,44 +653,46 @@ Package pdftex.def Info: imgs/curvaROC.png  used on input line 401.
 
 
 [11 <./imgs/reportKernels.png> <./imgs/confLin.png> <./imgs/confPol.png> <./imgs/confGaus.png>]
-<imgs/reportBagging.png, id=159, 451.6875pt x 191.21437pt>
-File: imgs/reportBagging.png Graphic file (type png)
-<use imgs/reportBagging.png>
-Package pdftex.def Info: imgs/reportBagging.png  used on input line 422.
-(pdftex.def)             Requested size: 188.21288pt x 79.67926pt.
-<imgs/confBagging.png, id=160, 492.33937pt x 394.47375pt>
-File: imgs/confBagging.png Graphic file (type png)
-<use imgs/confBagging.png>
-Package pdftex.def Info: imgs/confBagging.png  used on input line 429.
-(pdftex.def)             Requested size: 188.21288pt x 150.79843pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
 
 [12 <./imgs/curvaROC.png>]
+<imgs/reportBagging.png, id=166, 487.06969pt x 176.15813pt>
+File: imgs/reportBagging.png Graphic file (type png)
+<use imgs/reportBagging.png>
+Package pdftex.def Info: imgs/reportBagging.png  used on input line 440.
+(pdftex.def)             Requested size: 188.21288pt x 68.06972pt.
+<imgs/confBagging.png, id=167, 840.64063pt x 353.82187pt>
+File: imgs/confBagging.png Graphic file (type png)
+<use imgs/confBagging.png>
+Package pdftex.def Info: imgs/confBagging.png  used on input line 447.
+(pdftex.def)             Requested size: 188.21288pt x 79.21776pt.
+
 
 [13 <./imgs/reportBagging.png> <./imgs/confBagging.png>]
-<imgs/reportStacking.png, id=180, 493.845pt x 165.61874pt>
-File: imgs/reportStacking.png Graphic file (type png)
-<use imgs/reportStacking.png>
-Package pdftex.def Info: imgs/reportStacking.png  used on input line 467.
-(pdftex.def)             Requested size: 188.21288pt x 63.11772pt.
-<imgs/reportStackingModelos.png, id=181, 428.35031pt x 526.21594pt>
-File: imgs/reportStackingModelos.png Graphic file (type png)
-<use imgs/reportStackingModelos.png>
-Package pdftex.def Info: imgs/reportStackingModelos.png  used on input line 474.
-(pdftex.def)             Requested size: 188.21288pt x 231.21455pt.
+<imgs/correlacionStacking.png, id=184, 621.82312pt x 119.69719pt>
+File: imgs/correlacionStacking.png Graphic file (type png)
+<use imgs/correlacionStacking.png>
+Package pdftex.def Info: imgs/correlacionStacking.png  used on input line 479.
+(pdftex.def)             Requested size: 188.21288pt x 36.22905pt.
+<imgs/confStacking.png, id=185, 852.68562pt x 603.75563pt>
+File: imgs/confStacking.png Graphic file (type png)
+<use imgs/confStacking.png>
+Package pdftex.def Info: imgs/confStacking.png  used on input line 486.
+(pdftex.def)             Requested size: 188.21288pt x 133.25963pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `confStacking' on page 14 undefined on input line 494.
+
+
+LaTeX Warning: Reference `confStacking' on page 14 undefined on input line 496.
 
 
 
 [14]
 
-[15 <./imgs/reportStacking.png> <./imgs/reportStackingModelos.png>]
+[15 <./imgs/correlacionStacking.png> <./imgs/confStacking.png>]
 
 [16] (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
@@ -708,18 +710,18 @@ Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: 88DCA16A1B1BF98C46F7D1D491A7BECF;1330.
  ) 
 Here is how much of TeX's memory you used:
- 18611 strings out of 473362
- 296123 string characters out of 5725050
- 984824 words of memory out of 5000000
- 41077 multiletter control sequences out of 15000+600000
- 620791 words of font info for 344 fonts, out of 8000000 for 9000
+ 18628 strings out of 473362
+ 296275 string characters out of 5725050
+ 984822 words of memory out of 5000000
+ 41080 multiletter control sequences out of 15000+600000
+ 621224 words of font info for 350 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,1094b,2168s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (16 pages, 1412747 bytes).
+Output written on HugoGomezSabucedo.pdf (16 pages, 1496527 bytes).
 PDF statistics:
- 249 PDF objects out of 1000 (max. 8388607)
- 171 compressed objects within 2 object streams
- 55 named destinations out of 1000 (max. 500000)
+ 254 PDF objects out of 1000 (max. 8388607)
+ 176 compressed objects within 2 object streams
+ 61 named destinations out of 1000 (max. 500000)
  80034 words of extra memory for PDF output out of 89155 (max. 10000000)
 
