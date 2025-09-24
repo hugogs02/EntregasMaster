@@ -588,24 +588,17 @@ plt.show()
 # ========================
 # Comparativa global con SVM, Bagging y Stacking
 # ========================
+# Unir comparacion 
 comparativa_final = pd.concat([
-    comparacion,  # lo que ya tenías de SVM y Bagging
-    df_results_stack
+    comparacion,        # SVM base y Bagging
+    df_results_stack    # Bases y Stacking
 ], ignore_index=True)
 
 # >>> 1) Añadir gaps train-test
 comparativa_final["Acc Gap"] = comparativa_final["Acc Train"] - comparativa_final["Acc Test"]
 comparativa_final["AUC Gap"] = comparativa_final["AUC Train"] - comparativa_final["AUC Test"]
 
-# >>> 2) Correlación de predicciones en stacking
-preds_stack = pd.DataFrame({
-    name: model.fit(X_train_scaled, y_train).predict(X_test_scaled)
-    for name, model in base_models
-})
-print("\n=== Correlación entre predicciones de clasificadores base (TEST) ===")
-print(preds_stack.corr())
-
-# >>> 3) Añadir Precision, Recall y F1
+# >>> 2) Añadir Precision, Recall y F1 si no están
 def add_extra_metrics(df, Xte, yte):
     metrics = []
     for i, row in df.iterrows():
@@ -614,7 +607,7 @@ def add_extra_metrics(df, Xte, yte):
             model = best_svm_model
         elif model_name == "Bagging SVM":
             model = best_bagging
-        elif model_name == "Stacking (LR meta)":
+        elif model_name == "STACKING (LR meta)":
             model = stacking_model
         #elif "Base–RF" in model_name:
         #    model = base_models[0][1]
@@ -636,14 +629,16 @@ def add_extra_metrics(df, Xte, yte):
     return pd.DataFrame(metrics)
 
 extra_metrics = add_extra_metrics(comparativa_final, X_test_scaled, y_test)
-comparativa_final = comparativa_final.merge(extra_metrics, on="Modelo")
+
+# Merge con métricas extra
+comparativa_final = comparativa_final.merge(extra_metrics, on="Modelo", how="left")
 
 print("\n=== Comparativa FINAL con métricas adicionales ===")
 print(comparativa_final.to_string(index=False))
 
-# >>> 4) Gráfico comparativo de F1 en Test
-plt.figure(figsize=(8,6))
-sns.barplot(data=comparativa_final, x="Modelo", y="F1_y", palette="coolwarm")
+# >>> 3) Gráfico comparativo de F1 en Test 
+plt.figure(figsize=(10,6))
+sns.barplot(data=comparativa_final, x="Modelo", y="F1", palette="coolwarm")
 plt.title("Comparación de F1-score en Test")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()

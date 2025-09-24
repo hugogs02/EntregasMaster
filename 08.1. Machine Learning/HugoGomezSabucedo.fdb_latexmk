@@ -1,9 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1758747742.03897 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1758747745.48153 0
-  "HugoGomezSabucedo.aux" 1758747745 6670 c1bd1b25ab3babfe67fccb30b66103a7 "pdflatex"
-  "HugoGomezSabucedo.out" 1758747745 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
-  "HugoGomezSabucedo.tex" 1758742991 39632 ac888f03dffccb55a76c7224026f191a ""
-  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1758742991 39632 ac888f03dffccb55a76c7224026f191a ""
+["pdflatex"] 1758752433.54439 "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" "HugoGomezSabucedo.pdf" "HugoGomezSabucedo" 1758752437.20871 0
+  "HugoGomezSabucedo.aux" 1758752437 7227 f300174900e4e2659797c27422146867 "pdflatex"
+  "HugoGomezSabucedo.out" 1758752437 1330 88dca16a1b1bf98c46f7d1d491a7becf "pdflatex"
+  "HugoGomezSabucedo.tex" 1758752432 44069 48293abcd4a25a0721367534541703e5 ""
+  "c:/Users/Hugo/OneDrive/Desktop/Entregas/EntregasMaster/08.1. Machine Learning/HugoGomezSabucedo.tex" 1758752432 44069 48293abcd4a25a0721367534541703e5 ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1738263611 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1738263212 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1738263945 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -130,6 +130,7 @@
   "imgs/bidimensional_cats.png" 1758571209 174589 51aa71bdd321644ee0bbcf63a95b0f04 ""
   "imgs/bidimensional_densidad.png" 1758571203 435254 f8d415978c977cf8bf5855272185edda ""
   "imgs/boxplot.png" 1758570880 19730 9b1ee25b9de5c3985cace4b54d12d4b0 ""
+  "imgs/comparativa_final.png" 1758750730 71024 e5298a758ced0381d79f3c90e9766ac9 ""
   "imgs/confBagging.png" 1758740860 46727 559cbf9ca8cea35cd2671a3f410918d3 ""
   "imgs/confGaus.png" 1758738152 31230 deefab1b495c655c3fca60f6e8be0220 ""
   "imgs/confLin.png" 1758738142 32027 b1016c2c41cd6522870419b24c341ce2 ""

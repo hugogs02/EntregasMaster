@@ -498,12 +498,61 @@ el stacking mejora el AUC, pero no tanto el accuracy. Esto es algo general en st
 ser más modestas.
 
 \section{Comparativa y conclusiones}\label{comparativa}
-Una vez tenemos todos los modelos, los compararemos en base a, principalmente, la accuracy. En estos términos, el mejor modelo es el que escogimos como mejor 
-del SVM, con un accuracy de 0,641, mejor incluso que aplicando bagging o stacking. Aunque la diferencia entre SVM y bagging es pequeña, la ventaja de SVM sugiere
-que, en términos generales, este modelo tiene un mejor desempeño al clasificar correctamente las instancias en el conjunto de datos.
+El estudio comparativo de los modelos nos permite extraer varias consideraciones de interés. En primer lugar, la homogeneidad en el rendimiento global ya que,
+como se observa en la figura \ref{fig:comparativaMetricas}, todos los modelos alcanzan métricas similares, con un \textit{accuracy} en torno al 0.64 y un AUC entre 
+0.65 y 0.71. Esto refleja que los límites predictivos están condicionados no tanto por la elección del algoritmo, sino más por la calidad de los datos. Una posible 
+mejora sería probar con distintas combinaciones de variables, para ver cuál nos ofrece un mejor rendimiento. Dentro de esto, si bien los tres tipos de kernel han obtenido
+resultados similares, se destaca el kernel lineal por, aún siendo realmente simple, producir unos resultados igual de buenos que el resto.
 
-Esta comparativa en base a la accuracy no refleja por completo la calidad del modelo, pero no se ha podido realizar una comparativa más en profundidad. Lo que 
-está claro es que, analizando todos los parámetros que hemos ido viendo para cada uno de los modelos, el mejor es el que resultó del SVM con un kernel polinómico.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/comparativa_final.png}
+    \caption{Gráfico comparativo de métricas} \label{fig:comparativaMetricas}
+\end{figure}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|ccccc|}
+\hline
+\textbf{Modelo} & \textbf{Accuracy (Test)} & \textbf{AUC (Test)} & \textbf{F1-score (Test)} & \textbf{Acc Gap} & \textbf{AUC Gap} \\
+\hline
+SVM base        & 0.621 & 0.652 & 0.639 & 0.019 & 0.039 \\
+Bagging SVM     & 0.617 & 0.654 & 0.612 & 0.036 & 0.037 \\
+Base--RF        & 0.650 & 0.699 & 0.638 & 0.350 & 0.301 \\
+Base--LR        & 0.626 & 0.665 & 0.626 & 0.031 & 0.033 \\
+Base--KNN       & 0.630 & 0.688 & 0.621 & 0.067 & 0.069 \\
+Base--SVM       & 0.621 & 0.652 & 0.639 & 0.019 & 0.039 \\
+Stacking (LR)   & 0.636 & 0.709 & 0.638 & 0.224 & 0.237 \\
+\hline
+\end{tabular}
+\caption{Resultados comparativos en test para los modelos evaluados}
+\label{tab:comparativa_modelos}
+\end{table}
+
+Respecto a las técnicas de mejora de los modelos, en ensamblado mediante \textit{bagging} no logra una mejora significativa respecto al SVM base ya que, pese a 
+aumentar el AUC, lo hace a costa de reducir el \textit{accuracy} y el F1. Esto significa que el problema no es lo suficientemente estable como para poder beneficiarse 
+de técnicas de agregación. Respecto al stacking, consigue la mejor puntuación de AUC, reflejando la capacidad que tiene para combinar la información de los distintos 
+clasificadores base. Sin embargo, presenta un alto AUC en \textit{train}, lo cual podría ser una señal de sobreajuste. Dentro de los modelos base que se emplearon,
+el Random Forest obtiene el mejor equilibro entre textit{accuracy} y AUC, pero presenta un alto gap entre el AUC de \textit{train} y \textit{test}, indicando también 
+un riesgo de sobreajuste. El Logistic Regression, por su parte, tiene resultados similares al SVM, con la ventaja de una alta interpretabilidad. Por último, el KNN 
+está en una situación intermedia, con un buen AUC pero menor estabilidad. En resumen, el realizar un stacking mejora marginalmente los resultados, pero a costa de
+incrementar la complejidad del modelo.
+
+En relación con el sobreajuste, algunos modelos presentan cierto gap entre las métricas de entrenamiento y test, como es el caso del stacking que, como se ve en la tabla 
+\ref{tab:comparativa_modelos} obtiene un 0.946 en entrenamiento, frente al 0.709 de test, lo cual representa un gap de 0.237. Esta es la mayor diferencia entre todos los 
+modelos, lo cual refleja un ajuste excesivo a los datos de entrenamiento y una menor capacidad de generalizacion, y presenta problemas de estabilidad al enfrentarse a nuevos 
+datos. Por el contrario, el comportamiento del SVM lineal es más equilibrado,con una diferencia muy reducida (AUC de 0.691 en train y 0.652 en test), lo que refleja un 
+modelo más robusto y generalizable.
+
+La elección del modelo debe guiarse por un equilibrio entre rendimiento y parsimonia. Aunque los métodos de ensamblado como Bagging y Stacking ofrecen ligeras mejoras
+en algunas métricas (por ejemplo, el Stacking logra el mayor AUC en test), estas mejoras son modestas y se acompañan de un incremento considerable en la complejidad
+y el riesgo de sobreajuste. El Random Forest, a pesar de su buena precisión en test, queda penalizado por su alto riesgo de overfitting. En este contexto, el SVM lineal
+emerge como la opción más adecuada: mantiene un rendimiento competitivo en todas las métricas (accuracy de 0.621, AUC de 0.652 y F1-score de 0.639 en test), con un
+comportamiento estable entre entrenamiento y test, un bajo riesgo de sobreajuste y la ventaja adicional de su simplicidad e interpretabilidad.
+
+En conclusión, los resultados muestran que las mejoras obtenidas por los modelos más complejos (Random Forest, Bagging, Stacking) son marginales y no compensan el aumento
+de complejidad y el mayor riesgo de sobreajuste. Aplicando el principio de parsimonia, y teniendo en cuenta los resultados obtenidos en la figura \ref{fig:comparativaMetricas} 
+y en la tabla \ref{tab:comparativa_modelos}, el SVM lineal es el modelo más recomendable, ya que logra un equilibrio óptimo entre rendimiento predictivo, estabilidad, 
+interpretabilidad y capacidad de generalización. Se trata, por tanto, del modelo más apropiado para abordar este problema en un entorno práctico.
 
 \clearpage
 %\newpage

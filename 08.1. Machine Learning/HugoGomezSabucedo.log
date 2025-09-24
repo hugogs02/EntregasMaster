@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  24 SEP 2025 23:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.15)  25 SEP 2025 00:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -693,8 +693,16 @@ LaTeX Warning: Reference `confStacking' on page 14 undefined on input line 496.
 [14]
 
 [15 <./imgs/correlacionStacking.png> <./imgs/confStacking.png>]
+<imgs/comparativa_final.png, id=198, 859.71187pt x 426.09187pt>
+File: imgs/comparativa_final.png Graphic file (type png)
+<use imgs/comparativa_final.png>
+Package pdftex.def Info: imgs/comparativa_final.png  used on input line 509.
+(pdftex.def)             Requested size: 250.95476pt x 124.37617pt.
 
-[16] (./HugoGomezSabucedo.aux
+
+[16 <./imgs/comparativa_final.png>]
+
+[17] (./HugoGomezSabucedo.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -710,18 +718,18 @@ Package rerunfilecheck Info: File `HugoGomezSabucedo.out' has not changed.
 (rerunfilecheck)             Checksum: 88DCA16A1B1BF98C46F7D1D491A7BECF;1330.
  ) 
 Here is how much of TeX's memory you used:
- 18628 strings out of 473362
- 296275 string characters out of 5725050
- 984822 words of memory out of 5000000
- 41080 multiletter control sequences out of 15000+600000
- 621224 words of font info for 350 fonts, out of 8000000 for 9000
+ 18645 strings out of 473362
+ 296711 string characters out of 5725050
+ 984977 words of memory out of 5000000
+ 41094 multiletter control sequences out of 15000+600000
+ 621211 words of font info for 350 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,12n,79p,1094b,2168s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on HugoGomezSabucedo.pdf (16 pages, 1496527 bytes).
+Output written on HugoGomezSabucedo.pdf (17 pages, 1561308 bytes).
 PDF statistics:
- 254 PDF objects out of 1000 (max. 8388607)
- 176 compressed objects within 2 object streams
- 61 named destinations out of 1000 (max. 500000)
- 80034 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 266 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
+ 64 named destinations out of 1000 (max. 500000)
+ 80039 words of extra memory for PDF output out of 89155 (max. 10000000)
 
